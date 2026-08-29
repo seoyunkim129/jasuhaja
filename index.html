@@ -273,6 +273,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
       </svg>
       <div class="legend">
         <span><i style="background:#F5A623"></i>조건 통과</span>
+        <span><i style="background:transparent;box-shadow:inset 0 0 0 2px #3FD8C4"></i>검색한 단지</span>
         <span><i style="background:rgba(143,179,184,.35)"></i>조건 미달</span>
       </div>
     </div>
@@ -414,20 +415,42 @@ function 조건통과(단지){
 }
 
 function 다시그리기(){
-  const 통과 = 전체단지.filter(조건통과);
+  const 검색어 = document.getElementById('검색어').value.trim();
+  const 통과   = 전체단지.filter(조건통과);
 
-  // ── 지도: 통과한 단지는 주황, 아닌 곳은 흐리게
+  // ── 지도: 점 하나가 세 가지 모습 중 하나로 그려집니다
+  //    ① 검색한 단지  → 민트색 링을 둘러서 강조. 도보 조건에 걸려 탈락해도 "여기 있습니다" 하고 보여줍니다
+  //    ② 조건 통과     → 주황색 점 + 이름표
+  //    ③ 나머지        → 작고 흐린 점, 이름표 없음 (이름이 겹쳐서 뭉개지는 걸 막습니다)
+  // 마곡처럼 단지가 붙어 있으면 이름표가 겹쳐 뭉개집니다.
+  // 이미 놓은 자리를 기억해 뒀다가, 겹치면 한 줄씩 아래로 밀어냅니다.
+  const 놓은자리 = [];
+  function 이름표높이(x, y){
+    let 높이 = y + 19;
+    while (놓은자리.some(p => Math.abs(p.x - x) < 48 && Math.abs(p.y - 높이) < 11)) 높이 += 11;
+    놓은자리.push({ x, y:높이 });
+    return 높이;
+  }
+
   document.getElementById('단지점').innerHTML = 전체단지.map(d => {
-    const 위치 = 화면좌표(Number(d.위도), Number(d.경도));
+    const 위치   = 화면좌표(Number(d.위도), Number(d.경도));
+    const x = 위치.x.toFixed(1), y = 위치.y.toFixed(1);
     const 통과함 = 통과.includes(d);
+    const 검색됨 = 검색어 !== '' && d.단지명.includes(검색어);
+    const 이름표 = 통과함 || 검색됨;
+    const 글자y  = 이름표 ? 이름표높이(위치.x, 위치.y) : 0;
+
     return `
-      <circle cx="${위치.x.toFixed(1)}" cy="${위치.y.toFixed(1)}"
-              r="${통과함 ? 5 : 3}"
-              fill="${통과함 ? '#F5A623' : 'rgba(143,179,184,.30)'}"/>
-      <text x="${위치.x.toFixed(1)}" y="${(위치.y + 15).toFixed(1)}"
-            font-size="8.5" text-anchor="middle"
-            fill="${통과함 ? '#E9F3F2' : 'rgba(143,179,184,.30)'}"
-            font-weight="${통과함 ? 700 : 400}">${d.단지명}</text>
+      ${검색됨 ? `<circle cx="${x}" cy="${y}" r="11" fill="none"
+                          stroke="#3FD8C4" stroke-width="1.6" opacity=".85"/>` : ''}
+      <circle cx="${x}" cy="${y}" r="${이름표 ? 5 : 3}"
+              fill="${통과함 ? '#F5A623' : (검색됨 ? '#04242C' : 'rgba(143,179,184,.30)')}"
+              stroke="${검색됨 && !통과함 ? '#3FD8C4' : 'none'}" stroke-width="2"/>
+      ${이름표 ? `<line x1="${x}" y1="${(위치.y + 6).toFixed(1)}" x2="${x}" y2="${(글자y - 7).toFixed(1)}"
+                        stroke="${검색됨 ? 'rgba(63,216,196,.45)' : 'rgba(245,166,35,.4)'}" stroke-width="1"/>
+                  <text x="${x}" y="${글자y.toFixed(1)}"
+                        font-size="9" text-anchor="middle" font-weight="700"
+                        fill="${검색됨 ? '#3FD8C4' : '#E9F3F2'}">${d.단지명}</text>` : ''}
     `;
   }).join('');
 
@@ -437,7 +460,11 @@ function 다시그리기(){
   // ── 카드 목록
   const 목록 = document.getElementById('카드목록');
   if (통과.length === 0){
-    목록.innerHTML = `<p class="empty">조건에 맞는 단지가 없습니다. 도보 시간을 늘려보세요.</p>`;
+    // 검색한 단지가 있긴 한데 도보 조건에서 떨어진 경우 - 지도를 보라고 알려줍니다
+    const 검색만됨 = 검색어 ? 전체단지.filter(d => d.단지명.includes(검색어)) : [];
+    목록.innerHTML = 검색만됨.length
+      ? `<p class="empty">「${검색어}」에 맞는 단지 ${검색만됨.length}곳을 지도에 표시했습니다. 도보 ${선택한시간}분 조건에는 못 미쳐요 - 시간을 늘려보세요.</p>`
+      : `<p class="empty">조건에 맞는 단지가 없습니다. 도보 시간을 늘려보세요.</p>`;
     return;
   }
   목록.innerHTML = 통과.map(d => `
