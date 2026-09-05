@@ -183,15 +183,16 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
   </div>
 
   <div class="legend">
-    <span><i style="background:#F5A623"></i>단지 · 조건 통과 <b style="color:#F5A623">(가데이터)</b></span>
-    <span><i style="background:rgba(143,179,184,.45)"></i>단지 · 조건 미달 <b style="color:var(--muted)">(가데이터)</b></span>
+    <span><i style="background:#F5A623"></i>단지 · 조건 통과 <b style="color:#F5A623">(국토부 실거래)</b></span>
+    <span><i style="background:rgba(143,179,184,.45)"></i>단지 · 조건 미달 <b style="color:var(--muted)">(국토부 실거래)</b></span>
     <span><i style="background:#3FD8C4"></i>수영장 <b style="color:#3FD8C4">(TMAP 실제)</b></span>
     <span><i style="background:#E9F3F2"></i>다이소 <b style="color:#E9F3F2">(TMAP 실제)</b></span>
   </div>
 
   <footer>
-    수영장·다이소는 TMAP에서 실제로 찾아온 위치입니다.
-    단지 20개는 아직 손으로 넣은 예시 데이터라 위치와 도보 시간이 실제와 다릅니다.
+    단지와 실거래가는 국토교통부 실거래가 신고 데이터입니다 (2026년 3~9월 거래분).
+    수영장·다이소 위치와 도보 시간은 TMAP에서 실제로 계산했습니다.
+    도보 시간은 단지 대표 지점 기준이라, 큰 단지는 어느 동에 사느냐에 따라 몇 분 차이가 날 수 있습니다.
   </footer>
 </main>
 
@@ -353,7 +354,15 @@ function 데이터담기(csv글자){
   다시그리기();
 }
 
-fetch(CSV주소).then(r => r.text()).then(데이터담기).catch(() => 데이터담기(예비데이터));
+// CSV를 못 읽을 때만 예비데이터를 씁니다.
+// (예전 코드는 .catch가 데이터담기의 오류까지 삼켜서, 화면이 조용히 옛 데이터로 돌아갔습니다)
+fetch(CSV주소, { cache: "no-cache" })   // 서버에 매번 "바뀌었나요?" 물어봅니다 (안 바뀌었으면 캐시 사용)
+  .then(r => r.ok ? r.text() : Promise.reject(new Error("HTTP " + r.status)))
+  .catch(오류 => {
+    console.warn("danji.csv를 못 읽어 예비데이터를 씁니다:", 오류.message);
+    return 예비데이터;
+  })
+  .then(데이터담기);
 
 /* ============================================================
    ④ 조건에 맞는 단지 고르기 (index.html ⑫와 똑같습니다 - 일부러 그대로 뒀습니다)
