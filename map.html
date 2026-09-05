@@ -146,8 +146,11 @@ header{ padding:26px 0 6px; }
 }
 .시설더하기:hover{ background:rgba(63,216,196,.24); }
 
-.legend{ display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--muted); }
-.legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:-1px; }
+.legend{ display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; font-size:12px; color:var(--muted); align-items:center; }
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+/* 단지 핀은 남색(#052E38)이라 페이지 배경과 같습니다.
+   지도(밝은 배경) 위에서 보이는 모습 그대로 보여주려고 밝은 판을 깝니다. */
+.legend img{ background:#E9F3F2; border-radius:6px; padding:2px 3px; }
 
 footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
 
@@ -221,12 +224,8 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
     <div id="map_div"></div>
   </div>
 
-  <div class="legend">
-    <span><i style="background:#F5A623"></i>단지 · 조건 통과 <b style="color:#F5A623">(국토부 실거래)</b></span>
-    <span><i style="background:rgba(143,179,184,.45)"></i>단지 · 조건 미달 <b style="color:var(--muted)">(국토부 실거래)</b></span>
-    <span><i style="background:#3FD8C4"></i>수영장 <b style="color:#3FD8C4">(TMAP 실제)</b></span>
-    <span><i style="background:#E9F3F2"></i>다이소 <b style="color:#E9F3F2">(TMAP 실제)</b></span>
-  </div>
+  <!-- 범례는 아래 범례그리기()가 채웁니다. 지도 마커와 같은 그림을 씁니다 -->
+  <div class="legend" id="범례"></div>
 
   <footer>
     단지와 실거래가는 국토교통부 실거래가 신고 데이터입니다 (2026년 3~9월 거래분).
@@ -253,7 +252,8 @@ let 지도 = null;
 let 정보창 = null;
 
 window.addEventListener('load', () => {
-  시설칩그리기();          // 지도 키가 없어도 시설 목록은 보여줍니다
+  시설칩그리기();          // 지도 키가 없어도 시설 목록과 범례는 보여줍니다
+  범례그리기();
   if (!키){ 안내띄우기(); return; }
 
   // Tmapv2가 제대로 안 만들어졌으면 키나 인터넷 문제입니다
@@ -498,6 +498,19 @@ function 시설저장(목록){
 }
 
 // 시설 이름을 칩(둥근 딱지)으로 보여줍니다. 기본 시설은 뺄 수 없습니다.
+/* 범례 - 지도 마커와 똑같은 아이콘마커()를 재활용합니다.
+   그래서 시설을 추가하면 범례도 저절로 따라 늘어나고,
+   마커와 범례가 서로 어긋날 일이 없습니다. */
+function 범례그리기(){
+  const 항목 = 시설목록().map(시설 =>
+    '<span><img src="' + 아이콘마커(시설, 16) + '" width="16" height="21" alt="">' +
+    시설.이름 + ' <b style="color:' + 시설.색 + '">TMAP 실제 위치</b></span>'
+  );
+  항목.push('<span><img src="' + 아이콘마커(단지시설, 16) + '" width="16" height="21" alt="">' +
+            '단지 · 조건 통과 <b style="color:var(--muted)">국토부 실거래</b></span>');
+  document.getElementById('범례').innerHTML = 항목.join('');
+}
+
 function 시설칩그리기(){
   document.getElementById('시설칩들').innerHTML =
     시설목록().map((시설, 번호) => {
@@ -508,6 +521,13 @@ function 시설칩그리기(){
         (기본 ? '' : '<button title="빼기" onclick="시설빼기(' + (번호 - 기본시설.length) + ')">&times;</button>') +
       '</span>';
     }).join('');
+}
+
+// 지금 안 쓰는 색을 고릅니다.
+// 그냥 순서대로 주면 하나 지웠다 다시 넣을 때 색이 겹칩니다.
+function 남은색(저장){
+  const 쓰는중 = 저장.map(f => f.색);
+  return 추가색.find(c => !쓰는중.includes(c)) || 추가색[저장.length % 추가색.length];
 }
 
 function 시설더하기(){
@@ -521,11 +541,12 @@ function 시설더하기(){
   if (지금.length >= 6){ alert('시설은 6개까지만 넣을 수 있어요. 하나 빼고 다시 넣어주세요.'); return; }
 
   const 저장 = 저장된시설();
-  저장.push({ 이름: 이름, 색: 추가색[저장.length % 추가색.length], 그림: null });
+  저장.push({ 이름: 이름, 색: 남은색(저장), 그림: null });
   시설저장(저장);
 
   칸.value = '';
   시설칩그리기();
+  범례그리기();
   if (지도) 주변시설찾기();
 }
 
@@ -534,6 +555,7 @@ function 시설빼기(번호){
   저장.splice(번호, 1);
   시설저장(저장);
   시설칩그리기();
+  범례그리기();
   if (지도) 주변시설찾기();
 }
 
