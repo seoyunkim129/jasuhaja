@@ -120,6 +120,30 @@ header{ padding:26px 0 6px; }
 }
 .guide a{ color:var(--surf); }
 
+/* ============================================================
+   ④-2 시설 바 (내가 보고 싶은 시설을 더하고 빼는 곳)
+   ============================================================ */
+.시설바{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
+.시설라벨{ font-size:13px; color:var(--muted); }
+#시설칩들{ display:flex; flex-wrap:wrap; gap:6px; }
+.칩{
+  display:inline-flex; align-items:center; gap:5px; font-size:13px;
+  background:rgba(233,243,242,.07); border:1px solid rgba(233,243,242,.16);
+  border-radius:999px; padding:4px 10px;
+}
+.칩 button{
+  background:none; border:0; color:var(--muted); cursor:pointer;
+  font-size:15px; line-height:1; padding:0 1px;
+}
+.칩 button:hover{ color:#FF9E9E; }
+#시설추가{ width:120px; padding:8px 12px; font-size:13px; }
+.시설더하기{
+  background:rgba(63,216,196,.14); color:var(--surf);
+  border:1px solid rgba(63,216,196,.4); border-radius:999px;
+  padding:7px 13px; font-size:13px; cursor:pointer;
+}
+.시설더하기:hover{ background:rgba(63,216,196,.24); }
+
 .legend{ display:flex; gap:16px; margin-top:12px; font-size:12px; color:var(--muted); }
 .legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:-1px; }
 
@@ -176,6 +200,15 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
     </select>
   </section>
 
+  <!-- ========== 지도에 표시할 시설 (사용자가 직접 더할 수 있습니다) ========== -->
+  <section class="시설바">
+    <span class="시설라벨">지도에 표시할 시설</span>
+    <span id="시설칩들"></span>
+    <input type="text" id="시설추가" placeholder="예: GS25" maxlength="10"
+           onkeydown="if(event.key==='Enter') 시설더하기()">
+    <button class="시설더하기" onclick="시설더하기()">+ 추가</button>
+  </section>
+
   <p class="count"><b id="개수">0</b>곳이 조건에 맞습니다 · 지도에서 점을 누르면 자세히 보입니다</p>
 
   <div class="map-box">
@@ -214,6 +247,7 @@ let 지도 = null;
 let 정보창 = null;
 
 window.addEventListener('load', () => {
+  시설칩그리기();          // 지도 키가 없어도 시설 목록은 보여줍니다
   if (!키){ 안내띄우기(); return; }
 
   // Tmapv2가 제대로 안 만들어졌으면 키나 인터넷 문제입니다
@@ -445,6 +479,52 @@ function 저장된시설(){
 
 function 시설목록(){
   return 기본시설.concat(저장된시설());
+}
+
+// 저장이 막힌 브라우저(시크릿 창 등)에서도 화면이 안 죽게 감쌉니다
+function 시설저장(목록){
+  try { localStorage.setItem('물때시설', JSON.stringify(목록)); }
+  catch(e){ console.warn('시설을 저장하지 못했습니다. 새로고침하면 사라집니다.'); }
+}
+
+// 시설 이름을 칩(둥근 딱지)으로 보여줍니다. 기본 시설은 뺄 수 없습니다.
+function 시설칩그리기(){
+  document.getElementById('시설칩들').innerHTML =
+    시설목록().map((시설, 번호) => {
+      const 기본 = 번호 < 기본시설.length;
+      return '<span class="칩">' +
+        '<img src="' + 아이콘마커(시설, 14) + '" width="14" height="18" alt="">' +
+        시설.이름 +
+        (기본 ? '' : '<button title="빼기" onclick="시설빼기(' + (번호 - 기본시설.length) + ')">&times;</button>') +
+      '</span>';
+    }).join('');
+}
+
+function 시설더하기(){
+  const 칸   = document.getElementById('시설추가');
+  const 이름 = 칸.value.trim();
+  if (!이름) return;
+
+  const 지금 = 시설목록();
+  if (지금.some(f => f.이름 === 이름)){ alert('이미 있습니다: ' + 이름); return; }
+  // 시설이 늘면 지도를 열 때마다 그 수만큼 TMAP에 물어봅니다. 6개까지만 받습니다.
+  if (지금.length >= 6){ alert('시설은 6개까지만 넣을 수 있어요. 하나 빼고 다시 넣어주세요.'); return; }
+
+  const 저장 = 저장된시설();
+  저장.push({ 이름: 이름, 색: 추가색[저장.length % 추가색.length], 그림: null });
+  시설저장(저장);
+
+  칸.value = '';
+  시설칩그리기();
+  if (지도) 주변시설찾기();
+}
+
+function 시설빼기(번호){
+  const 저장 = 저장된시설();
+  저장.splice(번호, 1);
+  시설저장(저장);
+  시설칩그리기();
+  if (지도) 주변시설찾기();
 }
 
 /* ============================================================
