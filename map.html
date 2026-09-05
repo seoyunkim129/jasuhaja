@@ -123,6 +123,8 @@ header{ padding:26px 0 6px; }
 /* ============================================================
    ④-2 시설 바 (내가 보고 싶은 시설을 더하고 빼는 곳)
    ============================================================ */
+.미달라벨{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); cursor:pointer; }
+
 .시설바{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
 .시설라벨{ font-size:13px; color:var(--muted); }
 #시설칩들{ display:flex; flex-wrap:wrap; gap:6px; }
@@ -198,6 +200,10 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
       <option value="강서구">강서구</option>
       <option value="양천구">양천구</option>
     </select>
+    <label class="미달라벨">
+      <input type="checkbox" id="미달보기" onchange="다시그리기()">
+      조건 미달 단지도 흐리게 보기
+    </label>
   </section>
 
   <!-- ========== 지도에 표시할 시설 (사용자가 직접 더할 수 있습니다) ========== -->
@@ -449,8 +455,9 @@ function 조건통과(단지){
    ============================================================ */
 let 마커들 = [];
 
-// 동그란 점 하나를 그림 파일 없이 글자로 만들어 씁니다 (data URI)
-function 점모양(색, 지름){
+// 조건에 못 미친 단지를 흐리게 찍는 작은 점입니다.
+// 시설과 통과 단지는 아래 아이콘마커()를 씁니다. 이건 '나머지' 전용입니다.
+function 작은점(색, 지름){
   const 반지름 = 지름/2;
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + 지름 + '" height="' + 지름 + '">'
             + '<circle cx="' + 반지름 + '" cy="' + 반지름 + '" r="' + (반지름-2) + '" '
@@ -469,6 +476,9 @@ const 기본시설 = [
 ];
 
 // 사용자가 추가한 시설에 차례로 물려줄 색입니다
+// 단지 핀. 시설이 아니라 집이라 시설 목록과 따로 둡니다.
+const 단지시설 = { 이름:'단지', 색:'#052E38', 그림:'집' };
+
 const 추가색 = ['#7FB3FF', '#C792EA', '#7BD88F', '#FF9E9E', '#FFD166', '#5FD3E8'];
 
 // 사용자가 추가한 시설은 이 브라우저에 저장해서 새로고침해도 남게 합니다
@@ -663,16 +673,36 @@ function 다시그리기(){
   마커들.forEach(m => m.setMap(null));   // ← 이 줄이 핵심
   마커들 = [];
 
+  // 조건에 맞는 단지만 핀으로 그립니다.
+  // 299개를 다 그리면 회색 점이 지도를 덮어서 정작 봐야 할 시설이 안 보입니다.
+  // 아래 체크박스를 켜면 나머지도 작고 흐린 점으로 보여줍니다.
+  const 미달칸     = document.getElementById('미달보기');
+  const 미달도보기 = 미달칸 ? 미달칸.checked : false;
+
   전체단지.forEach(d => {
     const 통과함 = 통과.includes(d);
-    const 지름   = 통과함 ? 22 : 13;
-    const 마커 = new Tmapv2.Marker({
-      position: new Tmapv2.LatLng(Number(d.위도), Number(d.경도)),
-      icon:     점모양(통과함 ? '#F5A623' : 'rgba(143,179,184,.55)', 지름),
-      iconSize: new Tmapv2.Size(지름, 지름),
-      title:    d.단지명,
-      map:      지도
-    });
+    if (!통과함 && !미달도보기) return;      // ← 이 한 줄이 핵심입니다
+
+    const 자리 = new Tmapv2.LatLng(Number(d.위도), Number(d.경도));
+    const 마커 = 통과함
+      ? new Tmapv2.Marker({
+          position: 자리,
+          icon:     아이콘마커(단지시설, 26),
+          iconSize: new Tmapv2.Size(26, 34),
+          offset:   new Tmapv2.Point(13, 34),
+          zIndex:   50,                      // 시설(100)보다 아래에 그립니다
+          title:    d.단지명,
+          map:      지도
+        })
+      : new Tmapv2.Marker({
+          position: 자리,
+          icon:     작은점('rgba(143,179,184,.45)', 9),
+          iconSize: new Tmapv2.Size(9, 9),
+          zIndex:   10,
+          title:    d.단지명,
+          map:      지도
+        });
+
     마커.addListener("click", () => 정보창열기(d));
     마커들.push(마커);
   });
