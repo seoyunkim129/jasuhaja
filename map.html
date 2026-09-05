@@ -123,6 +123,13 @@ header{ padding:26px 0 6px; }
 /* ============================================================
    ④-2 시설 바 (내가 보고 싶은 시설을 더하고 빼는 곳)
    ============================================================ */
+/* ============================================================
+   ③-2 소개 (이 화면이 뭔지 짧게 알려주는 자리)
+   ============================================================ */
+.intro{ border-left:3px solid var(--surf); padding:2px 0 2px 16px; margin-top:20px; }
+.intro h2{ font-size:17px; font-weight:800; letter-spacing:-.02em; }
+.intro p{ font-size:14px; color:var(--muted); margin-top:6px; max-width:620px; line-height:1.6; }
+
 .미달라벨{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); cursor:pointer; }
 
 .시설바{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
@@ -186,6 +193,17 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
 
 <main class="wrap">
 
+  <!-- ========== 이 화면이 뭔지 짧게 ========== -->
+  <section class="intro">
+    <h2>내 동네에 수영장과 다이소가 어디 있는지 한눈에</h2>
+    <p>
+      물때는 내가 자주 가는 시설이 가까운 집을 찾는 개인 프로젝트입니다.
+      보고 싶은 시설을 직접 더할 수 있고, 지도 위 핀을 누르면 네이버 지도로 이어져
+      리뷰와 길찾기를 바로 볼 수 있습니다.
+      단지와 실거래가는 국토교통부 신고 데이터, 시설 위치는 TMAP에서 가져옵니다.
+    </p>
+  </section>
+
   <section class="filter">
     <input type="text" id="검색어" placeholder="단지 이름으로 검색" oninput="다시그리기()">
     <div class="mins">
@@ -218,7 +236,7 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
     <button class="시설더하기" onclick="시설더하기()">+ 추가</button>
   </section>
 
-  <p class="count"><b id="개수">0</b>곳이 조건에 맞습니다 · 지도에서 점을 누르면 자세히 보입니다</p>
+  <p class="count"><b id="개수">0</b>곳이 조건에 맞습니다 · 지도에서 핀을 누르면 자세히 보입니다</p>
 
   <div class="map-box">
     <div id="map_div"></div>

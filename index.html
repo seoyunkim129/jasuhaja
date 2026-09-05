@@ -81,6 +81,18 @@ h1 em{ font-style:normal; color:var(--surf); }
   transition:transform .18s, box-shadow .18s;
 }
 .cta:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(63,216,196,.28); }
+/* map.html(실제 지도)로 가는 길. 전에는 주소창에 직접 쳐야만 들어갈 수 있었습니다 */
+.지도로{ margin-left:auto; font-size:13px; color:var(--muted); text-decoration:none; }
+.지도로:hover{ color:var(--surf); }
+.map-real{
+  font-family:ui-monospace, Menlo, Consolas, monospace; font-size:10px; letter-spacing:.1em;
+  color:var(--surf); text-decoration:none; border:1px solid rgba(63,216,196,.4);
+  border-radius:999px; padding:3px 9px; margin-left:6px;
+}
+.cta-보조{
+  background:transparent; color:var(--surf); border:1.5px solid rgba(63,216,196,.45);
+  text-decoration:none; margin-left:10px;
+}
 .cta-note{ margin-top:12px; font-size:13px; color:var(--muted); }
 
 /* 히어로 오른쪽 지도 카드 */
@@ -228,7 +240,8 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
       <div class="logo-sub">MULTTAE</div>
     </div>
   </div>
-</header>
+  <a class="지도로" href="map.html">실제 지도로 보기 →</a>
+  </header>
 
 <main class="wrap">
 
@@ -250,6 +263,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
           <path d="M5 12h13M13 6l6 6-6 6"/>
         </svg>
       </button>
+      <a class="cta cta-보조" href="map.html">지도에서 보기</a>
       <p class="cta-note">국토교통부 실거래가 기준입니다 (2026년 3~9월 거래분)</p>
     </div>
 
@@ -257,7 +271,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
     <div class="map-card">
       <div class="map-head">
         <span class="map-title">강서구 · 양천구</span>
-        <span class="map-fake">그림</span>
+        <span class="map-fake">그림</span><a class="map-real" href="map.html">실지도 →</a>
       </div>
       <svg class="map-svg" viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg">
         <defs>
