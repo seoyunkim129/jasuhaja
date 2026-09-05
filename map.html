@@ -263,6 +263,12 @@ let 시설마커 = [];
 // 이름에 이런 게 붙은 건 시설 본체가 아니라 부속입니다 (예: "다이소 발산역점 주차장")
 const 부속 = /주차장|정문|후문|출입구|입구$/;
 
+// TMAP "수영장" 분류에는 유아·어린이 전용 강습장이 섞여 나옵니다.
+// (오션키즈, 키즈돌핀, 오션차일드, 국가대표어린이수영클럽 ...)
+// 어른이 수영하러 갈 수 있는 곳이 아니라서 수영장으로 치지 않습니다.
+// 성인 강습장(블루라군, 스위밍고, 스윔랩 ...)은 일부러 남겨둡니다.
+const 유아전용 = /키즈|어린이|유아|아동|주니어|차일드|kids/i;
+
 async function 카테고리검색(카테고리, 중심, 반경km){
   const 주소 = 'https://apis.openapi.sk.com/tmap/pois/search/around?version=1'
     + '&categories=' + encodeURIComponent(카테고리)
@@ -280,6 +286,7 @@ async function 카테고리검색(카테고리, 중심, 반경km){
   const 본 = new Set();
   return 목록.filter(p => {
     if (부속.test(p.name)) return false;
+    if (카테고리 === '수영장' && 유아전용.test(p.name)) return false;
     const 자리 = p.frontLat + ',' + p.frontLon;
     if (본.has(자리)) return false;
     본.add(자리);
