@@ -269,6 +269,20 @@ const 부속 = /주차장|정문|후문|출입구|입구$/;
 // 성인 강습장(블루라군, 스위밍고, 스윔랩 ...)은 일부러 남겨둡니다.
 const 유아전용 = /키즈|어린이|유아|아동|주니어|차일드|kids/i;
 
+// 아직 문을 안 연 곳 (예: "신기스포렉스 공사중(2027년07월오픈예정)")
+const 미개장 = /공사중|오픈예정|개장예정|준비중/;
+
+// 여름에만 여는 야외 물놀이장은 수영장이 아닙니다 (예: "서서울호수공원물놀이장")
+const 물놀이장 = /물놀이장|워터파크/;
+
+// 법인 등록명으로 잡힌 것 (예: "주식회사 엠에이치씨스포츠") - 실제 시설인지 확인이 안 됩니다
+const 법인명 = /주식회사|㈜|\(주\)/;
+
+// 위 네 가지 중 하나라도 걸리면 수영장으로 치지 않습니다
+function 수영장아님(이름){
+  return 유아전용.test(이름) || 미개장.test(이름) || 물놀이장.test(이름) || 법인명.test(이름);
+}
+
 async function 카테고리검색(카테고리, 중심, 반경km){
   const 주소 = 'https://apis.openapi.sk.com/tmap/pois/search/around?version=1'
     + '&categories=' + encodeURIComponent(카테고리)
@@ -286,7 +300,7 @@ async function 카테고리검색(카테고리, 중심, 반경km){
   const 본 = new Set();
   return 목록.filter(p => {
     if (부속.test(p.name)) return false;
-    if (카테고리 === '수영장' && 유아전용.test(p.name)) return false;
+    if (카테고리 === '수영장' && 수영장아님(p.name)) return false;
     const 자리 = p.frontLat + ',' + p.frontLon;
     if (본.has(자리)) return false;
     본.add(자리);
