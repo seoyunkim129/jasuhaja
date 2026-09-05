@@ -309,32 +309,38 @@ async function 카테고리검색(카테고리, 중심, 반경km){
 }
 
 async function 주변시설찾기(){
-  const 중심 = 지도.getCenter();
+  const 중심   = 지도.getCenter();
+  const 시설들 = 시설목록();
+
   try {
-    const [수영장, 다이소] = await Promise.all([
-      카테고리검색('수영장', 중심, 5),
-      카테고리검색('다이소', 중심, 5)
-    ]);
+    // 시설마다 TMAP에 한 번씩 물어봅니다.
+    // Promise.all로 한꺼번에 보내야 시설이 늘어도 기다리는 시간이 안 늘어납니다.
+    // 하나가 실패해도 나머지는 보이도록 각각 catch로 감쌉니다.
+    const 결과들 = await Promise.all(
+      시설들.map(시설 => 카테고리검색(시설.이름, 중심, 5).catch(() => []))
+    );
 
     시설마커.forEach(m => m.setMap(null));
     시설마커 = [];
 
-    const 그리기 = (목록, 색, 종류) => 목록.forEach(p => {
-      const 마커 = new Tmapv2.Marker({
-        position: new Tmapv2.LatLng(Number(p.frontLat), Number(p.frontLon)),
-        icon:     점모양(색, 15),
-        iconSize: new Tmapv2.Size(15, 15),
-        title:    p.name,
-        map:      지도
+    시설들.forEach((시설, 번호) => {
+      결과들[번호].forEach(p => {
+        const 마커 = new Tmapv2.Marker({
+          position: new Tmapv2.LatLng(Number(p.frontLat), Number(p.frontLon)),
+          icon:     아이콘마커(시설, 30),
+          iconSize: new Tmapv2.Size(30, 40),
+          offset:   new Tmapv2.Point(15, 40),   // 핀 아래 뾰족한 끝을 실제 위치에 맞춥니다
+          zIndex:   100,                        // 시설을 단지보다 위에 그립니다
+          title:    p.name,
+          map:      지도
+        });
+        마커.addListener("click", () => 시설정보창(p, 시설));
+        시설마커.push(마커);
       });
-      마커.addListener("click", () => 시설정보창(p, 종류, 색));
-      시설마커.push(마커);
     });
 
-    그리기(수영장, '#3FD8C4', '수영장');
-    그리기(다이소, '#E9F3F2', '다이소');
-
-    console.log('TMAP에서 찾음 - 수영장 ' + 수영장.length + '곳, 다이소 ' + 다이소.length + '곳');
+    console.log('TMAP에서 찾음 - ' +
+      시설들.map((시설, 번호) => 시설.이름 + ' ' + 결과들[번호].length + '곳').join(', '));
   } catch (e) {
     console.warn('주변 시설을 못 불러왔습니다:', e.message);
   }
@@ -527,7 +533,8 @@ function 정보창열기(d){
 }
 
 // 수영장·다이소를 눌렀을 때 - 이건 TMAP에서 온 진짜 정보입니다
-function 시설정보창(p, 종류, 색){
+function 시설정보창(p, 시설){
+  const 종류 = 시설.이름, 색 = 시설.색;
   정보창닫기();
   const 주소 = [p.upperAddrName, p.middleAddrName, p.lowerAddrName, p.roadName].filter(Boolean).join(' ');
   const 내용 =
