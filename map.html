@@ -418,6 +418,80 @@ function 점모양(색, 지름){
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
+/* ============================================================
+   ⑤-1 시설 목록
+   전에는 수영장·다이소가 코드에 박혀 있었습니다.
+   이제 목록으로 두고, 사용자가 화면에서 더할 수 있게 합니다.
+   ============================================================ */
+const 기본시설 = [
+  { 이름:'수영장', 색:'#3FD8C4', 그림:'수영'   },
+  { 이름:'다이소', 색:'#F5A623', 그림:'쇼핑백' }
+];
+
+// 사용자가 추가한 시설에 차례로 물려줄 색입니다
+const 추가색 = ['#7FB3FF', '#C792EA', '#7BD88F', '#FF9E9E', '#FFD166', '#5FD3E8'];
+
+// 사용자가 추가한 시설은 이 브라우저에 저장해서 새로고침해도 남게 합니다
+function 저장된시설(){
+  try { return JSON.parse(localStorage.getItem('물때시설') || '[]'); }
+  catch(e){ return []; }   // 저장이 막힌 브라우저(시크릿 창 등)에서도 안 죽게
+}
+
+function 시설목록(){
+  return 기본시설.concat(저장된시설());
+}
+
+/* ============================================================
+   ⑤-2 아이콘 마커
+   그림 파일을 따로 두지 않고 SVG를 글자로 만들어 씁니다 (data URI).
+   Vercel에 올릴 때 챙길 파일이 안 늘어납니다.
+
+   그림은 24x24 칸 안에 그린다고 생각하고 그립니다.
+   ============================================================ */
+const 그림모음 = {
+  수영:   '<circle cx="15.8" cy="7" r="2.2" fill="currentColor" stroke="none"/>'
+        + '<path d="M3 13.6l5.2-2.9 4.6 2.6 4.4-4.1 3.8 2.2"/>'
+        + '<path d="M2 19c2.5-2.4 5-2.4 7.5 0s5.5 2.4 8 0"/>',
+  쇼핑백: '<path d="M5 8h14l-1.2 13H6.2L5 8Z"/>'
+        + '<path d="M9 10V6.8a3 3 0 0 1 6 0V10"/>',
+  집:     '<path d="M3.5 10.5 12 4l8.5 6.5V21H3.5V10.5Z"/>'
+        + '<path d="M9.6 21v-5.4h4.8V21"/>'
+};
+
+// 그림이 없는 시설은 이름 앞글자를 씁니다 (GS25 → GS, 스타벅스 → 스)
+function 앞글자(이름){
+  return /^[A-Za-z]/.test(이름) ? 이름.slice(0,2).toUpperCase() : 이름.slice(0,1);
+}
+
+// 핀 하나를 그림 주소로 만들어 돌려줍니다
+function 아이콘마커(시설, 크기){
+  const 세로   = Math.round(크기 * 1.32);   // 핀은 세로로 길쭉합니다
+  const 그림   = 그림모음[시설.그림];
+
+  // 그림이 있으면 그림을, 없으면 앞글자를 가운데에 놓습니다
+  const 가운데 = 그림
+    ? '<g transform="translate(8.6 8.6) scale(0.62)" fill="none" stroke="' + 시설.색 + '" '
+      + 'color="' + 시설.색 + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+      + 그림 + '</g>'
+    : '<text x="16" y="16" dy=".36em" text-anchor="middle" fill="' + 시설.색 + '" '
+      + 'font-family="Malgun Gothic, sans-serif" font-size="10.5" font-weight="700">'
+      + 앞글자(시설.이름) + '</text>';
+
+  const svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="' + 크기 + '" height="' + 세로 + '" viewBox="0 0 32 42">'
+    // ① 핀 몸통. 아래 뾰족한 끝이 실제 위치를 가리킵니다.
+    //    테두리를 흰색으로 둬야 마커끼리 겹쳐도 경계가 보입니다.
+    + '<path d="M16 41C16 41 29 26 29 16A13 13 0 1 0 3 16C3 26 16 41 16 41Z" '
+    +       'fill="' + 시설.색 + '" stroke="#FFFFFF" stroke-width="2.5"/>'
+    // ② 흰 동그라미. 그림이 핀 색에 묻히지 않게 받쳐줍니다.
+    + '<circle cx="16" cy="16" r="9.6" fill="#FFFFFF"/>'
+    + 가운데
+    + '</svg>';
+
+  // '#'을 그대로 두면 브라우저가 그 뒤를 주소의 조각으로 보고 그림을 잘라먹습니다
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
 function 정보창닫기(){
   if (!정보창) return;
   try { 정보창.setMap(null); } catch(e){ try { 정보창.setVisible(false); } catch(e2){} }
