@@ -533,6 +533,16 @@ function 정보창열기(d){
 }
 
 // 수영장·다이소를 눌렀을 때 - 이건 TMAP에서 온 진짜 정보입니다
+/* 네이버 지도 장소 검색 링크.
+   API 키가 필요 없고, 리뷰·길찾기·영업시간을 네이버가 다 보여줍니다.
+   덕분에 도보 시간을 우리가 계산할 이유가 없어졌습니다.
+
+   좌표(?c=...)는 일부러 안 붙입니다. 문서에 없는 값이라
+   네이버가 바꾸면 조용히 깨집니다. 이름으로 찾는 게 더 안전합니다. */
+function 네이버지도주소(검색어){
+  return 'https://map.naver.com/p/search/' + encodeURIComponent(검색어.trim());
+}
+
 function 시설정보창(p, 시설){
   const 종류 = 시설.이름, 색 = 시설.색;
   정보창닫기();
@@ -540,10 +550,14 @@ function 시설정보창(p, 시설){
   const 내용 =
     '<div style="background:#0B5C6B;color:#E9F3F2;border:1px solid ' + 색 + ';' +
     'border-radius:12px;padding:11px 13px;font-size:13px;line-height:1.5;' +
-    'font-family:Malgun Gothic,sans-serif;min-width:170px">' +
+    'font-family:Malgun Gothic,sans-serif;min-width:215px">' +
       '<span style="font-size:10px;letter-spacing:.1em;color:' + 색 + '">' + 종류 + '</span><br>' +
       '<b style="font-size:14px">' + p.name + '</b><br>' +
-      '<span style="color:#8FB3B8;font-size:12px">' + 주소 + '</span>' +
+      '<span style="color:#8FB3B8;font-size:12px">' + 주소 + '</span><br>' +
+      '<a href="' + 네이버지도주소(p.name + ' ' + (p.middleAddrName || '')) + '" ' +
+        'target="_blank" rel="noopener noreferrer" ' +
+        'style="color:' + 색 + ';font-weight:700;display:inline-block;margin-top:8px">' +
+        '네이버 지도에서 보기 (리뷰 · 길찾기) →</a>' +
     '</div>';
 
   정보창 = new Tmapv2.InfoWindow({
