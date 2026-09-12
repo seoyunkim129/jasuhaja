@@ -170,7 +170,7 @@ h1 em{ font-style:normal; color:var(--surf); }
 .card-walk b{ font-family:ui-monospace, Menlo, Consolas, monospace; font-weight:700; }
 .w-pool b{ color:var(--surf); }
 .w-daiso b{ color:var(--rope); }
-.card-price{ margin-top:12px; font-size:14px; font-weight:700; }
+.card-price{ margin:6px 0 10px; font-size:24px; font-weight:800; color:var(--surf); }
 .card-price span{ font-size:11px; color:var(--muted); font-weight:400; margin-left:6px; }
 
 /* 카드를 눌렀을 때 열리는 상세 부분 */
@@ -313,6 +313,12 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
       <option value="전체">자치구 전체</option>
       <option value="강서구">강서구</option>
       <option value="양천구">양천구</option>
+    </select>
+    <select id="정렬" onchange="다시그리기()">
+      <option value="기본">기본 순서</option>
+      <option value="가격낮은순">가격 낮은 순</option>
+      <option value="가격높은순">가격 높은 순</option>
+      <option value="도보빠른순">도보 빠른 순</option>
     </select>
   </section>
 
@@ -457,7 +463,14 @@ function 다시그리기(){
   // ── 개수
   document.getElementById('개수').textContent = 통과.length;
 
-  // ── 카드 목록
+  // ── 카드 목록 (지도의 통과 배열은 그대로 두고, 카드에만 정렬을 적용합니다)
+  const 정렬기준 = document.getElementById('정렬').value;
+  const 카드용   = 통과.slice();
+  if (정렬기준 === '가격낮은순') 카드용.sort((a, b) => 가격숫자(a.최근실거래) - 가격숫자(b.최근실거래));
+  if (정렬기준 === '가격높은순') 카드용.sort((a, b) => 가격숫자(b.최근실거래) - 가격숫자(a.최근실거래));
+  if (정렬기준 === '도보빠른순') 카드용.sort((a, b) =>
+    (Number(a.수영장도보분) + Number(a.다이소도보분)) - (Number(b.수영장도보분) + Number(b.다이소도보분)));
+
   const 목록 = document.getElementById('카드목록');
   if (통과.length === 0){
     // 검색한 단지가 있긴 한데 도보 조건에서 떨어진 경우 - 지도를 보라고 알려줍니다
@@ -467,20 +480,19 @@ function 다시그리기(){
       : `<p class="empty">조건에 맞는 단지가 없습니다. 도보 시간을 늘려보세요.</p>`;
     return;
   }
-  목록.innerHTML = 통과.map(d => `
+  목록.innerHTML = 카드용.map(d => `
     <article class="card" onclick="this.classList.toggle('open')">
       <div class="card-top">
         <span class="card-name">${d.단지명}</span>
         <span class="badge">${d.유형}</span>
       </div>
+      <div class="card-price">${d.최근실거래}<span>최근 실거래</span></div>
       <div class="card-sub">${d.자치구} · ${d.면적}㎡</div>
 
       <div class="card-walk">
         <span class="w-pool">수영장 <b>${d.수영장도보분}분</b></span>
         <span class="w-daiso">다이소 <b>${d.다이소도보분}분</b></span>
       </div>
-
-      <div class="card-price">${d.최근실거래}<span>최근 실거래</span></div>
 
       <div class="detail">
         가장 가까운 수영장은 <b>${d.수영장이름}</b>입니다.<br>
