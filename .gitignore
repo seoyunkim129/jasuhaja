@@ -3,3 +3,7 @@ tmap-key.js
 
 # UI/UX Pro Max 스킬 - 도구 파일이라 프로젝트 코드가 아닙니다 (uipro init으로 재설치 가능)
 .claude/skills/
+
+# 파이썬이 만드는 캐시 파일 - 코드 아님
+__pycache__/
+*.pyc
