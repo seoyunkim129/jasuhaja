@@ -1,7 +1,7 @@
 {
   "name": "mulddae",
   "private": true,
-  "description": "물때 - 수영장과 다이소가 걸어서 가까운 집을 찾는 프로젝트",
+  "description": "물때 - 오늘 갈 수 있는 자유수영장을 찾는 프로젝트",
   "scripts": {
     "build": "node scripts/키파일만들기.js"
   }
