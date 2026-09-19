@@ -27,7 +27,9 @@ module.exports = async function cafeSearch(req, res) {
     return res.status(503).json({ error: '네이버 검색 API가 아직 설정되지 않았습니다.' });
   }
 
-  const 주소 = new URL('https://openapi.naver.com/v1/search/cafearticle.json');
+  // NAVER API HUB에서 새로 발급한 키는 예전 openapi.naver.com에서 쓸 수 없습니다.
+  // API HUB 전용 주소와 전용 헤더 이름을 사용해야 합니다.
+  const 주소 = new URL('https://naverapihub.apigw.ntruss.com/search/v1/cafearticle');
   주소.searchParams.set('query', 검색어);
   주소.searchParams.set('display', '10');
   주소.searchParams.set('start', '1');
@@ -36,8 +38,8 @@ module.exports = async function cafeSearch(req, res) {
   try {
     const 응답 = await fetch(주소, {
       headers: {
-        'X-Naver-Client-Id': 아이디,
-        'X-Naver-Client-Secret': 비밀키
+        'X-NCP-APIGW-API-KEY-ID': 아이디,
+        'X-NCP-APIGW-API-KEY': 비밀키
       }
     });
 
