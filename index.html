@@ -14,14 +14,28 @@
    ① 여기만 바꾸면 색이 전부 바뀝니다 (제일 먼저 만져볼 곳)
    ============================================================ */
 :root{
-  --deep:  #052E38;   /* 깊은 물 - 배경 */
-  --water: #0B5C6B;   /* 물색 - 중간 톤 */
-  --surf:  #3FD8C4;   /* 수면 반짝임 - 강조색(버튼) */
-  --tile:  #E9F3F2;   /* 타일 흰색 - 글자색 */
-  --rope:  #F5A623;   /* 레인 로프 주황 - 두 번째 강조색 */
-  --muted: #8FB3B8;   /* 흐린 글자색 */
+  /* 뮤트 팔레트. 이 네 개가 실제로 고른 색이고, 나머지는 거기서 파생했습니다 */
+  --lavender: #DDDEE4;   /* 밝은 라벤더그레이 - 카드·구역 배경 */
+  --plum:     #726A84;   /* 뮤트 보라 - 보조 글자·테두리 */
+  --dusty:    #D8B8BB;   /* 먼지 핑크 - 원래 색 (배경·테두리처럼 옅게 쓸 때) */
+  --olive:    #67634E;   /* 카키올리브 - 원래 색. 이제 "두 번째" 강조색입니다 */
+
+  --bg:    #F8F7F9;      /* 캔버스 배경. --lavender보다 한 톤 더 밝습니다 */
+  --panel: var(--lavender);
+  --ink:   #2E2B38;      /* 본문 글자. --plum을 훨씬 어둡게 만든 색 (밝은 배경에서 잘 읽히게) */
+  --muted: var(--plum);
+
+  /* 주요 강조색을 핑크로 바꿨습니다. 글자로 쓰면 밝은 배경에서 흐리게 보여서
+     --dusty를 그대로 안 쓰고 진하게 만든 색을 씁니다. */
+  --accent:  #B06B70;    /* 먼지 핑크를 진하게 - 이제 "주요" 강조색 */
+  --accent2: var(--olive); /* 카키올리브 - 이제 "두 번째" 강조색 */
+  --surf:  var(--accent);   /* 기존 이름은 남겨두고 값만 바꿉니다 */
+  --rope:  var(--accent2);
+  --line:  rgba(46,43,56,.12);   /* 카드 테두리 - 은은하게 */
+  --shadow: 0 8px 24px rgba(46,43,56,.08);
+
   --max:   1080px;
-  --radius:16px;
+  --radius:20px;
 }
 
 /* ============================================================
@@ -29,19 +43,15 @@
    ============================================================ */
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{
-  background: var(--deep); color: var(--tile);
+  background: var(--bg); color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
                "Pretendard", "Malgun Gothic", sans-serif;
   line-height:1.6; -webkit-font-smoothing:antialiased;
-  background-image:
-    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-  background-size:48px 48px;
 }
 .wrap{ max-width:var(--max); margin:0 auto; padding:0 24px; }
 a{ color:inherit; }
 button, input, select{ font-family:inherit; }
-:focus-visible{ outline:3px solid var(--surf); outline-offset:3px; }
+:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; }
 
 /* ============================================================
    ③ 헤더 (맨 위 로고 줄)
@@ -49,7 +59,7 @@ button, input, select{ font-family:inherit; }
 header{ padding:26px 0; }
 .logo{ display:flex; align-items:center; gap:10px; }
 .logo-mark{
-  width:34px; height:34px; border-radius:10px; background:var(--surf);
+  width:34px; height:34px; border-radius:10px; background:var(--ink);
   display:grid; place-items:center; flex-shrink:0;
 }
 .logo-name{ font-size:20px; font-weight:800; letter-spacing:-.02em; }
@@ -68,54 +78,54 @@ header{ padding:26px 0; }
 .eyebrow{
   display:inline-block;
   font-family:ui-monospace, Menlo, Consolas, monospace;
-  font-size:12px; letter-spacing:.12em; color:var(--surf);
-  border:1px solid rgba(63,216,196,.35); border-radius:999px;
+  font-size:12px; letter-spacing:.12em; color:var(--accent);
+  background:var(--panel); border:1px solid var(--line); border-radius:999px;
   padding:6px 14px; margin-bottom:20px;
 }
-h1{ font-size:clamp(30px,4.8vw,50px); line-height:1.22; font-weight:800; letter-spacing:-.035em; }
-h1 em{ font-style:normal; color:var(--surf); }
+h1{ font-size:clamp(30px,4.8vw,50px); line-height:1.22; font-weight:800; letter-spacing:-.035em; color:var(--ink); }
+h1 em{ font-style:normal; color:var(--olive); }
 .lead{ margin-top:18px; max-width:440px; font-size:16.5px; color:var(--muted); }
 .cta{
   display:inline-flex; align-items:center; gap:10px; margin-top:28px;
-  padding:16px 28px; background:var(--surf); color:var(--deep);
+  padding:16px 28px; background:var(--ink); color:#fff;
   font-size:16px; font-weight:800; border:none; border-radius:999px; cursor:pointer;
   transition:transform .18s, box-shadow .18s;
 }
-.cta:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(63,216,196,.28); }
+.cta:hover{ transform:translateY(-2px); box-shadow:0 10px 28px rgba(46,43,56,.22); }
 /* map.html(실제 지도)로 가는 길. 전에는 주소창에 직접 쳐야만 들어갈 수 있었습니다 */
 .지도로{ margin-left:auto; font-size:13px; color:var(--muted); text-decoration:none; }
-.지도로:hover{ color:var(--surf); }
+.지도로:hover{ color:var(--accent); }
 .map-real{
   font-family:ui-monospace, Menlo, Consolas, monospace; font-size:10px; letter-spacing:.1em;
-  color:var(--surf); text-decoration:none; border:1px solid rgba(63,216,196,.4);
+  color:var(--accent); text-decoration:none; border:1px solid var(--line);
   border-radius:999px; padding:3px 9px; margin-left:6px;
 }
 .cta-보조{
-  background:transparent; color:var(--surf); border:1.5px solid rgba(63,216,196,.45);
+  background:#fff; color:var(--ink); border:1.5px solid var(--line);
   text-decoration:none; margin-left:10px;
 }
 .cta-note{ margin-top:12px; font-size:13px; color:var(--muted); }
 
 /* 히어로 오른쪽 지도 카드 */
 .map-card{
-  background:rgba(11,92,107,.30); border:1px solid rgba(63,216,196,.18);
-  border-radius:var(--radius); padding:16px;
+  background:#fff; border:1px solid var(--line);
+  border-radius:var(--radius); padding:16px; box-shadow:var(--shadow);
 }
 .map-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.map-title{ font-size:13px; font-weight:700; }
+.map-title{ font-size:13px; font-weight:700; color:var(--ink); }
 .map-fake{
   font-family:ui-monospace, Menlo, Consolas, monospace;
-  font-size:10px; letter-spacing:.1em; color:var(--rope);
-  border:1px solid rgba(245,166,35,.4); border-radius:999px; padding:3px 9px;
+  font-size:10px; letter-spacing:.1em; color:var(--accent);
+  background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:3px 9px;
 }
-.map-svg{ width:100%; display:block; border-radius:10px; background:#04242C; }
+.map-svg{ width:100%; display:block; border-radius:10px; background:var(--panel); }
 .legend{ display:flex; gap:16px; margin-top:12px; font-size:11px; color:var(--muted); }
 .legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:5px; vertical-align:-1px; }
 
 /* 레인 로프 모양 구분선 */
 .rope{
-  height:10px; border-radius:999px; opacity:.5;
-  background:repeating-linear-gradient(90deg, var(--rope) 0 14px, var(--water) 14px 28px);
+  height:10px; border-radius:999px; opacity:.6;
+  background:repeating-linear-gradient(90deg, var(--dusty) 0 14px, var(--panel) 14px 28px);
 }
 
 /* ============================================================
@@ -126,8 +136,8 @@ h1 em{ font-style:normal; color:var(--surf); }
   padding:22px 0 6px;
 }
 .filter input[type="text"], .filter select{
-  background:rgba(4,36,44,.7); color:var(--tile);
-  border:1px solid rgba(63,216,196,.22); border-radius:10px;
+  background:#fff; color:var(--ink);
+  border:1px solid var(--line); border-radius:10px;
   padding:11px 14px; font-size:14px;
 }
 .filter input[type="text"]{ flex:1; min-width:180px; }
@@ -136,17 +146,17 @@ h1 em{ font-style:normal; color:var(--surf); }
 .mins{ display:flex; gap:6px; }
 .min-btn{
   font-family:ui-monospace, Menlo, Consolas, monospace; font-size:13px;
-  padding:10px 15px; background:transparent; color:var(--muted);
-  border:1px solid rgba(143,179,184,.3); border-radius:999px; cursor:pointer;
+  padding:10px 15px; background:#fff; color:var(--muted);
+  border:1px solid var(--line); border-radius:999px; cursor:pointer;
   transition:all .2s;
 }
-.min-btn:hover{ color:var(--tile); }
-.min-btn.on{ background:var(--surf); color:var(--deep); border-color:var(--surf); font-weight:700; }
+.min-btn:hover{ color:var(--ink); }
+.min-btn.on{ background:var(--ink); color:#fff; border-color:var(--ink); font-weight:700; }
 
 .count{ padding:14px 0 20px; font-size:14px; color:var(--muted); }
 .count b{
   font-family:ui-monospace, Menlo, Consolas, monospace;
-  font-size:22px; color:var(--surf); font-weight:800; margin-right:2px;
+  font-size:22px; color:var(--accent); font-weight:800; margin-right:2px;
 }
 
 /* ============================================================
@@ -154,29 +164,29 @@ h1 em{ font-style:normal; color:var(--surf); }
    ============================================================ */
 .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding-bottom:16px; }
 .card{
-  background:rgba(11,92,107,.28); border:1px solid rgba(63,216,196,.16);
-  border-radius:var(--radius); padding:18px; cursor:pointer;
-  transition:border-color .2s, transform .2s;
+  background:#fff; border:1px solid var(--line);
+  border-radius:var(--radius); padding:18px; cursor:pointer; box-shadow:var(--shadow);
+  transition:box-shadow .2s, transform .2s;
 }
-.card:hover{ border-color:rgba(63,216,196,.45); transform:translateY(-3px); }
+.card:hover{ box-shadow:0 14px 32px rgba(46,43,56,.14); transform:translateY(-3px); }
 .card-top{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
-.card-name{ font-size:16px; font-weight:800; letter-spacing:-.02em; }
+.card-name{ font-size:16px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
 .badge{
   font-size:10px; padding:2px 8px; border-radius:999px;
-  background:rgba(143,179,184,.16); color:var(--muted); flex-shrink:0;
+  background:var(--panel); color:var(--muted); flex-shrink:0;
 }
 .card-sub{ font-size:12.5px; color:var(--muted); }
 .card-walk{ display:flex; gap:14px; margin-top:14px; font-size:13px; }
 .card-walk b{ font-family:ui-monospace, Menlo, Consolas, monospace; font-weight:700; }
-.w-pool b{ color:var(--surf); }
-.w-daiso b{ color:var(--rope); }
-.card-price{ margin:6px 0 10px; font-size:24px; font-weight:800; color:var(--surf); }
+.w-pool b{ color:var(--accent); }
+.w-daiso b{ color:var(--accent2); }
+.card-price{ margin:6px 0 10px; font-size:24px; font-weight:800; color:var(--accent); }
 .card-price span{ font-size:11px; color:var(--muted); font-weight:400; margin-left:6px; }
 
 /* 카드를 눌렀을 때 열리는 상세 부분 */
-.detail{ display:none; margin-top:14px; padding-top:14px; border-top:1px solid rgba(63,216,196,.16); font-size:13px; color:var(--muted); }
+.detail{ display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); }
 .card.open .detail{ display:block; }
-.detail a{ display:inline-block; margin-top:10px; color:var(--surf); font-weight:700; }
+.detail a{ display:inline-block; margin-top:10px; color:var(--accent); font-weight:700; }
 
 .empty{ padding:40px 0; text-align:center; color:var(--muted); }
 
@@ -185,26 +195,26 @@ h1 em{ font-style:normal; color:var(--surf); }
    ============================================================ */
 .lanes{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; padding:48px 0 64px; }
 .lane{
-  background:rgba(11,92,107,.32); border:1px solid rgba(63,216,196,.14);
+  background:var(--panel); border:1px solid var(--line);
   border-radius:var(--radius); padding:26px 22px;
 }
 .lane-no{
   font-family:ui-monospace, Menlo, Consolas, monospace;
-  font-size:11px; letter-spacing:.18em; color:var(--rope); margin-bottom:14px;
+  font-size:11px; letter-spacing:.18em; color:var(--accent); margin-bottom:14px;
 }
-.lane h3{ font-size:17px; font-weight:800; margin-bottom:10px; letter-spacing:-.02em; }
+.lane h3{ font-size:17px; font-weight:800; margin-bottom:10px; letter-spacing:-.02em; color:var(--ink); }
 .lane p{ font-size:14px; color:var(--muted); }
 
 /* ============================================================
    ⑧ 강사 피드백 자리 (받은 내용으로 바꿔 넣으세요)
    ============================================================ */
 .feedback{
-  border:1.5px dashed rgba(245,166,35,.5); border-radius:var(--radius);
-  padding:20px 24px; margin-bottom:56px; background:rgba(245,166,35,.05);
+  border:1.5px dashed #C79094; border-radius:var(--radius);
+  padding:20px 24px; margin-bottom:56px; background:rgba(216,184,187,.16);
 }
 .feedback .tag{
   font-family:ui-monospace, Menlo, Consolas, monospace;
-  font-size:11px; letter-spacing:.14em; color:var(--rope);
+  font-size:11px; letter-spacing:.14em; color:#B06B70;
 }
 .feedback p{ font-size:14px; color:var(--muted); margin-top:8px; }
 footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
@@ -231,7 +241,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
   <div class="logo">
     <div class="logo-mark">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-           stroke="#052E38" stroke-width="2.4" stroke-linecap="round">
+           stroke="#F8F7F9" stroke-width="2.4" stroke-linecap="round">
         <path d="M2 9c2.5-2.4 5-2.4 7.5 0S15 11.4 17.5 9 22 6.6 22 6.6"/>
         <path d="M2 16c2.5-2.4 5-2.4 7.5 0s5.5 2.4 8 0"/>
       </svg>
@@ -266,6 +276,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
       </button>
       <a class="cta cta-보조" href="map.html">지도에서 보기</a>
       <p class="cta-note">국토교통부 실거래가 기준입니다 (2026년 3~9월 거래분)</p>
+      <p class="cta-note">지도에서는 수영장·다이소 말고 <b style="color:var(--accent)">원하는 시설(GS25, 스타벅스 등)도 직접 추가</b>해서 볼 수 있어요.</p>
     </div>
 
     <!-- 오른쪽 지도 -->
@@ -277,19 +288,19 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
       <svg class="map-svg" viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="도로" width="30" height="30" patternUnits="userSpaceOnUse">
-            <path d="M30 0 L0 0 0 30" fill="none" stroke="rgba(143,179,184,.10)" stroke-width="1"/>
+            <path d="M30 0 L0 0 0 30" fill="none" stroke="rgba(46,43,56,.06)" stroke-width="1"/>
           </pattern>
         </defs>
         <rect width="360" height="280" fill="url(#도로)"/>
         <!-- 한강 (분위기용 장식) -->
         <path d="M-10 20 Q 120 62, 250 42 T 370 70 L 370 96 Q 250 68, -10 46 Z"
-              fill="rgba(63,216,196,.055)"/>
+              fill="rgba(103,99,78,.09)"/>
         <g id="단지점"></g>
       </svg>
       <div class="legend">
-        <span><i style="background:#F5A623"></i>조건 통과</span>
-        <span><i style="background:transparent;box-shadow:inset 0 0 0 2px #3FD8C4"></i>검색한 단지</span>
-        <span><i style="background:rgba(143,179,184,.35)"></i>조건 미달</span>
+        <span><i style="background:#B06B70"></i>조건 통과</span>
+        <span><i style="background:transparent;box-shadow:inset 0 0 0 2px #67634E"></i>검색한 단지</span>
+        <span><i style="background:rgba(114,106,132,.35)"></i>조건 미달</span>
       </div>
     </div>
   </section>
@@ -357,7 +368,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
     </p>
   </section>
 
-  <footer>물때 · 2026년 개인 프로젝트 · 화면의 데이터는 예시입니다</footer>
+  <footer>물때 · 2026년 개인 프로젝트 · 국토교통부 실거래가 기준</footer>
 </main>
 
 <script>
@@ -448,15 +459,15 @@ function 다시그리기(){
 
     return `
       ${검색됨 ? `<circle cx="${x}" cy="${y}" r="11" fill="none"
-                          stroke="#3FD8C4" stroke-width="1.6" opacity=".85"/>` : ''}
+                          stroke="#67634E" stroke-width="1.6" opacity=".85"/>` : ''}
       <circle cx="${x}" cy="${y}" r="${이름표 ? 5 : 3}"
-              fill="${통과함 ? '#F5A623' : (검색됨 ? '#04242C' : 'rgba(143,179,184,.30)')}"
-              stroke="${검색됨 && !통과함 ? '#3FD8C4' : 'none'}" stroke-width="2"/>
+              fill="${통과함 ? '#B06B70' : (검색됨 ? '#2E2B38' : 'rgba(114,106,132,.30)')}"
+              stroke="${검색됨 && !통과함 ? '#67634E' : 'none'}" stroke-width="2"/>
       ${이름표 ? `<line x1="${x}" y1="${(위치.y + 6).toFixed(1)}" x2="${x}" y2="${(글자y - 7).toFixed(1)}"
-                        stroke="${검색됨 ? 'rgba(63,216,196,.45)' : 'rgba(245,166,35,.4)'}" stroke-width="1"/>
+                        stroke="${검색됨 ? 'rgba(176,107,112,.5)' : 'rgba(103,99,78,.45)'}" stroke-width="1"/>
                   <text x="${x}" y="${글자y.toFixed(1)}"
                         font-size="9" text-anchor="middle" font-weight="700"
-                        fill="${검색됨 ? '#3FD8C4' : '#E9F3F2'}">${d.단지명}</text>` : ''}
+                        fill="${검색됨 ? '#67634E' : '#2E2B38'}">${d.단지명}</text>` : ''}
     `;
   }).join('');
 
@@ -498,9 +509,11 @@ function 다시그리기(){
         가장 가까운 수영장은 <b>${d.수영장이름}</b>입니다.<br>
         위도 ${d.위도} · 경도 ${d.경도}
         <br>
-        <a href="https://search.naver.com/search.naver?query=${encodeURIComponent(d.단지명 + ' 매물')}"
-           target="_blank" rel="noopener" onclick="event.stopPropagation()">
-          이 단지 매물 보러 가기 →
+        <!-- 실제 지도로 넘어가서, 그 자리 기준으로 수영장·다이소를 실시간으로 다시 찾아줍니다.
+             매물 링크는 지도 쪽 정보창에 이미 있어서 여기서는 뺐습니다.
+             (map.html의 이동대상있으면이동() 이 이 주소를 읽습니다) -->
+        <a href="map.html?단지=${encodeURIComponent(d.단지명)}" onclick="event.stopPropagation()">
+          지도에서 이 단지 보기 →
         </a>
       </div>
     </article>

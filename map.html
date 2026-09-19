@@ -32,14 +32,28 @@ if (typeof TMAP키 !== 'undefined' && TMAP키) {
    ① 색 (index.html과 같은 값 - 나중에 합칠 때 그대로 맞물립니다)
    ============================================================ */
 :root{
-  --deep:  #052E38;
-  --water: #0B5C6B;
-  --surf:  #3FD8C4;
-  --tile:  #E9F3F2;
-  --rope:  #F5A623;
-  --muted: #8FB3B8;
+  /* index.html과 완전히 같은 값입니다. 두 파일이 각자 <style>을 갖고 있어서
+     따로 적지만, 색은 반드시 맞춰둡니다. */
+  --lavender: #DDDEE4;
+  --plum:     #726A84;
+  --dusty:    #D8B8BB;   /* 원래 색 (배경·테두리처럼 옅게 쓸 때) */
+  --olive:    #67634E;   /* 원래 색. 이제 "두 번째" 강조색입니다 */
+
+  --bg:    #F8F7F9;
+  --panel: var(--lavender);
+  --ink:   #2E2B38;
+  --muted: var(--plum);
+
+  /* 주요 강조색을 핑크로 바꿨습니다. index.html과 반드시 같은 값이어야 합니다 */
+  --accent:  #B06B70;
+  --accent2: var(--olive);
+  --surf:  var(--accent);
+  --rope:  var(--accent2);
+  --line:  rgba(46,43,56,.12);
+  --shadow: 0 8px 24px rgba(46,43,56,.08);
+
   --max:   1080px;
-  --radius:16px;
+  --radius:20px;
 }
 
 /* ============================================================
@@ -47,14 +61,14 @@ if (typeof TMAP키 !== 'undefined' && TMAP키) {
    ============================================================ */
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{
-  background: var(--deep); color: var(--tile);
+  background: var(--bg); color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
                "Pretendard", "Malgun Gothic", sans-serif;
   line-height:1.6; -webkit-font-smoothing:antialiased;
 }
 .wrap{ max-width:var(--max); margin:0 auto; padding:0 24px; }
 button, input, select{ font-family:inherit; }
-:focus-visible{ outline:3px solid var(--surf); outline-offset:3px; }
+:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; }
 
 /* ============================================================
    ③ 헤더
@@ -62,24 +76,24 @@ button, input, select{ font-family:inherit; }
 header{ padding:26px 0 6px; }
 .logo{ display:flex; align-items:center; gap:10px; }
 .logo-mark{
-  width:34px; height:34px; border-radius:10px; background:var(--surf);
+  width:34px; height:34px; border-radius:10px; background:var(--ink);
   display:grid; place-items:center; flex-shrink:0;
 }
-.logo-name{ font-size:20px; font-weight:800; letter-spacing:-.02em; }
+.logo-name{ font-size:20px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
 .logo-sub{
   font-family:ui-monospace, Menlo, Consolas, monospace;
   font-size:11px; letter-spacing:.22em; color:var(--muted); margin-top:-2px;
 }
 .back{ margin-left:auto; font-size:13px; color:var(--muted); text-decoration:none; }
-.back:hover{ color:var(--surf); }
+.back:hover{ color:var(--accent); }
 
 /* ============================================================
    ④ 검색 · 필터 바 (index.html ⑤와 같은 모양)
    ============================================================ */
 .filter{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:22px 0 6px; }
 .filter input[type="text"], .filter select{
-  background:rgba(4,36,44,.7); color:var(--tile);
-  border:1px solid rgba(63,216,196,.22); border-radius:10px;
+  background:#fff; color:var(--ink);
+  border:1px solid var(--line); border-radius:10px;
   padding:11px 14px; font-size:14px;
 }
 .filter input[type="text"]{ flex:1; min-width:180px; }
@@ -87,39 +101,39 @@ header{ padding:26px 0 6px; }
 .mins{ display:flex; gap:6px; }
 .min-btn{
   font-family:ui-monospace, Menlo, Consolas, monospace; font-size:13px;
-  padding:10px 15px; background:transparent; color:var(--muted);
-  border:1px solid rgba(143,179,184,.3); border-radius:999px; cursor:pointer;
+  padding:10px 15px; background:#fff; color:var(--muted);
+  border:1px solid var(--line); border-radius:999px; cursor:pointer;
   transition:all .2s;
 }
-.min-btn:hover{ color:var(--tile); }
-.min-btn.on{ background:var(--surf); color:var(--deep); border-color:var(--surf); font-weight:700; }
+.min-btn:hover{ color:var(--ink); }
+.min-btn.on{ background:var(--ink); color:#fff; border-color:var(--ink); font-weight:700; }
 
 .count{ padding:14px 0 14px; font-size:14px; color:var(--muted); }
 .count b{
   font-family:ui-monospace, Menlo, Consolas, monospace;
-  font-size:22px; color:var(--surf); font-weight:800; margin-right:2px;
+  font-size:22px; color:var(--accent); font-weight:800; margin-right:2px;
 }
 
 /* ============================================================
    ⑤ 지도 자리 — TMAP이 이 div 안에 지도를 그려 넣습니다
    ============================================================ */
 .map-box{
-  border:1px solid rgba(63,216,196,.18); border-radius:var(--radius);
-  overflow:hidden; background:#04242C;
+  border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden; background:var(--panel); box-shadow:var(--shadow);
 }
 #map_div{ width:100%; height:520px; }
 
 /* 키가 없을 때 지도 대신 뜨는 안내 카드 */
 .guide{ padding:34px 28px; }
-.guide h2{ font-size:17px; font-weight:800; margin-bottom:6px; }
+.guide h2{ font-size:17px; font-weight:800; margin-bottom:6px; color:var(--ink); }
 .guide p{ font-size:14px; color:var(--muted); }
 .guide ol{ margin:16px 0 0 18px; font-size:14px; color:var(--muted); }
 .guide li{ margin-bottom:7px; }
 .guide code{
   font-family:ui-monospace, Menlo, Consolas, monospace; font-size:13px;
-  background:rgba(63,216,196,.10); color:var(--surf); padding:2px 7px; border-radius:6px;
+  background:var(--panel); color:var(--accent); padding:2px 7px; border-radius:6px;
 }
-.guide a{ color:var(--surf); }
+.guide a{ color:var(--accent); }
 
 /* ============================================================
    ④-2 시설 바 (내가 보고 싶은 시설을 더하고 빼는 곳)
@@ -127,38 +141,79 @@ header{ padding:26px 0 6px; }
 /* ============================================================
    ③-2 소개 (이 화면이 뭔지 짧게 알려주는 자리)
    ============================================================ */
-.intro{ border-left:3px solid var(--surf); padding:2px 0 2px 16px; margin-top:20px; }
-.intro h2{ font-size:17px; font-weight:800; letter-spacing:-.02em; }
+.intro{ border-left:3px solid var(--accent); padding:2px 0 2px 16px; margin-top:20px; }
+.intro h2{ font-size:17px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
 .intro p{ font-size:14px; color:var(--muted); margin-top:6px; max-width:620px; line-height:1.6; }
 
 .미달라벨{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); cursor:pointer; }
 
-.시설바{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:8px; opacity:.82; }
+.시설바{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:8px; opacity:.85; }
 .시설라벨{ font-size:11.5px; color:var(--muted); }
 #시설칩들{ display:flex; flex-wrap:wrap; gap:6px; }
 .칩{
   display:inline-flex; align-items:center; gap:5px; font-size:13px;
-  background:rgba(233,243,242,.07); border:1px solid rgba(233,243,242,.16);
+  background:#fff; border:1px solid var(--line);
   border-radius:999px; padding:4px 10px;
 }
 .칩 button{
   background:none; border:0; color:var(--muted); cursor:pointer;
   font-size:15px; line-height:1; padding:0 1px;
 }
-.칩 button:hover{ color:#FF9E9E; }
+.칩 button:hover{ color:#B06B70; }
 #시설추가{ width:120px; padding:8px 12px; font-size:13px; }
 .시설더하기{
-  background:rgba(63,216,196,.14); color:var(--surf);
-  border:1px solid rgba(63,216,196,.4); border-radius:999px;
+  background:var(--panel); color:var(--accent);
+  border:1px solid var(--line); border-radius:999px;
   padding:7px 13px; font-size:13px; cursor:pointer;
 }
-.시설더하기:hover{ background:rgba(63,216,196,.24); }
+.시설더하기:hover{ background:#CFD0D8; }
 
 .legend{ display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; font-size:12px; color:var(--muted); align-items:center; }
 .legend span{ display:inline-flex; align-items:center; gap:6px; }
-/* 단지 핀은 남색(#052E38)이라 페이지 배경과 같습니다.
-   지도(밝은 배경) 위에서 보이는 모습 그대로 보여주려고 밝은 판을 깝니다. */
-.legend img{ background:#E9F3F2; border-radius:6px; padding:2px 3px; }
+/* 단지 핀은 어두운 색이라 밝은 배경에서만 잘 보입니다.
+   범례는 흰 판을 깔아서 지도 위에서 보이는 모습 그대로 보여줍니다. */
+.legend img{ background:#fff; border-radius:6px; padding:2px 3px; }
+
+/* ============================================================
+   ④-3 "담은 단지" 바 + 문구 패널
+   ============================================================ */
+.담은바{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-top:12px; padding:10px 14px; background:var(--panel);
+  border-radius:12px; font-size:13px; color:var(--muted);
+}
+.담은바 b{ color:var(--ink); }
+.문구버튼{
+  background:var(--ink); color:#fff; border:none; border-radius:999px;
+  padding:8px 16px; font-size:13px; font-weight:700; cursor:pointer;
+}
+.문구버튼:hover{ opacity:.88; }
+
+.문구패널{
+  position:fixed; inset:0; background:rgba(46,43,56,.45);
+  display:flex; align-items:center; justify-content:center; z-index:1000; padding:20px;
+}
+.문구패널안{
+  background:#fff; border-radius:var(--radius); padding:22px;
+  max-width:460px; width:100%; box-shadow:var(--shadow);
+}
+.문구패널머리{ display:flex; justify-content:space-between; align-items:center; }
+.문구패널머리 button{
+  background:none; border:none; font-size:22px; line-height:1; color:var(--muted); cursor:pointer;
+}
+.문구안내{ font-size:12.5px; color:var(--muted); margin-top:4px; }
+.담은칩들{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+.담은칩들 .칩 button{ color:var(--muted); }
+#문구내용{
+  width:100%; margin-top:12px; padding:12px; font-size:13.5px; line-height:1.6;
+  border:1px solid var(--line); border-radius:10px; resize:vertical; color:var(--ink);
+  font-family:inherit;
+}
+.문구복사버튼{
+  margin-top:10px; width:100%; padding:11px; background:var(--accent); color:#fff;
+  border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer;
+}
+.문구복사버튼:hover{ opacity:.9; }
 
 footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
 
@@ -179,7 +234,7 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
   <div class="logo">
     <div class="logo-mark">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-           stroke="#052E38" stroke-width="2.4" stroke-linecap="round">
+           stroke="#F8F7F9" stroke-width="2.4" stroke-linecap="round">
         <path d="M2 9c2.5-2.4 5-2.4 7.5 0S15 11.4 17.5 9 22 6.6 22 6.6"/>
         <path d="M2 16c2.5-2.4 5-2.4 7.5 0s5.5 2.4 8 0"/>
       </svg>
@@ -232,19 +287,39 @@ footer{ padding:28px 0 44px; font-size:13px; color:var(--muted); }
     <button class="시설더하기" onclick="시설더하기()">+ 추가</button>
   </section>
 
+  <!-- ========== 지도에서 확인한 단지를 담아뒀다가, 중개사에게 보낼 문구를 만듭니다 ========== -->
+  <section class="담은바">
+    <span>담은 단지 <b id="담은개수">0</b>개</span>
+    <button class="문구버튼" onclick="문구만들기()">📋 문구 만들기</button>
+  </section>
+
   <p class="count"><b id="개수">0</b>곳이 조건에 맞습니다 · 지도에서 핀을 누르면 자세히 보입니다</p>
 
   <div class="map-box">
     <div id="map_div"></div>
   </div>
 
+  <!-- 문구 패널. 평소엔 숨겨뒀다가 문구만들기()가 열어줍니다 -->
+  <div id="문구패널" class="문구패널" style="display:none">
+    <div class="문구패널안">
+      <div class="문구패널머리">
+        <b>중개사에게 보낼 문구</b>
+        <button onclick="문구패널닫기()" aria-label="닫기">&times;</button>
+      </div>
+      <p class="문구안내">지도에서 확인하고 담은 단지로 만들었습니다. 필요하면 직접 고쳐서 쓰세요.</p>
+      <div id="담은칩들" class="담은칩들"></div>
+      <textarea id="문구내용" rows="8"></textarea>
+      <button class="문구복사버튼" onclick="문구복사()">복사하기</button>
+    </div>
+  </div>
+
   <!-- 범례는 아래 범례그리기()가 채웁니다. 지도 마커와 같은 그림을 씁니다 -->
   <div class="legend" id="범례"></div>
 
   <footer>
-    단지와 실거래가는 국토교통부 실거래가 신고 데이터입니다 (2026년 3~9월 거래분).
-    수영장·다이소 위치와 도보 시간은 TMAP에서 실제로 계산했습니다.
-    도보 시간은 단지 대표 지점 기준이라, 큰 단지는 어느 동에 사느냐에 따라 몇 분 차이가 날 수 있습니다.
+    <b style="color:var(--ink)">단지·실거래가</b> — 국토교통부 실거래가 신고 데이터입니다 (2026년 3~9월 거래분). 새로 거래되어도 자동으로 갱신되지 않습니다.<br><br>
+    <b style="color:var(--ink)">카드에 적힌 도보 시간</b> — TMAP <b>보행자 길찾기</b>(직선거리가 아니라 실제로 걷는 경로)로 계산했습니다. 단지 대표 좌표에서, <b>계산 당시</b> 가장 가까웠던 시설까지 거리 기준이며, 그 뒤로 다시 재보진 않습니다. 큰 단지는 어느 동에 사느냐에 따라 실제로는 몇 분 차이가 날 수 있습니다.<br><br>
+    <b style="color:var(--ink)">지도 위 핀</b> — 이건 반대로 <b>지금 이 순간 실시간</b>으로 TMAP에 물어봐서 찍는 겁니다. 그래서 카드의 "4분"이라는 숫자와 지도 위 핀이 완전히 같은 계산은 아닐 수 있습니다. 정확히 확인하려면 카드에서 "지도에서 이 단지 보기"를 눌러, 그 단지를 기준으로 다시 검색된 핀을 보세요.
   </footer>
 </main>
 
@@ -267,6 +342,7 @@ let 정보창 = null;
 
 window.addEventListener('load', () => {
   시설칩그리기();          // 지도 키가 없어도 시설 목록과 범례는 보여줍니다
+  담은표시갱신();           // 담은 단지 개수도 지도 키 유무와 상관없이 보여줍니다
   범례그리기();
   if (!키){ 안내띄우기(); return; }
 
@@ -301,6 +377,7 @@ function 지도만들기(){
   });
   다시그리기();      // 지도가 준비된 뒤에 단지 점을 찍습니다
   주변시설찾기();    // TMAP에서 진짜 수영장·다이소를 찾아옵니다
+  이동대상있으면이동();   // CSV가 지도보다 먼저 준비됐을 수도 있어서 여기서도 확인합니다
 }
 
 /* ============================================================
@@ -431,6 +508,26 @@ let 전체단지 = [];
 function 데이터담기(csv글자){
   전체단지 = Papa.parse(csv글자.trim(), { header:true, skipEmptyLines:true }).data;
   다시그리기();
+  이동대상있으면이동();   // 카드 목록에서 "이 단지 지도에서 보기"로 넘어온 경우
+}
+
+/* index.html 카드에서 "지도에서 이 단지 보기 →" 를 누르면
+   map.html?단지=단지명 형태로 넘어옵니다.
+   그 단지 위치로 지도를 옮기고, 정보창을 열고,
+   그 자리 기준으로 주변시설을 다시 검색합니다.
+   (전체단지 CSV와 TMAP 지도, 둘 다 준비된 뒤에만 실행할 수 있어서
+    데이터담기()와 지도만들기() 양쪽에서 이 함수를 부릅니다 - 어느 게 먼저 끝날지 모르기 때문입니다) */
+function 이동대상있으면이동(){
+  const 단지명 = new URLSearchParams(location.search).get('단지');
+  if (!단지명 || !지도 || !전체단지.length) return;
+
+  const 대상 = 전체단지.find(d => d.단지명 === 단지명);
+  if (!대상) return;
+
+  지도.setCenter(new Tmapv2.LatLng(Number(대상.위도), Number(대상.경도)));
+  지도.setZoom(16);
+  정보창열기(대상);
+  주변시설찾기();   // 지도 중심이 바뀌었으니 그 자리 기준으로 다시 검색합니다
 }
 
 // CSV를 못 읽을 때만 예비데이터를 씁니다.
@@ -460,7 +557,7 @@ function 작은점(색, 지름){
   const 반지름 = 지름/2;
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + 지름 + '" height="' + 지름 + '">'
             + '<circle cx="' + 반지름 + '" cy="' + 반지름 + '" r="' + (반지름-2) + '" '
-            + 'fill="' + 색 + '" stroke="#052E38" stroke-width="2"/></svg>';
+            + 'fill="' + 색 + '" stroke="#2E2B38" stroke-width="2"/></svg>';
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }
 
@@ -470,15 +567,15 @@ function 작은점(색, 지름){
    이제 목록으로 두고, 사용자가 화면에서 더할 수 있게 합니다.
    ============================================================ */
 const 기본시설 = [
-  { 이름:'수영장', 색:'#3FD8C4', 그림:'수영'   },
-  { 이름:'다이소', 색:'#F5A623', 그림:'쇼핑백' }
+  { 이름:'수영장', 색:'#B06B70', 그림:'수영'   },  /* 카드의 수영장 글자색과 같습니다 */
+  { 이름:'다이소', 색:'#67634E', 그림:'쇼핑백' }   /* 카드의 다이소 글자색과 같습니다 */
 ];
 
 // 사용자가 추가한 시설에 차례로 물려줄 색입니다
 // 단지 핀. 시설이 아니라 집이라 시설 목록과 따로 둡니다.
-const 단지시설 = { 이름:'단지', 색:'#052E38', 그림:'집' };
+const 단지시설 = { 이름:'단지', 색:'#726A84', 그림:'집' };
 
-const 추가색 = ['#7FB3FF', '#C792EA', '#7BD88F', '#FF9E9E', '#FFD166', '#5FD3E8'];
+const 추가색 = ['#8C9CAF', '#A78BA0', '#8FA888', '#C99B7C', '#BFAE7A', '#7FA6A3'];
 
 // 사용자가 추가한 시설은 이 브라우저에 저장해서 새로고침해도 남게 합니다
 function 저장된시설(){
@@ -508,6 +605,108 @@ function 범례그리기(){
   항목.push('<span><img src="' + 아이콘마커(단지시설, 16) + '" width="16" height="21" alt="">' +
             '단지 · 조건 통과 <b style="color:var(--muted)">국토부 실거래</b></span>');
   document.getElementById('범례').innerHTML = 항목.join('');
+}
+
+/* ============================================================
+   ⑤-3 담은 단지 · 중개사에게 보낼 문구
+   지도에서 확인한 단지만 하나씩 눌러서 담습니다.
+   (필터에 걸린 전체를 한꺼번에 넣지 않습니다 - 직접 확인한 것만 넣어야
+    "진짜 확인하고 보내는 문의"가 되기 때문입니다)
+   ============================================================ */
+function 담은단지목록(){
+  try { return JSON.parse(localStorage.getItem('물때담은단지') || '[]'); }
+  catch(e){ return []; }
+}
+
+function 담은단지저장(목록){
+  try { localStorage.setItem('물때담은단지', JSON.stringify(목록)); }
+  catch(e){ console.warn('담은 단지를 저장하지 못했습니다. 새로고침하면 사라집니다.'); }
+}
+
+function 담은표시갱신(){
+  const 칸 = document.getElementById('담은개수');
+  if (칸) 칸.textContent = 담은단지목록().length;
+}
+
+function 단지담기(){
+  if (!담을단지) return;
+  const 목록 = 담은단지목록();
+  if (목록.some(x => x.단지명 === 담을단지.단지명)) return;   // 이미 담겨 있으면 조용히 무시
+
+  // CSV 값이 나중에 바뀌어도, 담은 시점 정보를 그대로 보여주려고 필요한 값만 복사해둡니다
+  목록.push({
+    단지명: 담을단지.단지명, 유형: 담을단지.유형, 자치구: 담을단지.자치구,
+    최근실거래: 담을단지.최근실거래,
+    수영장도보분: 담을단지.수영장도보분, 다이소도보분: 담을단지.다이소도보분
+  });
+  담은단지저장(목록);
+  담은표시갱신();
+  정보창열기(담을단지);   // 정보창의 버튼을 "담았습니다 ✓" 로 바로 바꿔줍니다
+}
+
+function 담은단지빼기(번호){
+  const 목록 = 담은단지목록();
+  목록.splice(번호, 1);
+  담은단지저장(목록);
+  담은표시갱신();
+  담은칩그리기();
+  if (목록.length === 0) document.getElementById('문구내용').value = '';
+  else 문구내용채우기();
+}
+
+function 담은칩그리기(){
+  document.getElementById('담은칩들').innerHTML = 담은단지목록().map((x, 번호) =>
+    '<span class="칩">' + x.단지명 +
+      '<button title="빼기" onclick="담은단지빼기(' + 번호 + ')">&times;</button>' +
+    '</span>'
+  ).join('');
+}
+
+// 지금 필터 조건 + 담은 단지 이름으로 문구를 만듭니다
+function 문구내용채우기(){
+  const 목록 = 담은단지목록();
+  const 유형   = document.getElementById('유형').value;
+  const 자치구 = document.getElementById('자치구').value;
+  const 조건줄 = [
+    자치구 !== '전체' ? 자치구 : null,
+    유형   !== '전체' ? 유형   : null,
+    '수영장·다이소 도보 ' + 선택한시간 + '분 이내'
+  ].filter(Boolean).join(' · ');
+
+  document.getElementById('문구내용').value =
+    `안녕하세요, 매물 문의드립니다.
+
+조건: ${조건줄}
+관심 단지: ${목록.map(x => x.단지명).join(', ')}
+
+편하실 때 연락 부탁드립니다.`;
+}
+
+function 문구만들기(){
+  if (!담은단지목록().length){
+    alert('아직 담은 단지가 없습니다. 지도에서 단지를 눌러 "문의 목록에 담기"로 담아보세요.');
+    return;
+  }
+  담은칩그리기();
+  문구내용채우기();
+  document.getElementById('문구패널').style.display = 'flex';
+}
+
+function 문구패널닫기(){
+  document.getElementById('문구패널').style.display = 'none';
+}
+
+function 문구복사(){
+  const 칸 = document.getElementById('문구내용');
+  칸.select();
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(칸.value)
+      .then(() => alert('복사했습니다. 카카오톡이나 문자에 붙여넣으세요.'))
+      .catch(() => alert('복사가 안 됐어요. 직접 선택해서 복사해주세요.'));
+  } else {
+    document.execCommand('copy');   // 오래된 브라우저 대비
+    alert('복사했습니다.');
+  }
 }
 
 function 시설칩그리기(){
@@ -615,22 +814,31 @@ function 정보창닫기(){
   정보창 = null;
 }
 
+let 담을단지 = null;   // 정보창이 열려있는 단지. [담기] 버튼이 나중에 눌릴 때 이걸 읽습니다
+
 function 정보창열기(d){
   정보창닫기();
+  담을단지 = d;   // 단지명에 쉼표·따옴표가 섞인 경우도 있어서, HTML 속성 대신 변수로 기억해둡니다
+  const 이미담음 = 담은단지목록().some(x => x.단지명 === d.단지명);
   const 내용 =
-    '<div style="background:#0B5C6B;color:#E9F3F2;border:1px solid rgba(63,216,196,.4);' +
+    '<div style="background:#fff;color:#2E2B38;border:1px solid rgba(46,43,56,.14);' +
     'border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;' +
     'font-family:Malgun Gothic,sans-serif;min-width:190px">' +
       '<b style="font-size:15px">' + d.단지명 + '</b>' +
-      '<span style="font-size:11px;color:#8FB3B8;margin-left:6px">' + d.유형 + '</span><br>' +
-      '<span style="color:#8FB3B8">' + d.자치구 + ' · ' + d.면적 + '㎡</span><br>' +
-      '수영장 <b style="color:#3FD8C4">' + d.수영장도보분 + '분</b> · ' +
-      '다이소 <b style="color:#F5A623">' + d.다이소도보분 + '분</b><br>' +
+      '<span style="font-size:11px;color:#726A84;margin-left:6px">' + d.유형 + '</span><br>' +
+      '<span style="color:#726A84">' + d.자치구 + ' · ' + d.면적 + '㎡</span><br>' +
+      '수영장 <b style="color:#B06B70">' + d.수영장도보분 + '분</b> · ' +
+      '다이소 <b style="color:#67634E">' + d.다이소도보분 + '분</b><br>' +
       '<b>' + d.최근실거래 + '</b> ' +
-      '<span style="font-size:11px;color:#8FB3B8">최근 실거래</span><br>' +
+      '<span style="font-size:11px;color:#726A84">최근 실거래</span><br>' +
       '<a href="https://search.naver.com/search.naver?query=' +
         encodeURIComponent(d.단지명 + ' 매물') + '" target="_blank" rel="noopener" ' +
-        'style="color:#3FD8C4;font-weight:700;display:inline-block;margin-top:6px">매물 보러 가기 →</a>' +
+        'style="color:#B06B70;font-weight:700;display:inline-block;margin-top:6px">매물 보러 가기 →</a><br>' +
+      '<button onclick="단지담기()" ' +
+        'style="margin-top:8px;background:' + (이미담음 ? '#DDDEE4' : '#2E2B38') + ';' +
+        'color:' + (이미담음 ? '#726A84' : '#fff') + ';border:none;border-radius:999px;' +
+        'padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">' +
+        (이미담음 ? '담았습니다 ✓' : '📋 문의 목록에 담기') + '</button>' +
     '</div>';
 
   정보창 = new Tmapv2.InfoWindow({
@@ -659,12 +867,12 @@ function 시설정보창(p, 시설){
   정보창닫기();
   const 주소 = [p.upperAddrName, p.middleAddrName, p.lowerAddrName, p.roadName].filter(Boolean).join(' ');
   const 내용 =
-    '<div style="background:#0B5C6B;color:#E9F3F2;border:1px solid ' + 색 + ';' +
+    '<div style="background:#fff;color:#2E2B38;border:1px solid ' + 색 + ';' +
     'border-radius:12px;padding:11px 13px;font-size:13px;line-height:1.5;' +
     'font-family:Malgun Gothic,sans-serif;min-width:215px">' +
       '<span style="font-size:10px;letter-spacing:.1em;color:' + 색 + '">' + 종류 + '</span><br>' +
       '<b style="font-size:14px">' + p.name + '</b><br>' +
-      '<span style="color:#8FB3B8;font-size:12px">' + 주소 + '</span><br>' +
+      '<span style="color:#726A84;font-size:12px">' + 주소 + '</span><br>' +
       '<a href="' + 네이버지도주소(p.name + ' ' + (p.middleAddrName || '')) + '" ' +
         'target="_blank" rel="noopener noreferrer" ' +
         'style="color:' + 색 + ';font-weight:700;display:inline-block;margin-top:8px">' +
@@ -717,7 +925,7 @@ function 다시그리기(){
         })
       : new Tmapv2.Marker({
           position: 자리,
-          icon:     작은점('rgba(143,179,184,.45)', 9),
+          icon:     작은점('rgba(114,106,132,.45)', 9),
           iconSize: new Tmapv2.Size(9, 9),
           zIndex:   10,
           title:    d.단지명,
