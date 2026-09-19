@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>물때 · 수영장과 다이소가 걸어서 가까운 집</title>
+<title>물때 · 수영장이 걸어서 가까운 집</title>
 
 <!-- CSV 파일을 읽어주는 도구. 인터넷 주소 한 줄로 가져다 씁니다(=CDN) -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -179,7 +179,6 @@ h1 em{ font-style:normal; color:var(--olive); }
 .card-walk{ display:flex; gap:14px; margin-top:14px; font-size:13px; }
 .card-walk b{ font-family:ui-monospace, Menlo, Consolas, monospace; font-weight:700; }
 .w-pool b{ color:var(--accent); }
-.w-daiso b{ color:var(--accent2); }
 .card-price{ margin:6px 0 10px; font-size:24px; font-weight:800; color:var(--accent); }
 .card-price span{ font-size:11px; color:var(--muted); font-weight:400; margin-left:6px; }
 
@@ -260,11 +259,11 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
   <section class="hero">
     <div>
       <span class="eyebrow">강서구 · 양천구</span>
-      <h1>수영장도 다이소도<br>걸어서 갈 수 있는<br><em>단지만 남깁니다</em></h1>
+      <h1>수영장까지<br>걸어서 갈 수 있는<br><em>단지만 남깁니다</em></h1>
       <p class="lead">
         역세권과 학군은 부동산 앱에서 한 번에 걸러지는데,
         수영장 거리는 매물을 하나씩 찍어서 직접 재봐야 합니다.
-        물때는 반대로 시작합니다. 두 곳 다 도보권인 단지만 남기고,
+        물때는 반대로 시작합니다. 수영장이 도보권인 단지만 남기고,
         실제로 걸어서 몇 분인지까지 계산합니다.
       </p>
       <button class="cta" onclick="목록으로()">
@@ -276,7 +275,7 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
       </button>
       <a class="cta cta-보조" href="map.html">지도에서 보기</a>
       <p class="cta-note">국토교통부 실거래가 기준입니다 (2026년 3~9월 거래분)</p>
-      <p class="cta-note">지도에서는 수영장·다이소 말고 <b style="color:var(--accent)">원하는 시설(GS25, 스타벅스 등)도 직접 추가</b>해서 볼 수 있어요.</p>
+      <p class="cta-note">지도에서는 수영장 말고 <b style="color:var(--accent)">원하는 시설(다이소, GS25 등)도 직접 추가</b>해서 볼 수 있어요.</p>
     </div>
 
     <!-- 오른쪽 지도 -->
@@ -342,8 +341,8 @@ footer{ padding-bottom:44px; font-size:13px; color:var(--muted); }
   <section class="lanes">
     <div class="lane">
       <div class="lane-no">LANE 1</div>
-      <h3>두 조건을 동시에 겁니다</h3>
-      <p>수영장과 다이소, 둘 다 도보권인 단지만 남깁니다. 하나만 가까운 곳은 후보에서 빠집니다.</p>
+      <h3>부동산 앱에 없는 조건</h3>
+      <p>역세권·학군·평수는 어디서나 거를 수 있습니다. 수영장까지 걸어서 몇 분인지는 여기에만 있습니다.</p>
     </div>
     <div class="lane">
       <div class="lane-no">LANE 2</div>
@@ -480,7 +479,7 @@ function 다시그리기(){
   if (정렬기준 === '가격낮은순') 카드용.sort((a, b) => 가격숫자(a.최근실거래) - 가격숫자(b.최근실거래));
   if (정렬기준 === '가격높은순') 카드용.sort((a, b) => 가격숫자(b.최근실거래) - 가격숫자(a.최근실거래));
   if (정렬기준 === '도보빠른순') 카드용.sort((a, b) =>
-    (Number(a.수영장도보분) + Number(a.다이소도보분)) - (Number(b.수영장도보분) + Number(b.다이소도보분)));
+    Number(a.수영장도보분) - Number(b.수영장도보분));
 
   const 목록 = document.getElementById('카드목록');
   if (통과.length === 0){
@@ -502,14 +501,13 @@ function 다시그리기(){
 
       <div class="card-walk">
         <span class="w-pool">수영장 <b>${d.수영장도보분}분</b></span>
-        <span class="w-daiso">다이소 <b>${d.다이소도보분}분</b></span>
       </div>
 
       <div class="detail">
         가장 가까운 수영장은 <b>${d.수영장이름}</b>입니다.<br>
         위도 ${d.위도} · 경도 ${d.경도}
         <br>
-        <!-- 실제 지도로 넘어가서, 그 자리 기준으로 수영장·다이소를 실시간으로 다시 찾아줍니다.
+        <!-- 실제 지도로 넘어가서, 그 자리 기준으로 수영장을 실시간으로 다시 찾아줍니다.
              매물 링크는 지도 쪽 정보창에 이미 있어서 여기서는 뺐습니다.
              (map.html의 이동대상있으면이동() 이 이 주소를 읽습니다) -->
         <a href="map.html?단지=${encodeURIComponent(d.단지명)}" onclick="event.stopPropagation()">

@@ -15,7 +15,8 @@ function 조건통과(단지){
   const 자치구 = document.getElementById('자치구').value;
 
   if (Number(단지.수영장도보분) > 선택한시간) return false;   // 수영장 조건
-  if (Number(단지.다이소도보분) > 선택한시간) return false;   // 다이소 조건
+  // 다이소 조건은 뺐습니다. 이제 수영장 하나만 봅니다.
+  // (다이소가 보고 싶으면 지도 화면에서 시설로 직접 추가하면 됩니다)
   if (유형   !== '전체' && 단지.유형   !== 유형)   return false;
   if (자치구 !== '전체' && 단지.자치구 !== 자치구) return false;
   if (검색어 && !단지.단지명.includes(검색어))    return false;
