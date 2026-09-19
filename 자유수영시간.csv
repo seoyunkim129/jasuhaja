@@ -1,0 +1,24 @@
+수영장ID,요일구분,시작시간,종료시간,대상,회원가격원,비회원가격원,정보상태,출처,비고
+MP001,월~금,08:00,08:50,성인,3000,3500,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,평일 자유수영 1부
+MP001,월~금,12:00,12:50,성인,3000,3500,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,평일 자유수영 2부
+MP001,월~금,21:00,21:50,성인,3000,3500,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,평일 자유수영 3부; 21:10 이후 발권 및 입장 불가
+MP001,토,07:00,08:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,토요일 자유수영 1부
+MP001,토,10:00,11:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,토요일 자유수영 2부
+MP001,토,13:00,14:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,토요일 자유수영 3부
+MP001,토,16:00,17:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,토요일 자유수영 4부
+MP001,토,19:00,20:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,토요일 자유수영 5부
+MP001,일·공휴일,09:00,10:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,마지막 주 일요일 휴관
+MP001,일·공휴일,12:00,13:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,마지막 주 일요일 휴관
+MP001,일·공휴일,15:00,16:50,성인,3600,4200,공식확인,https://www.mfac.or.kr/communication/daily_reservation.jsp,마지막 주 일요일 휴관
+MP002,평일·토,,,,,,부분확인,https://heness.imweb.me/22,운영시간 내 자유수영 가능; 정확한 시간·요금 전화 확인
+MP003,토,,,,,,부분확인,https://heness.imweb.me/25,토요일 운영시간 내 자유수영 가능; 정확한 시간·요금 전화 확인
+MP004,월~금,06:00,06:50,성인,,,참고정보,https://25m.kr/swim/pool/seoul-mapo-BGKRZx,운영처 공식 시간표로 재확인 필요
+MP004,월~금,12:00,15:50,성인,,,참고정보,https://25m.kr/swim/pool/seoul-mapo-BGKRZx,운영처 공식 시간표로 재확인 필요
+MP004,월~금,18:00,18:50,성인,,,참고정보,https://25m.kr/swim/pool/seoul-mapo-BGKRZx,운영처 공식 시간표로 재확인 필요
+MP004,월~금,21:00,22:50,성인,,,참고정보,https://25m.kr/swim/pool/seoul-mapo-BGKRZx,운영처 공식 시간표로 재확인 필요
+MP004,토,06:00,09:50,성인,,,참고정보,https://25m.kr/swim/pool/seoul-mapo-BGKRZx,운영처 공식 시간표로 재확인 필요
+MP004,토,11:00,16:50,성인,,,참고정보,https://25m.kr/swim/pool/seoul-mapo-BGKRZx,운영처 공식 시간표로 재확인 필요
+MP005,평일,06:00,11:50,성인,,12000,참고정보,https://www.helloswim.kr/pool/5164,공개 출처마다 요금·시간이 달라 전화 확인 필요
+MP005,평일,13:00,21:50,성인,,12000,참고정보,https://www.helloswim.kr/pool/5164,공개 출처마다 요금·시간이 달라 전화 확인 필요
+MP006,평일,06:00,22:30,성인,,11000,참고정보,https://www.helloswim.kr/pool/915,공식 홈페이지가 없어 전화 확인 필요
+MP006,토·공휴일,10:00,19:30,성인,,11000,참고정보,https://cbswim.webflow.io/suyeongjang/weoldeukeobseuparaendeu24,공식 홈페이지가 없어 전화 확인 필요
