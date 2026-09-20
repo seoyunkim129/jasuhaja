@@ -2,6 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const localEnvPath = path.join(root, '.env.local');
+if (fs.existsSync(localEnvPath)) {
+  for (const line of fs.readFileSync(localEnvPath, 'utf8').split(/\r?\n/)) {
+    const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (match && !process.env[match[1]]) process.env[match[1]] = match[2].replace(/^['"]|['"]$/g, '');
+  }
+}
 const rubric = JSON.parse(fs.readFileSync(path.join(root, 'analysis', 'review-rubric.json'), 'utf8'));
 const baseUrl = process.env.REVIEW_API_BASE || 'https://mulddae-cyan.vercel.app';
 const poolLimit = Number(process.env.POOL_LIMIT || 1);
