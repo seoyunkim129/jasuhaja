@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-09-20T11:23:28.003Z",
+  "results": [
+    {
+      "pool": "마포아트센터 수영장",
+      "reviewCount": 15,
+      "keyword": {
+        "crowd": {
+          "evidenceCount": 3,
+          "score": -1,
+          "evidence": [
+            {
+              "link": "https://cafe.naver.com/swimmingholicclub/2633109",
+              "sentiment": -1,
+              "text": "최근에 마포아트센터 수영장 평일 자유수영 1부 가 보신 분. 최근 후기가 많지 않고, 여름 후기들엔, 사람이 많다고 하더라고요 지금도 여전히 30분 전에 가면 정말 50명 커트라인에 못 드나요? 더 일찍 가야해요? 금요일은 오리발도 가능하니까 사람이 더 많으려나,,,"
+            },
+            {
+              "link": "https://cafe.naver.com/swnolja/820550",
+              "sentiment": -1,
+              "text": "요새 마포아트센터 수영장 사람 많나요?! +아니면 마포쪽 일요일 자유수영 ..... 마포아트센터 수영장 싸지만 거의 티켓팅 수준으로 입장해야한다고 블로그 후기를 봤어용...ㅜ 요새 사람 여전히 많나요? ㅜㅜㅜ 아현 스포렉스는 텃세가 있다고 하구... 어디가 좋을까요? 내일 (일요일) 자유수영 하고... "
+            },
+            {
+              "link": "https://cafe.naver.com/mapomommy/1116146",
+              "sentiment": -1,
+              "text": "마포아트센터 한식뷔페 도시락은 이제 식권 구입시 구매 가능 하다고 합니..... 그리고 가는 길이 복잡 하다고 하는 후기를 봤는데 저도 수영장 지하까지 갔다가 돌아 나왔네요 ㅋㅋ 마포아트센터 공연장 을 바라보고 왼쪽이 문화동? 인가봐요 여기 지하 1층에 한식뷔페가 있으니 참고하시고 가보세요!"
+            }
+          ]
+        },
+        "facility": {
+          "evidenceCount": 0,
+          "score": null,
+          "evidence": []
+        },
+        "water": {
+          "evidenceCount": 1,
+          "score": -1,
+          "evidence": [
+            {
+              "link": "https://cafe.naver.com/swnolja/530878",
+              "sentiment": -1,
+              "text": "마포아트센터 수영장 후기. 저만의 수태기 극복 방법 중에 하나가 수영장탐방 인데요~ 오늘은 처음으로 마포아트센터가보았습니다~ 비회원 주말자유수영은 4,100원에 1시간... 예전 후기글에서는 수질이 안좋다고 본 것 같은데, 관리가 된 것인지... "
+            }
+          ]
+        },
+        "value": {
+          "evidenceCount": 0,
+          "score": null,
+          "evidence": []
+        }
+      },
+      "transformer": {
+        "status": "skipped",
+        "reason": "HF_TOKEN 없음"
+      }
+    }
+  ]
+}
