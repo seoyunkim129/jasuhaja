@@ -31,7 +31,10 @@ module.exports = async function cafeSearch(req, res) {
   // API HUB 전용 주소와 전용 헤더 이름을 사용해야 합니다.
   const 주소 = new URL('https://naverapihub.apigw.ntruss.com/search/v1/cafearticle');
   주소.searchParams.set('query', 검색어);
-  주소.searchParams.set('display', '10');
+  // 별점은 관련 후기 3개 이상일 때만 계산합니다. 기본값 10개로는
+  // 시설명·평가 항목 필터를 거친 뒤 표본이 거의 남지 않아 허용 최대치인 100개를 받습니다.
+  // display를 늘려도 API 호출 횟수는 한 번으로 동일합니다.
+  주소.searchParams.set('display', '100');
   주소.searchParams.set('start', '1');
   주소.searchParams.set('sort', 'sim');
 
