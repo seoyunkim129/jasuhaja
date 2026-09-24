@@ -4,6 +4,7 @@
   "description": "물때 - 오늘 갈 수 있는 자유수영장을 찾는 프로젝트",
   "scripts": {
     "build": "node scripts/키파일만들기.js",
-    "analyze:reviews": "node scripts/후기분석비교.mjs"
+    "analyze:reviews": "node scripts/후기분석비교.mjs",
+    "sample:reviews": "node scripts/후기표본만들기.mjs"
   }
 }
