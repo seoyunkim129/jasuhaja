@@ -14,24 +14,30 @@
     margin:0; padding:18px 14px 50px; background:var(--paper); color:var(--ink);
     font-family:Pretendard,"Noto Sans KR",sans-serif; line-height:1.55;
   }
-  .wrap{ max-width:720px; margin:0 auto }
+  .wrap{ max-width:760px; margin:0 auto }
   h1{ font-size:22px; margin:0 0 4px; letter-spacing:-.5px }
-  .lead{ color:var(--muted); font-size:14px; margin:0 0 16px }
+  .lead{ color:var(--muted); font-size:14px; margin:0 0 14px }
 
   .알림{ margin:10px 0; padding:12px 15px; border-radius:12px; background:var(--mint);
         border:1px solid var(--line); font-size:13px }
   .알림.나쁨{ background:#fde8e8; border-color:#f5c2c2 }
 
-  /* 레이스 화면 */
-  .경기장{ position:relative; width:100%; background:#0b3d5c; border-radius:18px; overflow:hidden;
-          box-shadow:0 12px 34px #25362d1f }
-  #레인 { display:block; width:100%; height:auto }
+  /* 경기장 + 우상단 웹캠 */
+  .경기장{ position:relative; width:100%; background:#04263f; border-radius:18px; overflow:hidden;
+          box-shadow:0 14px 38px #25362d24 }
+  #레인{ display:block; width:100%; height:auto }
+  .캠{ position:absolute; top:12px; right:12px; width:22%; max-width:150px; aspect-ratio:4/3;
+      border-radius:10px; overflow:hidden; border:2px solid #ffffff5c; background:#000;
+      box-shadow:0 6px 18px #0006 }
+  .캠 video, .캠 canvas{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
+  .거울{ transform:scaleX(-1) }
+
   .덮개{ position:absolute; inset:0; display:grid; place-items:center; text-align:center;
-        background:#06263ad9; color:#fff; padding:20px }
+        background:#04263fdb; color:#fff; padding:20px; backdrop-filter:blur(2px) }
   .덮개.숨김{ display:none }
-  .덮개 h2{ margin:0 0 8px; font-size:26px }
-  .덮개 p{ margin:0 0 14px; font-size:14px; opacity:.9 }
-  .카운트{ font-size:72px; font-weight:900; line-height:1 }
+  .덮개 h2{ margin:0 0 8px; font-size:27px }
+  .덮개 p{ margin:0 0 14px; font-size:14px; opacity:.92 }
+  .카운트{ font-size:76px; font-weight:900; line-height:1; text-shadow:0 4px 20px #000a }
 
   button{ font-family:inherit; cursor:pointer; border-radius:11px; border:1px solid var(--line);
           background:#fff; padding:11px 18px; font-size:14px; font-weight:800; color:var(--ink) }
@@ -41,27 +47,21 @@
   a.버튼{ display:inline-block; text-decoration:none; background:#fff; color:var(--ink);
           border:1px solid var(--line); border-radius:11px; padding:11px 18px; font-size:14px; font-weight:800 }
 
-  /* 계기판 */
-  .판{ margin-top:12px; display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)) }
+  .판{ margin-top:12px; display:grid; gap:8px; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)) }
   .칸{ background:#fff; border:1px solid var(--line); border-radius:11px; padding:9px 11px }
   .칸 .라벨{ font-size:11px; color:var(--muted) }
   .칸 .값{ font-family:ui-monospace,Consolas,monospace; font-size:19px; font-weight:800 }
   .칸.큰 .값{ color:var(--green) }
 
-  /* 웹캠 (작게) */
   details{ margin-top:14px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px }
   summary{ cursor:pointer; font-size:13px; font-weight:800 }
-  .무대{ position:relative; width:100%; max-width:320px; margin-top:10px; background:#000;
-        border-radius:10px; overflow:hidden }
-  video,#그림판{ display:block; width:100%; height:auto }
-  #그림판{ position:absolute; inset:0 }
-  .거울{ transform:scaleX(-1) }
-
-  .줄{ display:grid; grid-template-columns:118px 1fr 64px; gap:9px; align-items:center; margin:9px 0 }
+  .줄{ display:grid; grid-template-columns:128px 1fr 64px; gap:9px; align-items:center; margin:9px 0 }
   .줄 label{ font-size:12px }
   .줄 output{ font-family:ui-monospace,Consolas,monospace; font-size:12px; text-align:right }
   input[type=range]{ width:100% }
   .도움{ font-size:12px; color:var(--muted); margin:8px 0 0 }
+  .간격{ font-family:ui-monospace,Consolas,monospace; font-size:11px; color:var(--muted);
+        background:#f4f7f5; border-radius:8px; padding:7px 9px; margin-top:8px; word-break:break-all }
 
   .미끼{ margin-top:16px; background:var(--pink); border-radius:16px; padding:16px 18px }
   .미끼 b{ display:block; font-size:15px; margin-bottom:6px }
@@ -76,7 +76,11 @@
   <div id="알림" class="알림">카메라를 준비하는 중입니다…</div>
 
   <div class="경기장">
-    <canvas id="레인" width="900" height="360"></canvas>
+    <canvas id="레인" width="960" height="420"></canvas>
+    <div class="캠">
+      <video id="영상" class="거울" playsinline muted></video>
+      <canvas id="그림판" class="거울"></canvas>
+    </div>
     <div class="덮개" id="덮개">
       <div>
         <h2 id="덮개제목">준비됐나요?</h2>
@@ -96,14 +100,17 @@
   </div>
 
   <details>
-    <summary>판정이 안 맞나요? 카메라와 기준 조절하기</summary>
-    <div class="무대">
-      <video id="영상" class="거울" playsinline muted></video>
-      <canvas id="그림판" class="거울"></canvas>
-    </div>
+    <summary>숫자가 안 맞나요? 판정 기준 조절하기</summary>
+
     <div class="판">
       <div class="칸"><div class="라벨">왼팔 높이</div><div class="값" id="왼높이">-</div></div>
       <div class="칸"><div class="라벨">오른팔 높이</div><div class="값" id="오른높이">-</div></div>
+      <div class="칸"><div class="라벨">방금 든 높이</div><div class="값" id="최고">-</div></div>
+    </div>
+
+    <div class="줄">
+      <label for="s최소진폭">최소 진폭</label>
+      <input type="range" id="s최소진폭" min="0" max="0.40" step="0.01" value="0.15"><output id="o최소진폭">0.15</output>
     </div>
     <div class="줄">
       <label for="s올라감">올라감 기준</label>
@@ -115,12 +122,19 @@
     </div>
     <div class="줄">
       <label for="s쿨다운">최소 간격(ms)</label>
-      <input type="range" id="s쿨다운" min="100" max="1200" step="50" value="300"><output id="o쿨다운">300</output>
+      <input type="range" id="s쿨다운" min="100" max="1200" step="50" value="400"><output id="o쿨다운">400</output>
     </div>
+
+    <div class="간격" id="간격기록">판정 간격: 아직 없음</div>
+
     <p class="도움">
-      <b>10번 저었는데 더 많이 셀 때</b> → 올라감 기준을 올리거나 최소 간격을 늘리세요.<br>
-      <b>덜 셀 때</b> → 올라감 기준을 내리세요. 손을 끝까지 올렸을 때의 "높이" 숫자의 절반쯤이 적당합니다.
+      <b>실제보다 많이 셀 때</b> → <b>최소 진폭</b>을 올리세요. 팔을 살짝 까딱한 것까지 세는 걸 막아줍니다.<br>
+      위 <b>판정 간격</b>에 100~200ms처럼 짧은 값이 섞여 있으면 한 번 저은 걸 두 번 센 것입니다.<br>
+      <b>덜 셀 때</b> → 최소 진폭을 내리세요. 팔을 끝까지 올렸을 때 <b>방금 든 높이</b>에 찍히는 숫자보다 낮아야 합니다.
     </p>
+    <div class="버튼줄" style="justify-content:flex-start;margin-top:10px">
+      <button id="카운터초기화">카운터 0으로</button>
+    </div>
   </details>
 
   <div class="미끼" id="미끼" hidden>
@@ -138,27 +152,44 @@ import { FilesetResolver, PoseLandmarker }
    판정 로직 - 고칠 일이 있으면 이 함수만 보면 됩니다.
 
    높이 = 어깨y - 손목y     (y는 위로 갈수록 작아지므로 손을 들면 +)
-   1) 높이가 '올라감 기준'을 넘으면 → UP
-   2) UP에서 '내려감 기준' 아래로 떨어지면 → 스트로크 1회
 
-   떨림 방지
+   1) 높이가 '올라감 기준'을 넘으면 → UP 으로 바뀌고, 이때부터 최고 높이를 기억한다
+   2) UP 에서 '내려감 기준' 아래로 떨어지면 → 한 번 저은 것으로 본다
+
+   세 가지 장치로 중복을 막습니다
    · 히스테리시스 - 올라가는 문턱과 내려오는 문턱을 다르게 둔다
-   · 쿨다운 - 마지막으로 센 뒤 최소 간격이 지나야 다음 걸 센다
+   · 쿨다운       - 마지막으로 센 뒤 최소 간격이 지나야 다음 걸 센다
+   · 최소 진폭    - UP 동안 팔을 이만큼은 올렸어야 센다        ← 여기가 핵심
+
+   최소 진폭이 왜 필요한가
+   올라감 기준만 쓰면 '팔을 조금 까딱한 것'과 '크게 한 바퀴 돌린 것'을 구분하지
+   못합니다. 손목 좌표는 매 프레임 조금씩 떨리는데, 문턱 근처에서 떨면 한 번
+   저은 것이 두세 번으로 세어집니다. UP 동안의 최고 높이를 기억했다가 그 값이
+   최소 진폭을 넘을 때만 세면 이 문제가 사라집니다.
    ═══════════════════════════════════════════════════════════ */
 function 스트로크판정(팔상태, 어깨y, 손목y, 지금, 설정){
   const 높이 = 어깨y - 손목y;
   let 셌다 = false;
 
   if (팔상태.상태 === 'DOWN') {
-    if (높이 > 설정.올라감) 팔상태.상태 = 'UP';
+    if (높이 > 설정.올라감) {
+      팔상태.상태 = 'UP';
+      팔상태.최고높이 = 높이;          // 이번 스윙에서 얼마나 올렸는지 기억하기 시작
+    }
   } else {
+    if (높이 > 팔상태.최고높이) 팔상태.최고높이 = 높이;
     if (높이 < 설정.내려감) {
       팔상태.상태 = 'DOWN';
-      if (지금 - 팔상태.마지막카운트시각 >= 설정.쿨다운) {
+      const 충분히올렸다 = 팔상태.최고높이 >= 설정.최소진폭;
+      const 간격지났다   = 지금 - 팔상태.마지막카운트시각 >= 설정.쿨다운;
+      if (충분히올렸다 && 간격지났다) {
+        팔상태.직전간격 = 지금 - 팔상태.마지막카운트시각;
         팔상태.마지막카운트시각 = 지금;
         팔상태.횟수 += 1;
+        팔상태.마지막진폭 = 팔상태.최고높이;
         셌다 = true;
       }
+      팔상태.최고높이 = -9;
     }
   }
   return { 높이, 셌다 };
@@ -166,17 +197,8 @@ function 스트로크판정(팔상태, 어깨y, 손목y, 지금, 설정){
 /* ═══════════════ 판정 로직 끝 ═══════════════ */
 
 
-/* ═══════════════════════════════════════════════════════════
-   레이스 규칙 - 난이도를 바꾸려면 여기 숫자만 만지면 됩니다.
-   ═══════════════════════════════════════════════════════════ */
-const 규칙 = {
-  거리: 100,        // 결승선까지의 거리(가상 단위)
-  추진: 6.0,        // 스트로크 한 번에 더해지는 속도
-  번갈아보너스: 1.35, // 직전과 다른 팔이면 추진력을 이만큼 곱합니다
-  저항: 2.0,        // 1초에 속도의 이 비율만큼 깎입니다 (안 저으면 멈춤)
-  상대완주초: 32,    // 상대가 결승선에 닿는 데 걸리는 시간
-};
-/* 이 숫자들은 짐작으로 정하지 않고 브라우저 없이 따로 돌려보고 맞췄습니다.
+/* ═══════════════ 레이스 규칙 ═══════════════
+   이 숫자들은 짐작으로 정하지 않고 브라우저 없이 따로 돌려보고 맞췄습니다.
    상대를 45초로 뒀을 때는 느리게 저어도(0.7회/초) 이겨서 너무 쉬웠습니다.
 
      저는 방식            기록      결과
@@ -184,7 +206,14 @@ const 규칙 = {
      보통 번갈아  1.0/s   25.5초    이김
      보통 한팔만  1.0/s   32.0초    짐    ← 한 팔만 흔드는 치팅이 막힙니다
      느리게      0.7/s   32.0초    짐
-     대충       0.5/s   32.0초    짐                                       */
+     대충       0.5/s   32.0초    짐                                     */
+const 규칙 = {
+  거리: 100,
+  추진: 6.0,
+  번갈아보너스: 1.35,
+  저항: 2.0,
+  상대완주초: 32,
+};
 
 const 영상 = document.getElementById('영상');
 const 그림판 = document.getElementById('그림판');
@@ -194,24 +223,35 @@ const 물 = 레인.getContext('2d');
 const 알림칸 = document.getElementById('알림');
 const $ = id => document.getElementById(id);
 
-// MediaPipe 번호는 해부학 기준이고 화면은 거울이라 뒤집어 맞춥니다
 const 왼팔번호   = { 어깨:12, 손목:16 };
 const 오른팔번호 = { 어깨:11, 손목:15 };
 const 그릴번호 = [11,12,13,14,15,16];
 
-const 설정 = { 올라감:0.06, 내려감:0.00, 쿨다운:300 };
-const 왼팔   = { 상태:'DOWN', 마지막카운트시각:-9999, 횟수:0 };
-const 오른팔 = { 상태:'DOWN', 마지막카운트시각:-9999, 횟수:0 };
+const 설정 = { 올라감:0.06, 내려감:0.00, 쿨다운:400, 최소진폭:0.15 };
+const 새팔 = () => ({ 상태:'DOWN', 마지막카운트시각:-9999, 횟수:0, 최고높이:-9, 마지막진폭:0, 직전간격:0, 위상:0 });
+const 왼팔 = 새팔(), 오른팔 = 새팔();
+const 간격들 = [];
 
-// 경기 상태: 준비 → 카운트다운 → 달리는중 → 끝남
 const 경기 = { 상태:'준비', 시작시각:0, 나:0, 상대:0, 속도:0, 마지막팔:null, 기록:0, 이김:false };
+const 물보라 = [];
 
-[['s올라감','o올라감','올라감'],['s내려감','o내려감','내려감'],['s쿨다운','o쿨다운','쿨다운']]
+[['s최소진폭','o최소진폭','최소진폭'],['s올라감','o올라감','올라감'],
+ ['s내려감','o내려감','내려감'],['s쿨다운','o쿨다운','쿨다운']]
   .forEach(([슬라이더,출력,키])=>{
     const el=$(슬라이더);
     const 반영=()=>{ 설정[키]=Number(el.value); $(출력).textContent=el.value; };
     el.addEventListener('input',반영); 반영();
   });
+
+$('카운터초기화').onclick = () => { 카운터초기화(); };
+
+function 카운터초기화(){
+  [왼팔,오른팔].forEach(팔=>Object.assign(팔,새팔()));
+  간격들.length=0;
+  $('간격기록').textContent='판정 간격: 아직 없음';
+  $('최고').textContent='-';
+  화면갱신();
+}
 
 function 알림(글, 나쁨=false){
   알림칸.textContent = 글;
@@ -231,18 +271,10 @@ function 덮개(제목, 설명, 버튼들=[], 카운트=''){
 }
 const 덮개숨기기 = () => $('덮개').classList.add('숨김');
 
-function 초기화(){
-  왼팔.횟수=오른팔.횟수=0;
-  왼팔.상태=오른팔.상태='DOWN';
-  왼팔.마지막카운트시각=오른팔.마지막카운트시각=-9999;
-  경기.나=경기.상대=경기.속도=0; 경기.마지막팔=null;
-  화면갱신();
-}
-
 function 시작(){
-  초기화();
-  경기.상태='카운트다운';
-  경기.시작시각=performance.now();
+  카운터초기화();
+  경기.나=경기.상대=경기.속도=0; 경기.마지막팔=null; 물보라.length=0;
+  경기.상태='카운트다운'; 경기.시작시각=performance.now();
   $('미끼').hidden = true;
   덮개('', '', [], '3');
 }
@@ -253,52 +285,134 @@ function 화면갱신(){
   $('총').textContent=왼팔.횟수+오른팔.횟수;
 }
 
-/* 레인 그리기 - 위에서 내려다본 수영장 2줄 */
-function 레인그리기(){
+/* ═══════════════ 레인 그리기 ═══════════════ */
+let 흐름 = 0;
+
+function 레인그리기(dt){
   const W=레인.width, H=레인.height;
-  물.clearRect(0,0,W,H);
-  물.fillStyle='#0b3d5c'; 물.fillRect(0,0,W,H);
+  흐름 = (흐름 + (30 + 경기.속도*22) * dt) % 120;
 
-  // 레인 분리선
-  [H*0.5].forEach(y=>{
-    물.strokeStyle='#ffffff33'; 물.lineWidth=3; 물.setLineDash([16,14]);
-    물.beginPath(); 물.moveTo(0,y); 물.lineTo(W,y); 물.stroke(); 물.setLineDash([]);
-  });
+  // 물빛
+  const 하늘=물.createLinearGradient(0,0,0,H);
+  하늘.addColorStop(0,'#0a5c86'); 하늘.addColorStop(0.5,'#0d7ba8'); 하늘.addColorStop(1,'#0a5c86');
+  물.fillStyle=하늘; 물.fillRect(0,0,W,H);
+
+  // 바닥 타일선 — 속도가 붙으면 빨리 흘러 속도감이 납니다
+  물.strokeStyle='#ffffff14'; 물.lineWidth=2;
+  for(let x=-120; x<W+120; x+=120){
+    물.beginPath(); 물.moveTo(x-흐름, 0); 물.lineTo(x-흐름-40, H); 물.stroke();
+  }
+  // 물결
+  const 때=performance.now()/1000;
+  물.strokeStyle='#ffffff1f'; 물.lineWidth=2;
+  for(let i=0;i<7;i++){
+    const y=H*(i+1)/8;
+    물.beginPath();
+    for(let x=0;x<=W;x+=12){
+      const ny=y+Math.sin((x/70)+때*1.6+i)*3.5;
+      x===0?물.moveTo(x,ny):물.lineTo(x,ny);
+    }
+    물.stroke();
+  }
+
+  레인로프(H*0.08); 레인로프(H*0.5); 레인로프(H*0.92);
+
   // 결승선
-  const 끝=W-60;
-  물.setLineDash([12,12]); 물.strokeStyle='#ffe37a'; 물.lineWidth=4;
-  물.beginPath(); 물.moveTo(끝,0); 물.lineTo(끝,H); 물.stroke(); 물.setLineDash([]);
+  const 끝=W-70;
+  for(let y=0;y<H;y+=22){
+    물.fillStyle=(y/22)%2?'#ffffffcc':'#e8414199';
+    물.fillRect(끝,y,7,22);
+  }
 
-  const 자리 = 비율 => 40 + (끝-40) * Math.min(1,비율);
-  헤엄이(자리(경기.나/규칙.거리),    H*0.27, '#7fe3b0', '나');
-  헤엄이(자리(경기.상대/규칙.거리),  H*0.75, '#ffd166', '상대');
+  물보라그리기(dt);
+
+  const 자리 = 비율 => 55 + (끝-55)*Math.min(1,비율);
+  헤엄이(자리(경기.상대/규칙.거리), H*0.72, '#ffd166', '상대', 때*4.2, 때*4.2+Math.PI);
+  헤엄이(자리(경기.나/규칙.거리),   H*0.28, '#8ef0bd', '나',
+         왼팔.위상*Math.PI*2, 오른팔.위상*Math.PI*2);
 }
-function 헤엄이(x,y,색,이름){
+
+function 레인로프(y){
+  for(let x=-30;x<레인.width+30;x+=26){
+    const px=x-흐름*0.35;
+    물.fillStyle=(Math.floor(x/26)%2)?'#ffffffb0':'#e8a33fcc';
+    물.beginPath(); 물.arc(px,y,5,0,Math.PI*2); 물.fill();
+  }
+}
+
+/* 위에서 내려다본 사람. 팔이 스트로크 위상에 따라 돌아갑니다. */
+function 헤엄이(x,y,색,이름,왼각,오른각){
+  물.save(); 물.translate(x,y);
+
+  // 발차기 물살
+  물.fillStyle='#ffffff40';
+  const 발=performance.now()/90;
+  물.beginPath(); 물.ellipse(-46+Math.sin(발)*3, Math.cos(발)*5, 15, 6, 0,0,Math.PI*2); 물.fill();
+
+  // 팔 (위상에 따라 원을 그리며 회전 — 자유형 스트로크처럼)
+  [[왼각,-1],[오른각,1]].forEach(([각,쪽])=>{
+    const 뻗음 = 18 + Math.max(0, Math.cos(각))*20;   // 앞으로 뻗을 때 길어짐
+    const 팔y = 쪽*(11 + Math.sin(각)*9);
+    물.strokeStyle='#ffffffdd'; 물.lineWidth=6; 물.lineCap='round';
+    물.beginPath(); 물.moveTo(2, 쪽*9); 물.lineTo(뻗음, 팔y); 물.stroke();
+    물.fillStyle='#fff';
+    물.beginPath(); 물.arc(뻗음, 팔y, 4.5, 0, Math.PI*2); 물.fill();
+  });
+
   // 몸통
   물.fillStyle=색;
-  물.beginPath(); 물.ellipse(x,y,26,13,0,0,Math.PI*2); 물.fill();
-  // 머리
-  물.beginPath(); 물.arc(x+24,y,10,0,Math.PI*2); 물.fill();
-  // 물보라
-  물.fillStyle='#ffffff55';
-  for(let i=1;i<=3;i++){ 물.beginPath(); 물.arc(x-26-i*11, y+(i%2?-5:5), 4-i*0.6, 0, Math.PI*2); 물.fill(); }
-  물.fillStyle='#ffffffcc'; 물.font='bold 13px Pretendard,sans-serif'; 물.textAlign='center';
-  물.fillText(이름, x, y-22);
+  물.beginPath(); 물.ellipse(-4,0,27,12,0,0,Math.PI*2); 물.fill();
+  // 머리 + 수모
+  물.fillStyle='#ffe9c9';
+  물.beginPath(); 물.arc(22,0,9.5,0,Math.PI*2); 물.fill();
+  물.fillStyle=색;
+  물.beginPath(); 물.arc(22,0,9.5,-Math.PI*0.85,Math.PI*0.85); 물.fill();
+
+  물.fillStyle='#ffffffe0'; 물.font='bold 13px Pretendard,sans-serif'; 물.textAlign='center';
+  물.fillText(이름, 0, -26);
+  물.restore();
 }
 
-/* 스트로크가 들어올 때마다 속도를 올립니다 */
+function 물보라뿌리기(x,y){
+  for(let i=0;i<9;i++){
+    물보라.push({x,y,vx:-30-Math.random()*70,vy:(Math.random()-0.5)*90,수명:0.55,크기:2+Math.random()*4});
+  }
+}
+function 물보라그리기(dt){
+  for(let i=물보라.length-1;i>=0;i--){
+    const p=물보라[i];
+    p.x+=p.vx*dt; p.y+=p.vy*dt; p.수명-=dt;
+    if(p.수명<=0){ 물보라.splice(i,1); continue; }
+    물.fillStyle=`rgba(255,255,255,${p.수명/0.55*0.8})`;
+    물.beginPath(); 물.arc(p.x,p.y,p.크기,0,Math.PI*2); 물.fill();
+  }
+}
+
+/* ═══════════════ 경기 진행 ═══════════════ */
 function 스트로크들어옴(어느팔){
+  const 팔 = 어느팔==='왼' ? 왼팔 : 오른팔;
+  팔.위상 = 0;                                  // 팔 애니메이션을 처음부터 돌립니다
+  간격들.push(Math.round(팔.직전간격));
+  if(간격들.length>10) 간격들.shift();
+  $('간격기록').textContent = '판정 간격: ' + 간격들.filter(x=>x<9000).map(x=>x+'ms').join(' · ');
+  $('최고').textContent = 팔.마지막진폭.toFixed(3);
+
   if(경기.상태!=='달리는중') return;
   const 번갈아 = 경기.마지막팔 && 경기.마지막팔!==어느팔;
   경기.속도 += 규칙.추진 * (번갈아 ? 규칙.번갈아보너스 : 1);
   경기.마지막팔 = 어느팔;
+
+  const 끝=레인.width-70;
+  물보라뿌리기(55 + (끝-55)*Math.min(1,경기.나/규칙.거리), 레인.height*0.28);
 }
 
 function 경기진행(dt){
+  // 팔 애니메이션 위상 (스트로크가 없어도 천천히 돌아 가만히 있지 않게)
+  [왼팔,오른팔].forEach(팔=>{ 팔.위상=(팔.위상+dt*1.1)%1; });
+
   if(경기.상태==='카운트다운'){
-    const 지난=(performance.now()-경기.시작시각)/1000;
-    const 남음=Math.ceil(3-지난);
-    if(남음>0){ 덮개('','',[],String(남음)); }
+    const 남음=Math.ceil(3-(performance.now()-경기.시작시각)/1000);
+    if(남음>0) 덮개('','',[],String(남음));
     else { 덮개숨기기(); 경기.상태='달리는중'; 경기.시작시각=performance.now(); }
     return;
   }
@@ -308,11 +422,11 @@ function 경기진행(dt){
   경기.나   += 경기.속도 * dt;
   경기.상대 += (규칙.거리/규칙.상대완주초) * dt;
 
-  경기.기록 = (performance.now()-경기.시작시각)/1000;
-  $('시계').textContent = 경기.기록.toFixed(1);
+  경기.기록=(performance.now()-경기.시작시각)/1000;
+  $('시계').textContent=경기.기록.toFixed(1);
 
   if(경기.나>=규칙.거리 || 경기.상대>=규칙.거리){
-    경기.이김 = 경기.나 >= 규칙.거리 && 경기.나 >= 경기.상대;
+    경기.이김 = 경기.나>=규칙.거리 && 경기.나>=경기.상대;
     경기.상태='끝남';
     결과보이기();
   }
@@ -323,11 +437,70 @@ function 결과보이기(){
   덮개(
     경기.이김 ? '이겼어요! 🎉' : '졌어요 😅',
     `${경기.기록.toFixed(1)}초 · 스트로크 ${총}회 (왼 ${왼팔.횟수} / 오른 ${오른팔.횟수})`,
-    [['다시 하기', 시작, true]]
+    [['다시 하기', 시작, true], ['결과 이미지 만들기', 공유하기]]
   );
   $('미끼').hidden = false;
 }
 
+/* ═══════════════ 결과 이미지 ═══════════════
+   인스타그램은 웹에서 스토리에 바로 올리는 공식 방법을 열어두지 않았습니다.
+   그래서 결과 카드를 이미지로 만들어
+     · 휴대폰이면 공유창을 띄우고(거기서 인스타를 고르면 됩니다)
+     · 안 되면 파일로 내려받아 직접 올리게 합니다.                     */
+function 결과카드만들기(){
+  const c=document.createElement('canvas');
+  c.width=1080; c.height=1920;                 // 인스타 스토리 비율
+  const g=c.getContext('2d');
+
+  const 배경=g.createLinearGradient(0,0,0,c.height);
+  배경.addColorStop(0,'#0a5c86'); 배경.addColorStop(1,'#04263f');
+  g.fillStyle=배경; g.fillRect(0,0,c.width,c.height);
+
+  // 경기 화면을 가운데에 얹습니다
+  const 폭=980, 높이=폭*레인.height/레인.width;
+  g.save();
+  g.beginPath(); g.roundRect((c.width-폭)/2, 700, 폭, 높이, 28); g.clip();
+  g.drawImage(레인,(c.width-폭)/2,700,폭,높이);
+  g.restore();
+
+  g.textAlign='center'; g.fillStyle='#fff';
+  g.font='900 96px Pretendard,sans-serif';
+  g.fillText(경기.이김?'이겼다 🎉':'졌다 😅', c.width/2, 330);
+  g.font='600 44px Pretendard,sans-serif'; g.fillStyle='#bfe8ff';
+  g.fillText('업무시간에 수영하기', c.width/2, 420);
+
+  g.fillStyle='#fff'; g.font='900 130px Pretendard,sans-serif';
+  g.fillText(`${경기.기록.toFixed(1)}초`, c.width/2, 1180+높이-260);
+  g.font='600 48px Pretendard,sans-serif'; g.fillStyle='#bfe8ff';
+  g.fillText(`스트로크 ${왼팔.횟수+오른팔.횟수}회 · 왼 ${왼팔.횟수} / 오른 ${오른팔.횟수}`,
+             c.width/2, 1180+높이-190);
+
+  g.font='700 40px Pretendard,sans-serif'; g.fillStyle='#ffffffb0';
+  g.fillText('물때 · 오늘 갈 자유수영장', c.width/2, c.height-120);
+  return c;
+}
+
+async function 공유하기(){
+  const 카드=결과카드만들기();
+  const 조각=await new Promise(r=>카드.toBlob(r,'image/png'));
+  const 파일=new File([조각],'물때-수영기록.png',{type:'image/png'});
+
+  if(navigator.canShare && navigator.canShare({files:[파일]})){
+    try{
+      await navigator.share({files:[파일], title:'업무시간에 수영하기',
+                             text:`${경기.기록.toFixed(1)}초 · 스트로크 ${왼팔.횟수+오른팔.횟수}회`});
+      return;
+    }catch(e){ if(e.name==='AbortError') return; }
+  }
+  const 주소=URL.createObjectURL(조각);
+  const a=document.createElement('a');
+  a.href=주소; a.download='물때-수영기록.png'; a.click();
+  URL.revokeObjectURL(주소);
+  알림('결과 이미지를 내려받았어요. 인스타그램 스토리에 올려보세요. '
+     + '(웹에서 스토리에 바로 올리는 공식 방법은 없어서 파일로 저장합니다)');
+}
+
+/* ═══════════════ 카메라와 포즈 ═══════════════ */
 let 인식기=null, 마지막시각=-1, 프레임시각=[], 이전프레임=performance.now();
 
 async function 준비(){
@@ -359,7 +532,6 @@ async function 준비(){
 
   알림('준비됐습니다. 팔을 크게, 왼팔·오른팔 번갈아 저으면 더 빨라요.');
   덮개('준비됐나요?','팔을 크게 저어 상대보다 먼저 결승선에 닿으세요.',[['시작하기',시작,true]]);
-  requestAnimationFrame(한프레임);
 }
 
 function 한프레임(){
@@ -369,7 +541,7 @@ function 한프레임(){
   이전프레임=지금;
 
   경기진행(dt);
-  레인그리기();
+  레인그리기(dt);
 
   if(!인식기 || 영상.readyState<2) return;
   if(영상.currentTime===마지막시각) return;   // 같은 프레임을 두 번 넣으면 오류가 납니다
@@ -393,14 +565,14 @@ function 한프레임(){
 
   그릴번호.forEach(n=>{
     const p=점들[n];
-    붓.beginPath(); 붓.arc(p.x*그림판.width, p.y*그림판.height, 8, 0, Math.PI*2);
-    붓.fillStyle='#176b50'; 붓.fill();
-    붓.lineWidth=3; 붓.strokeStyle='#fff'; 붓.stroke();
+    붓.beginPath(); 붓.arc(p.x*그림판.width, p.y*그림판.height, 7, 0, Math.PI*2);
+    붓.fillStyle='#8ef0bd'; 붓.fill();
+    붓.lineWidth=2.5; 붓.strokeStyle='#04263f'; 붓.stroke();
   });
   const 어깨선=(점들[11].y+점들[12].y)/2*그림판.height;
   붓.beginPath(); 붓.moveTo(0,어깨선); 붓.lineTo(그림판.width,어깨선);
-  붓.strokeStyle='rgba(255,255,255,.55)'; 붓.lineWidth=2;
-  붓.setLineDash([8,8]); 붓.stroke(); 붓.setLineDash([]);
+  붓.strokeStyle='rgba(255,255,255,.6)'; 붓.lineWidth=2;
+  붓.setLineDash([7,7]); 붓.stroke(); 붓.setLineDash([]);
 }
 
 function fps갱신(지금){
@@ -409,7 +581,7 @@ function fps갱신(지금){
   $('fps').textContent=프레임시각.length;
 }
 
-레인그리기();
+requestAnimationFrame(한프레임);
 준비();
 </script>
 </body>
