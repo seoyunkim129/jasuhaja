@@ -4,6 +4,9 @@
  * 브라우저에서 네이버 API를 직접 부르면 Client Secret이 공개됩니다.
  * 그래서 브라우저 → 이 함수 → 네이버 순서로 요청합니다.
  * 비밀키는 Vercel 환경변수에만 있고 응답에는 절대 포함하지 않습니다.
+ *
+ * 카페글 검색 결과에는 작성 날짜가 들어 있지 않습니다.
+ * 그래서 "언제 쓴 글"인지는 알 수 없고, sort=date로 최신순 정렬만 할 수 있습니다.
  */
 
 module.exports = async function cafeSearch(req, res) {
@@ -36,7 +39,10 @@ module.exports = async function cafeSearch(req, res) {
   // display를 늘려도 API 호출 횟수는 한 번으로 동일합니다.
   주소.searchParams.set('display', '100');
   주소.searchParams.set('start', '1');
-  주소.searchParams.set('sort', 'sim');
+  // sim은 관련도순, date는 최신순입니다.
+  // 혼잡도처럼 빨리 변하는 정보는 최신순이 아니면 몇 년 전 글이 올라옵니다.
+  const 정렬 = req.query.sort === 'date' ? 'date' : 'sim';
+  주소.searchParams.set('sort', 정렬);
 
   try {
     const 응답 = await fetch(주소, {
@@ -69,7 +75,7 @@ module.exports = async function cafeSearch(req, res) {
 
     // 같은 검색어의 결과는 Vercel에서 1시간 보관해 호출 수를 아낍니다.
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-    return res.status(200).json({ query: 검색어, total: 결과.total || 0, items: 글들 });
+    return res.status(200).json({ query: 검색어, sort: 정렬, total: 결과.total || 0, items: 글들 });
   } catch (오류) {
     console.error('카페글 검색 중 네트워크 오류:', 오류);
     return res.status(500).json({ error: '검색 중 네트워크 오류가 발생했습니다.' });
