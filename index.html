@@ -116,12 +116,19 @@ function 후기묶기(리뷰들){
 // 구글은 리뷰를 최신순으로 달라고 요청할 방법을 주지 않습니다.
 // (예전 API의 reviews_sort=newest는 신규 프로젝트에서 켤 수 없습니다)
 // 그래서 받아온 5개 안에서 직접 나이를 재고 정렬·거르기를 합니다.
+// 화면에는 '2년 전'이라고 뜨는데 실제로는 2.4년일 수 있습니다.
+// 버튼과 뱃지가 어긋나 보이지 않도록, 화면 표시와 같게 내림해서 셉니다.
 function 후기나이년(r){
   const t=Date.parse(r.작성시각||'');
   if(!t) return 99;
-  return (Date.now()-t)/(365.25*24*3600*1000);
+  return Math.floor((Date.now()-t)/(365.25*24*3600*1000));
 }
-function 최신순(리뷰들){return [...리뷰들].sort((a,b)=>후기나이년(a)-후기나이년(b))}
+// 정렬은 하루 단위까지 정확해야 하므로 내림하지 않은 값을 씁니다.
+function 후기나이일(r){
+  const t=Date.parse(r.작성시각||'');
+  return t?(Date.now()-t):Number.MAX_SAFE_INTEGER;
+}
+function 최신순(리뷰들){return [...리뷰들].sort((a,b)=>후기나이일(a)-후기나이일(b))}
 function 안전링크(u){return /^https?:\/\//.test(String(u||''))?u:''}
 function 인용HTML(항목){
   const r=항목.리뷰, 프로필=안전링크(r.작성자링크), 원본=안전링크(r.원본링크), 사진=안전링크(r.작성자사진);
