@@ -2,7 +2,7 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>물때 · 오늘 갈 자유수영장</title>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
-:root{--ink:#24302b;--muted:#6f7b75;--line:#dfe6e1;--paper:#fbfaf6;--mint:#dff2e8;--green:#176b50;--pink:#f5dce5;--yellow:#fff1ba}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Pretendard,"Noto Sans KR",sans-serif}a{color:inherit}header{position:sticky;top:0;z-index:5;background:#fbfaf6ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{max-width:1120px;margin:auto;padding:15px 22px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;font-size:21px;text-decoration:none}.brand span{color:var(--green)}.map-link{padding:10px 15px;border-radius:999px;background:var(--ink);color:white;text-decoration:none;font-weight:700;font-size:14px}main{max-width:1120px;margin:auto;padding:54px 22px 80px}.hero{display:grid;grid-template-columns:1.4fr .6fr;gap:28px;align-items:end;margin-bottom:34px}h1{font-size:clamp(36px,6vw,70px);line-height:1.02;letter-spacing:-.055em;margin:0 0 18px}.lead{font-size:18px;line-height:1.7;color:var(--muted);max-width:650px;margin:0}.stamp{background:var(--yellow);padding:22px;border-radius:24px;transform:rotate(2deg);font-weight:800;line-height:1.55}.filters{display:flex;flex-wrap:wrap;gap:9px;margin:28px 0}.filter{border:1px solid var(--line);background:white;border-radius:999px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer}.filter.active{background:var(--green);border-color:var(--green);color:white}.summary{display:flex;justify-content:space-between;align-items:center;margin:18px 0;color:var(--muted)}.summary strong{color:var(--ink)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:white;border:1px solid var(--line);border-radius:24px;padding:23px;box-shadow:0 10px 30px #25362d0d}.badge{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--mint);color:var(--green);font-size:12px;font-weight:800}.badge.warn{background:var(--yellow);color:#785c00}.badge.call{background:var(--pink);color:#83415b}h2{font-size:23px;letter-spacing:-.035em;margin:12px 0 7px}.type,.address{color:var(--muted);font-size:13px}.address{font-size:14px;margin:15px 0}.times{background:#f5f7f5;border-radius:16px;padding:14px;margin:16px 0;min-height:78px}.time-row{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:4px 0}.time-row span:last-child{font-weight:800}.price-line{margin-top:9px;padding-top:9px;border-top:1px solid var(--line);font-size:13px;font-weight:800;color:var(--green)}.notice{font-size:12px;color:#8a7461;margin-top:8px}.actions{display:flex;gap:8px}.btn{flex:1;border:0;border-radius:13px;padding:12px 10px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;text-align:center;text-decoration:none}.review-btn{background:var(--green);color:white}.map-btn{background:#eef2ef}.empty{grid-column:1/-1;padding:55px;text-align:center;border:1px dashed #bfc9c2;border-radius:24px;color:var(--muted)}dialog{width:min(860px,calc(100% - 28px));border:0;border-radius:25px;padding:0;box-shadow:0 30px 80px #0004}dialog::backdrop{background:#19231e99}.modal-head{padding:24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}.modal-head h3{margin:0 0 6px;font-size:23px}.modal-head p{margin:0;color:var(--muted);font-size:13px}.close{border:0;background:#edf1ee;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer}.modal-body{padding:22px 24px;max-height:72vh;overflow:auto}.section-title{font-size:15px;margin:0 0 11px}.schedule-box{background:#f5f7f5;border-radius:16px;padding:12px;margin-bottom:16px;overflow-x:auto}.planner{display:grid;grid-template-columns:repeat(8,minmax(94px,1fr));gap:7px;min-width:800px}.planner-day{background:white;border:1px solid var(--line);border-radius:12px;padding:9px;min-height:92px}.planner-day b{display:block;font-size:12px;color:var(--green);margin-bottom:7px}.planner-time{display:block;background:var(--mint);border-radius:7px;padding:5px 4px;margin:4px 0;text-align:center;font-size:11px;font-weight:800}.planner-empty{font-size:11px;color:#a7afaa}.fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}.fact{border:1px solid var(--line);border-radius:15px;padding:14px}.fact-label{font-size:11px;font-weight:850;color:var(--green);margin-bottom:7px}.fact-value{font-size:14px;line-height:1.5;font-weight:750}.fact-note{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:5px}.fact.spec{display:block}.spec-row{display:flex;align-items:baseline;gap:7px;margin:5px 0;flex-wrap:wrap}.spec-name{font-size:11px;color:var(--muted);min-width:38px}.spec-value{font-size:14px;font-weight:750}.spec-src{font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;background:#eef2ef;color:var(--muted)}.spec-src.공식확인{background:var(--mint);color:var(--green)}.spec-src.후기참고{background:var(--yellow);color:#8a6a12}.g-summary{font-size:12px;color:var(--muted);margin:0 0 10px}.g-summary a{color:var(--green)}.topic{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:9px}.topic-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}.topic-name{font-size:13px;font-weight:850}.topic-sum{font-size:11px;color:var(--muted);font-weight:600}.mini-star{font-size:11px;font-weight:800;color:#8a6a12;background:var(--yellow);padding:2px 8px;border-radius:99px}.quote{margin:9px 0 0;padding-left:11px;border-left:3px solid var(--mint)}.quote p{margin:0;font-size:13px;line-height:1.55}.quote-by{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--muted)}.quote-by a{color:var(--muted);text-decoration:underline}.quote-by .avatar{width:17px;height:17px;border-radius:50%;object-fit:cover}.quote-by .dot{opacity:.45}.quote-by .q-star{color:#b07d1a;font-weight:800}.quote-by .q-old{color:#a8763a;font-weight:700}.attr{font-size:11px;color:var(--muted);text-align:right;margin:14px 0 0}.stars{color:#e39a18;letter-spacing:1px;font-size:17px}.score-number{font-size:12px;color:var(--muted);margin-left:5px}.evidence{display:block;margin-top:6px;color:var(--muted);font-size:11px;font-weight:500;line-height:1.45}.reviews{padding:0}.review{display:block;padding:17px 0;border-bottom:1px solid var(--line);text-decoration:none}.review-title{font-weight:850;line-height:1.45}.review-desc{color:var(--muted);font-size:14px;line-height:1.55;margin:7px 0}.cafe{font-size:12px;color:var(--green);font-weight:750}.loading{padding:28px;text-align:center;color:var(--muted)}@media(max-width:720px){.hero{grid-template-columns:1fr}.stamp{display:none}.grid{grid-template-columns:1fr}main{padding-top:35px}.actions{flex-direction:column}.fact-grid{grid-template-columns:1fr}}
+:root{--ink:#24302b;--muted:#6f7b75;--line:#dfe6e1;--paper:#fbfaf6;--mint:#dff2e8;--green:#176b50;--pink:#f5dce5;--yellow:#fff1ba}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Pretendard,"Noto Sans KR",sans-serif}a{color:inherit}header{position:sticky;top:0;z-index:5;background:#fbfaf6ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.nav{max-width:1120px;margin:auto;padding:15px 22px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:900;font-size:21px;text-decoration:none}.brand span{color:var(--green)}.map-link{padding:10px 15px;border-radius:999px;background:var(--ink);color:white;text-decoration:none;font-weight:700;font-size:14px}main{max-width:1120px;margin:auto;padding:54px 22px 80px}.hero{display:grid;grid-template-columns:1.4fr .6fr;gap:28px;align-items:end;margin-bottom:34px}h1{font-size:clamp(36px,6vw,70px);line-height:1.02;letter-spacing:-.055em;margin:0 0 18px}.lead{font-size:18px;line-height:1.7;color:var(--muted);max-width:650px;margin:0}.stamp{background:var(--yellow);padding:22px;border-radius:24px;transform:rotate(2deg);font-weight:800;line-height:1.55}.filters{display:flex;flex-wrap:wrap;gap:9px;margin:28px 0}.filter{border:1px solid var(--line);background:white;border-radius:999px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer}.filter.active{background:var(--green);border-color:var(--green);color:white}.summary{display:flex;justify-content:space-between;align-items:center;margin:18px 0;color:var(--muted)}.summary strong{color:var(--ink)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:white;border:1px solid var(--line);border-radius:24px;padding:23px;box-shadow:0 10px 30px #25362d0d}.badge{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--mint);color:var(--green);font-size:12px;font-weight:800}.badge.warn{background:var(--yellow);color:#785c00}.badge.call{background:var(--pink);color:#83415b}h2{font-size:23px;letter-spacing:-.035em;margin:12px 0 7px}.type,.address{color:var(--muted);font-size:13px}.address{font-size:14px;margin:15px 0}.times{background:#f5f7f5;border-radius:16px;padding:14px;margin:16px 0;min-height:78px}.time-row{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:4px 0}.time-row span:last-child{font-weight:800}.price-line{margin-top:9px;padding-top:9px;border-top:1px solid var(--line);font-size:13px;font-weight:800;color:var(--green)}.notice{font-size:12px;color:#8a7461;margin-top:8px}.actions{display:flex;gap:8px}.btn{flex:1;border:0;border-radius:13px;padding:12px 10px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;text-align:center;text-decoration:none}.review-btn{background:var(--green);color:white}.map-btn{background:#eef2ef}.empty{grid-column:1/-1;padding:55px;text-align:center;border:1px dashed #bfc9c2;border-radius:24px;color:var(--muted)}dialog{width:min(860px,calc(100% - 28px));border:0;border-radius:25px;padding:0;box-shadow:0 30px 80px #0004}dialog::backdrop{background:#19231e99}.modal-head{padding:24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}.modal-head h3{margin:0 0 6px;font-size:23px}.modal-head p{margin:0;color:var(--muted);font-size:13px}.close{border:0;background:#edf1ee;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer}.modal-body{padding:22px 24px;max-height:72vh;overflow:auto}.section-title{font-size:15px;margin:0 0 11px}.schedule-box{background:#f5f7f5;border-radius:16px;padding:12px;margin-bottom:16px;overflow-x:auto}.planner{display:grid;grid-template-columns:repeat(8,minmax(94px,1fr));gap:7px;min-width:800px}.planner-day{background:white;border:1px solid var(--line);border-radius:12px;padding:9px;min-height:92px}.planner-day b{display:block;font-size:12px;color:var(--green);margin-bottom:7px}.planner-time{display:block;background:var(--mint);border-radius:7px;padding:5px 4px;margin:4px 0;text-align:center;font-size:11px;font-weight:800}.planner-empty{font-size:11px;color:#a7afaa}.fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}.fact{border:1px solid var(--line);border-radius:15px;padding:14px}.fact-label{font-size:11px;font-weight:850;color:var(--green);margin-bottom:7px}.fact-value{font-size:14px;line-height:1.5;font-weight:750}.fact-note{display:block;color:var(--muted);font-size:11px;font-weight:500;margin-top:5px}.fact.spec{display:block}.spec-row{display:flex;align-items:baseline;gap:7px;margin:5px 0;flex-wrap:wrap}.spec-name{font-size:11px;color:var(--muted);min-width:38px}.spec-value{font-size:14px;font-weight:750}.spec-src{font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;background:#eef2ef;color:var(--muted)}.spec-src.공식확인{background:var(--mint);color:var(--green)}.spec-src.후기참고{background:var(--yellow);color:#8a6a12}.g-summary{font-size:12px;color:var(--muted);margin:0 0 10px}.g-summary a{color:var(--green)}.topic{border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:9px}.topic-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}.topic-name{font-size:13px;font-weight:850}.topic-sum{font-size:11px;color:var(--muted);font-weight:600}.mini-star{font-size:11px;font-weight:800;color:#8a6a12;background:var(--yellow);padding:2px 8px;border-radius:99px}.quote{margin:9px 0 0;padding-left:11px;border-left:3px solid var(--mint)}.quote p{margin:0;font-size:13px;line-height:1.55}.quote-by{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--muted)}.quote-by a{color:var(--muted);text-decoration:underline}.quote-by .avatar{width:17px;height:17px;border-radius:50%;object-fit:cover}.quote-by .dot{opacity:.45}.quote-by .q-star{color:#b07d1a;font-weight:800}.quote-by .q-old{color:#a8763a;font-weight:700}.attr{font-size:11px;color:var(--muted);text-align:right;margin:14px 0 0}.age-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 11px}.age-btn{padding:5px 11px;border:1px solid var(--line);border-radius:99px;background:white;font-family:inherit;font-size:12px;font-weight:750;color:var(--muted);cursor:pointer}.age-btn.on{background:var(--green);border-color:var(--green);color:white}.age-btn:disabled{opacity:.38;cursor:default}.age-note{font-size:11px;color:var(--muted)}.stars{color:#e39a18;letter-spacing:1px;font-size:17px}.score-number{font-size:12px;color:var(--muted);margin-left:5px}.evidence{display:block;margin-top:6px;color:var(--muted);font-size:11px;font-weight:500;line-height:1.45}.reviews{padding:0}.review{display:block;padding:17px 0;border-bottom:1px solid var(--line);text-decoration:none}.review-title{font-weight:850;line-height:1.45}.review-desc{color:var(--muted);font-size:14px;line-height:1.55;margin:7px 0}.cafe{font-size:12px;color:var(--green);font-weight:750}.loading{padding:28px;text-align:center;color:var(--muted)}@media(max-width:720px){.hero{grid-template-columns:1fr}.stamp{display:none}.grid{grid-template-columns:1fr}main{padding-top:35px}.actions{flex-direction:column}.fact-grid{grid-template-columns:1fr}}
 </style></head><body>
 <header><div class="nav"><a class="brand" href="index.html">물<span>때</span></a><a class="map-link" href="map.html">지도에서 보기 →</a></div></header>
 <main><section class="hero"><div><h1>오늘 물에<br>들어갈 수 있을까?</h1><p class="lead">마포구 성인 자유수영장을 시간표와 함께 모았어요. 공식 정보와 확인이 필요한 정보는 구분하고, 실제 이용 후기는 네이버 카페에서 바로 찾아봅니다.</p></div><div class="stamp">🏊 원정 자유수영<br>첫 지역 · 마포구</div></section>
@@ -113,6 +113,15 @@ function 후기묶기(리뷰들){
 
 /* 구글 정책상 리뷰를 보여줄 때 작성자(사진·이름·프로필)와 원본 링크를
    반드시 함께 표시해야 합니다. 아래 두 함수가 그 표시를 담당합니다. */
+// 구글은 리뷰를 최신순으로 달라고 요청할 방법을 주지 않습니다.
+// (예전 API의 reviews_sort=newest는 신규 프로젝트에서 켤 수 없습니다)
+// 그래서 받아온 5개 안에서 직접 나이를 재고 정렬·거르기를 합니다.
+function 후기나이년(r){
+  const t=Date.parse(r.작성시각||'');
+  if(!t) return 99;
+  return (Date.now()-t)/(365.25*24*3600*1000);
+}
+function 최신순(리뷰들){return [...리뷰들].sort((a,b)=>후기나이년(a)-후기나이년(b))}
 function 안전링크(u){return /^https?:\/\//.test(String(u||''))?u:''}
 function 인용HTML(항목){
   const r=항목.리뷰, 프로필=안전링크(r.작성자링크), 원본=안전링크(r.원본링크), 사진=안전링크(r.작성자사진);
@@ -126,8 +135,9 @@ function 인용HTML(항목){
     +(원본?`<span class="dot">·</span><a href="${원본}" target="_blank" rel="noopener nofollow">원본 ↗</a>`:'')
     +`</div></div>`;
 }
-function 후기HTML(자료,필터){
-  const 쓸리뷰=수영리뷰만(자료.리뷰||[],필터);
+function 후기HTML(자료,필터,기간){
+  const 수영거른=수영리뷰만(자료.리뷰||[],필터);
+  const 쓸리뷰=최신순(기간?수영거른.filter(r=>후기나이년(r)<=기간):수영거른);
   const 묶음=후기묶기(쓸리뷰);
   const 칸들=[];
   for(const t of 후기주제){
@@ -145,11 +155,16 @@ function 후기HTML(자료,필터){
       +`<span class="topic-sum">위 항목에 안 들어가는 이야기</span></div>`
       +묶음.기타.slice(0,3).map(인용HTML).join('')+`</div>`);
   }
-  if(!칸들.length) return '<div class="loading">이 시설의 수영장에 대한 후기를 아직 찾지 못했어요.</div>';
   const 링크=안전링크(자료.장소링크);
-  const 머리=자료.전체평점!=null
-    ? `<p class="g-summary">구글 지도 평점 <b>${자료.전체평점}</b> · 리뷰 ${Number(자료.전체리뷰수||0).toLocaleString()}개 중 최근 ${쓸리뷰.length}개${링크?` · <a href="${링크}" target="_blank" rel="noopener nofollow">지도에서 보기 ↗</a>`:''}</p>`
-    : '';
+  // 기간 버튼. 이미 받아온 자료를 다시 그리는 것이라 API를 또 부르지 않습니다.
+  const 버튼들=[[0,'전체'],[3,'3년'],[2,'2년'],[1,'1년']].map(([년,이름])=>{
+    const 남음=(년?수영거른.filter(r=>후기나이년(r)<=년):수영거른).length;
+    return `<button class="age-btn${기간===년?' on':''}" data-age="${년}"${남음?'':' disabled'}>${이름} ${남음}</button>`;
+  }).join('');
+  const 머리=`<p class="g-summary">${자료.전체평점!=null?`구글 지도 평점 <b>${자료.전체평점}</b> · 리뷰 ${Number(자료.전체리뷰수||0).toLocaleString()}개`:''}`
+    +`${링크?` · <a href="${링크}" target="_blank" rel="noopener nofollow">지도에서 보기 ↗</a>`:''}</p>`
+    +`<div class="age-row">${버튼들}<span class="age-note">구글이 고른 5개 중에서 고릅니다</span></div>`;
+  if(!칸들.length) return 머리+'<div class="loading">이 기간에는 후기가 없어요. 기간을 넓혀 보세요.</div>';
   return 머리+칸들.join('');
 }
 async function 구글후기요청(placeId){
@@ -160,6 +175,17 @@ async function 구글후기요청(placeId){
   return d;
 }
 
+let 현재구글=null;
+function 구글다시그리기(){
+  if(!현재구글) return;
+  document.getElementById('google-reviews').innerHTML=후기HTML(현재구글.자료,현재구글.필터,현재구글.기간);
+}
+// 기간 버튼은 다시 그릴 때마다 새로 생기므로 바깥 상자에서 한 번만 받습니다.
+document.getElementById('google-reviews').addEventListener('click',e=>{
+  const b=e.target.closest('.age-btn'); if(!b||!현재구글) return;
+  현재구글.기간=Number(b.dataset.age);
+  구글다시그리기();
+});
 async function 후기열기(이름){
   const d=document.getElementById('review-dialog'),
         카페칸=document.getElementById('review-list'),
@@ -169,6 +195,7 @@ async function 후기열기(이름){
         표=시간표.filter(t=>t.수영장ID===p.수영장ID);
   document.getElementById('review-name').textContent=이름;
   상세기본정보(p,표);
+  현재구글=null;
   구글칸.innerHTML='<div class="loading">후기를 읽는 중이에요…</div>';
   카페칸.innerHTML='<div class="loading">네이버 카페 글을 찾는 중이에요…</div>';
   표기칸.textContent='';
@@ -177,7 +204,7 @@ async function 후기열기(이름){
   // 구글과 네이버는 서로 독립이라 한쪽이 실패해도 다른 쪽은 보여줍니다.
   if(p.구글PlaceID){
     구글후기요청(p.구글PlaceID)
-      .then(자료=>{구글칸.innerHTML=후기HTML(자료,p.구글리뷰필터);표기칸.textContent='후기 데이터 · Google Maps'})
+      .then(자료=>{현재구글={자료,필터:p.구글리뷰필터,기간:0};구글다시그리기();표기칸.textContent='후기 데이터 · Google Maps'})
       .catch(e=>{구글칸.innerHTML=`<div class="loading">후기를 불러오지 못했어요.<br><small>${깨끗한글(e.message)}</small></div>`});
   }else{
     구글칸.innerHTML='<div class="loading">이 시설은 구글 지도에 등록돼 있지 않아 후기를 찾을 수 없어요.</div>';
