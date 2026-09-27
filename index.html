@@ -324,11 +324,18 @@ function 후기HTML(자료,필터,기간,네이버문장){
   if(!칸들.length) return 머리+`<div class="loading">이 기간에는 후기가 없어요. 기간을 넓혀 보세요.</div>`+없음;
   return 머리+칸들.join('')+없음;
 }
+/* 구글 Places는 하루 호출 수에 한도가 있고, 상세창을 한 번 열 때마다 한 번씩 씁니다.
+   같은 수영장을 다시 열면 또 부르던 것을 막습니다.
+   이 페이지를 열어둔 동안만 기억하고 새로고침하면 사라집니다.
+   구글 정책상 리뷰 본문은 보관할 수 없으므로 파일이나 브라우저 저장소에 남기지 않습니다. */
+const 이번화면구글 = new Map();
 async function 구글후기요청(placeId){
+  if(이번화면구글.has(placeId)) return 이번화면구글.get(placeId);
   const r=await fetch(`/api/google-reviews?placeId=${encodeURIComponent(placeId)}`);
   const 본문=await r.text(); let d={};
   try{d=JSON.parse(본문)}catch{}
   if(!r.ok)throw Error(d.error||'구글 리뷰를 불러오지 못했어요.');
+  이번화면구글.set(placeId, d);
   return d;
 }
 
