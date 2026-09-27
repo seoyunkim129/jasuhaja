@@ -2,12 +2,16 @@ const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/st
 const html=fs.readFileSync('index.html','utf8');
 const code=html.match(/<script>([\s\S]*?)<\/script>/)[1];
 new vm.Script(code); // 페이지 전체 문법 검사
+const mapHtml=fs.readFileSync('map.html','utf8'),mapScripts=[...mapHtml.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x=>x[1]).filter(Boolean);
+mapScripts.forEach(x=>new vm.Script(x));
+const gameHtml=fs.readFileSync('수영게임.html','utf8'),gameCode=gameHtml.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace(/^import[\s\S]*?;\r?\n/gm,'');
+new vm.Script(gameCode);
 function csv(path){const rows=fs.readFileSync(path,'utf8').trim().split(/\r?\n/).map(s=>{let a=[],v='',q=false;for(let i=0;i<s.length;i++){const c=s[i];if(c==='"'){if(q&&s[i+1]==='"'){v+='"';i++}else q=!q}else if(c===','&&!q){a.push(v);v=''}else v+=c}a.push(v);return a});const h=rows.shift();return rows.map(r=>{assert.equal(r.length,h.length,path+' column count');return Object.fromEntries(h.map((k,i)=>[k,r[i]]))})}
 const fields={'recommend-date':{value:'2026-09-26'},'recommend-time':{value:'13:30'}};
 const context=vm.createContext({document:{getElementById:id=>fields[id]||{addEventListener(){}}},pools:csv('수영장.csv'),sessions:csv('자유수영시간.csv'),specs:csv('시설규격.csv'),assert,console});
 vm.runInContext(code.slice(0,code.indexOf("document.getElementById('pool-list').onclick")),context);
 vm.runInContext(`
-수영장=pools.filter(p=>p.성인자유수영==='가능');시간표=sessions;규격=specs;검색활성=true;
+수영장=pools.filter(p=>['가능','휴관중'].includes(p.성인자유수영));시간표=sessions;규격=specs;검색활성=true;
 const pool=id=>수영장.find(p=>p.수영장ID===id);
 const prices=(id,day)=>가격정보(선택일가격표(시간표.filter(t=>t.수영장ID===id),day));
 assert.equal(prices('MP001','토').문구,'비회원 4,200원');
@@ -25,9 +29,14 @@ const ordered=[...수영장].sort(검색비교);
 assert.equal(ordered[0].수영장ID,'MP001');
 assert.equal(ordered[1].수영장ID,'YC002');
 assert.equal(ordered[2].수영장ID,'MP004');
+assert.equal(ordered.at(-1).수영장ID,'YC006');
+assert.equal(검색판정(pool('YC006'),'토',13*60).순위,3);
+assert.equal(검색판정(pool('YC006'),'토',13*60).회차수,0);
+assert.ok(카드(pool('YC006')).includes('휴관 중 · 현재 이용 불가'));
+assert.ok(!카드(pool('YC006')).includes('3,000'));
 const saved=시간표;시간표=[...시간표,...시간표.filter(t=>t.수영장ID==='MP001')];
 assert.equal(검색판정(pool('MP001'),'토',13*60+30).회차수,5);시간표=saved;
 assert.ok(정보출처HTML(pool('MP002'),[]).includes('heness.imweb.me/22'));
-console.log('PASS: syntax, CSV columns, 16 assertions (sorting, fees, missing data, end boundary, duplicate sessions)');
+console.log('PASS: index/map/game syntax, CSV columns, 21 assertions (sorting, fees, closure, missing data, end boundary, duplicate sessions)');
 console.log(ordered.map(p=>p.이름+' '+검색판정(p).순위+'/'+검색판정(p).회차수).join('\\n'));
 `,context);

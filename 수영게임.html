@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>물때 · 업무시간에 수영하기</title>
+<title>자수하자 · 업무시간에 수영하기</title>
 <style>
   :root{
     --ink:#24302b; --muted:#6f7b75; --line:#dfe6e1; --paper:#fbfaf6;
@@ -80,7 +80,7 @@
 </head>
 <body>
 <div class="wrap">
-  <p style="margin:0 0 10px"><a href="index.html" style="color:var(--green);font-size:13px;font-weight:800;text-decoration:none">← 물때로 돌아가기</a></p>
+  <p style="margin:0 0 10px"><a href="index.html" style="color:var(--green);font-size:13px;font-weight:800;text-decoration:none">← 자수하자로 돌아가기</a></p>
   <h1>업무시간에 수영하기 🏊</h1>
   <p class="lead">웹캠 앞에서 팔을 저으면 앞으로 나아갑니다. 상대보다 먼저 닿으면 승리.</p>
 
@@ -646,19 +646,19 @@ function 결과카드만들기(){
   g.fillText(`스트로크 ${왼팔.횟수+오른팔.횟수}회 · 왼 ${왼팔.횟수} / 오른 ${오른팔.횟수}`,
              c.width/2, 660+높이+335);
   g.font='700 40px Pretendard,sans-serif'; g.fillStyle='#ffffffb0';
-  g.fillText('물때 · 오늘 갈 자유수영장', c.width/2, c.height-120);
+  g.fillText('자수하자 · 오늘 갈 자유수영장', c.width/2, c.height-120);
   return c;
 }
 async function 공유하기(){
   const 조각=await new Promise(r=>결과카드만들기().toBlob(r,'image/png'));
-  const 파일=new File([조각],'물때-수영기록.png',{type:'image/png'});
+  const 파일=new File([조각],'자수하자-수영기록.png',{type:'image/png'});
   if(navigator.canShare && navigator.canShare({files:[파일]})){
     try{ await navigator.share({files:[파일],title:'업무시간에 수영하기',
           text:`${수영한거리().toFixed(1)}m를 ${경기.기록.toFixed(1)}초에 · 스트로크 ${왼팔.횟수+오른팔.횟수}회`}); return; }
     catch(e){ if(e.name==='AbortError') return; }
   }
   const 주소=URL.createObjectURL(조각);
-  const a=document.createElement('a'); a.href=주소; a.download='물때-수영기록.png'; a.click();
+  const a=document.createElement('a'); a.href=주소; a.download='자수하자-수영기록.png'; a.click();
   URL.revokeObjectURL(주소);
   알림('결과 이미지를 내려받았어요. 인스타그램 스토리에 올려보세요. '
      + '(웹에서 스토리에 바로 올리는 공식 방법은 없어서 파일로 저장합니다)');
