@@ -38,6 +38,23 @@
   h1 em{ font-style:normal; color:var(--green) }
   .sub{ font-size:17px; color:var(--muted); max-width:680px; margin:0 0 26px }
   .meta{ display:flex; gap:10px; flex-wrap:wrap }
+  .pivot-hero{ display:grid; grid-template-columns:auto 1fr; gap:22px; align-items:center;
+               margin-top:26px; background:#fff; border:1px solid var(--line); border-radius:18px; padding:20px 24px }
+  .pivot-num{ text-align:center; padding-right:22px; border-right:1px solid var(--line) }
+  .pivot-num b{ display:block; font-size:62px; line-height:1; color:var(--green); letter-spacing:-3px }
+  .pivot-num span{ font-size:12.5px; color:var(--muted); font-weight:700 }
+  .pivot-why{ font-size:14.5px }
+  .big{ font-size:30px; font-weight:900; color:var(--green); letter-spacing:-1px; line-height:1.2 }
+  .verline{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:14px 0 }
+  .verline figure{ margin:0 }
+  .verline img{ width:100%; border:1px solid var(--line); border-radius:12px; display:block }
+  .verline figcaption{ font-size:12.5px; color:var(--muted); margin-top:7px; line-height:1.5 }
+  .verline .badge{ display:inline-block; font-size:11px; font-weight:850; padding:2px 9px;
+                   border-radius:99px; background:#eef1ef; color:var(--muted); margin-right:6px }
+  .verline .badge.after{ background:var(--mint); color:var(--green) }
+  @media (max-width:760px){ .pivot-hero{ grid-template-columns:1fr }
+    .pivot-num{ border-right:0; border-bottom:1px solid var(--line); padding:0 0 14px }
+    .verline{ grid-template-columns:1fr } }
   .chip{ background:#fff; border:1px solid var(--line); border-radius:99px; padding:7px 14px;
          font-size:13px; font-weight:700 }
   .chip a{ color:var(--green); text-decoration:none }
@@ -124,8 +141,20 @@
   <div class="meta">
     <span class="chip">🌐 <a href="https://mulddae-cyan.vercel.app" target="_blank" rel="noopener">mulddae-cyan.vercel.app</a></span>
     <span class="chip">기여도 100% (1인)</span>
-    <span class="chip">커밋 69개 · 30일</span>
+    <span class="chip">커밋 73개 · 30일</span>
     <span class="chip">HTML · JavaScript · Three.js · Vercel</span>
+  </div>
+
+  <div class="pivot-hero">
+    <div class="pivot-num"><b>6</b><span>번 방향을 바꿨습니다</span></div>
+    <div class="pivot-why">
+      <p style="margin:0 0 8px"><strong>“도보 5분 안에 다이소와 수영장이 같이 있는 동네 찾기”</strong>로 시작해
+        <strong>“오늘 갈 수 있는 자유수영장 찾기”</strong>로 끝났습니다.</p>
+      <p style="margin:0">
+        바꾼 이유를 전부 기록했습니다. <strong>버린 것이 무엇이고 왜 버렸는지</strong>가
+        이 프로젝트에서 제가 가장 많이 한 일입니다.
+      </p>
+    </div>
   </div>
 </div></header>
 
@@ -167,6 +196,34 @@
     저는 시설당 구글 1회 + 네이버 4회를 씁니다. 전국 800곳이면 같은 방식이 성립하지 않습니다.<br><br>
     <strong>제가 12곳만 다루기로 한 것이 후기를 붙일 수 있게 한 조건이었습니다.</strong>
     범위를 좁힌 것이 한계가 아니라 선택이었다는 뜻입니다.
+  </div>
+
+  <h3>6번의 방향 전환 — 유형별로</h3>
+  <table>
+    <tr><th style="width:6%">#</th><th style="width:12%">시점</th><th style="width:30%">무엇에서 무엇으로</th>
+        <th style="width:14%">유형</th><th>바꾼 이유</th></tr>
+    <tr><td>1</td><td>8/29</td><td>개별 매물 → <strong>구역·단지 단위</strong></td><td>범위 축소</td>
+        <td>부동산 매물은 크롤링이 막혀 있고 약관 위반입니다. 단지 단위 + 실거래가로 대체하면 매물 데이터가 아예 필요 없어집니다</td></tr>
+    <tr><td>2</td><td>8/29</td><td>100m 격자 → <strong>아파트 단지</strong></td><td>데이터 단위</td>
+        <td>후보 단위가 단지로 바뀌면서 격자 생성이 불필요해졌습니다</td></tr>
+    <tr><td>3</td><td>8/29</td><td>Streamlit → <strong>HTML 한 파일</strong></td><td>기술 스택</td>
+        <td>React·Next는 설치와 오류로 하루가 날아갔습니다. 프레임워크 없이 <code>index.html</code> 한 파일로</td></tr>
+    <tr><td>4</td><td>9/12</td><td>다이소+수영장 → <strong>수영장만</strong></td><td>조건 축소</td>
+        <td>배포를 끝내고 나서야 “이걸 누가 왜 쓰지?”가 왔습니다. 제가 진짜 알고 싶던 건 수영장 하나였습니다</td></tr>
+    <tr><td><strong>5</strong></td><td>9/19</td><td><strong>집 찾기 → 수영장 찾기</strong></td><td><strong>대상 전환</strong></td>
+        <td>가장 큰 전환입니다. “수영장 가까운 집”이 아니라 “오늘 갈 수 있는 수영장”이 제가 매번 겪던 불편이었습니다</td></tr>
+    <tr><td>6</td><td>9/25</td><td>후기 별점 → <strong>근거 문장</strong></td><td>표현 방식</td>
+        <td>데이터를 재보니 별점이 채워지는 칸이 24칸 중 1칸이었습니다(④ 참고)</td></tr>
+  </table>
+
+  <div class="note">
+    <b>여섯 번을 바꾸면서 배운 것</b><br>
+    ①②③은 <strong>만들기 전에</strong> 바꿨습니다. 크롤링 차단을 미리 확인하고, 격자가 필요 없어진 걸 알아채고,
+    프레임워크로 하루를 날린 뒤 접었습니다. 비용이 작았습니다.<br>
+    ④⑤는 <strong>배포를 끝낸 뒤에</strong> 바뀌었습니다.
+    <span class="big" style="display:block;margin:10px 0 6px">단지 299개를 다 모으고 나서야<br>“누가 왜 쓰지?”를 물었습니다</span>
+    그래서 다음부터는 <strong>데이터를 모으기 전에 화면부터 그려 사용자에게 물어보는 순서</strong>로 바꿨습니다.
+    ⑥이 그렇게 나온 결정입니다 — 별점을 만들기 전에 데이터가 몇 칸을 채우는지 먼저 셌습니다.
   </div>
 
   <h3>전체 진행 흐름</h3>
@@ -417,9 +474,58 @@ flowchart TD
     실제 후기의 <code>정말 깨끗해졌어요</code>를 못 잡은 것이었습니다.
   </div>
 
+  <h3>버전별로 무엇이 달라졌나</h3>
+  <p>
+    매주 화면을 캡처해 작업 일지에 남겨뒀습니다. 다시 보니
+    <strong>고민이 어디서 막혔고 무엇을 고쳤는지가 화면에 그대로</strong> 남아 있었습니다.
+  </p>
+
+  <div class="verline">
+    <figure>
+      <img src="img/v1-2주차-가짜데이터.png" alt="2주차 지도 화면. 회색·주황 동그라미 마커로 단지가 표시되고 하단에 가데이터 안내 문구가 있다">
+      <figcaption><span class="badge">v1 · 2주차</span>
+        단지 20개가 <strong>전부 손으로 넣은 가짜 데이터</strong>. 마커는 색깔 동그라미.
+        진짜 수영장(민트)을 같이 찍어보니 <strong>가짜 단지가 엉뚱한 자리</strong>에 있는 게 눈에 보였습니다.
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="img/v2-3주차-실데이터-아이콘핀.png" alt="3주차 지도 화면. 아이콘 핀으로 시설이 표시되고 gs25·cu를 직접 추가한 칩이 보인다">
+      <figcaption><span class="badge after">v2 · 3주차</span>
+        국토부 실거래 <strong>4,585건 → 단지 299개</strong>로 교체. 마커를 아이콘 핀으로,
+        시설을 직접 추가(GS25·CU)할 수 있게. 가짜 9억 5000 → 실제 <strong>24억 7500(2.6배 차이)</strong>.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="verline">
+    <figure>
+      <img src="img/v3-4주차-before.png" alt="4주차 개선 전 화면. 소개 문단과 필터, 시설추가 바가 위에 쌓여 지도가 아래로 밀려 있다">
+      <figcaption><span class="badge">v3 · 4주차 (개선 전)</span>
+        소개 문단 → 필터 → 시설추가 바 → 결과 개수, <strong>네 블록이 쌓여 지도가 화면 밖으로</strong> 밀렸습니다.
+        정렬·가격 필터가 없어 <strong>“제일 싼 집”을 찾으려면 카드를 하나씩 열어야</strong> 했습니다.
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="img/v4-4주차-after.png" alt="4주차 개선 후 화면. 히어로 문구와 정렬 드롭다운이 있고 카드에 가격이 크게 표시된다">
+      <figcaption><span class="badge after">v4 · 4주차 (개선 후)</span>
+        정렬 추가, <strong>가격을 단지명보다 크게</strong>(14px → 24억이 제일 먼저 보이게),
+        소개 문단 압축. 부가 기능이 핵심 필터보다 앞자리를 차지하던 것을 뒤로 보냈습니다.
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="note">
+    <b>v3 → v4를 만든 것은 “AI에게 내 화면을 평가시키기”였습니다</b><br>
+    직접 보면 익숙해져서 안 보입니다. AI에게 UI(색·글꼴·간격·위계)와 UX(원하는 걸 몇 번 만에 하는지)를
+    <strong>나눠서 평가하게</strong> 하고, 문제를 심각한 순서로 5개 받은 다음
+    <strong>“30분 안에 고칠 수 있는 3개만 고르라”</strong>고 범위를 제가 잘랐습니다.
+    전부 고치려 들면 하루가 날아가고, 그날의 목표였던 배포를 못 했을 겁니다.
+  </div>
+
   <div class="hole">
-    📷 <strong>사진 필요</strong> — 배포 화면 캡처 3장<br>
-    ① 검색 결과 목록(출처 배지가 보이게) ② 상세창의 시간표 플래너 + 후기 문장 ③ 3D 수영 게임 화면
+    📷 <strong>사진 필요 — v5(현재)</strong><br>
+    배포 화면 캡처 3장 ① 검색 결과 목록(출처 배지가 보이게) ② 상세창의 시간표 + 후기 문장 ③ 3D 수영 게임<br>
+    <span style="font-size:12px">파일을 <code>portfolio/img/</code>에 넣으면 v1~v4와 같은 형식으로 이어 붙입니다.</span>
   </div>
 </div></section>
 
@@ -637,6 +743,52 @@ flowchart TD
         <td>지금은 마포·양천 두 구입니다. 다만 <strong>넓히기 전에</strong> 지금 정보의 정확도를 먼저 끌어올리는 게
             맞다고 판단해 보류했습니다.</td></tr>
   </table>
+
+  <h3>모르는 말을 만날 때마다 사전에 적었습니다</h3>
+  <p>
+    AI에게 코드를 맡기면 <strong>모르는 단어가 그대로 지나갑니다.</strong> 그러면 다음에 같은 문제가 와도
+    무엇을 물어야 할지 모릅니다. 매주 새로 만난 말을 작업 일지에 적었고, 아래는 그중 실제로 판단에 쓰인 것들입니다.
+  </p>
+  <table>
+    <tr><th style="width:20%">용어</th><th style="width:36%">쉬운 말로</th><th>이 프로젝트에서 왜 필요했나</th></tr>
+    <tr><td><strong>REST API</strong></td><td>주소로 부르면 정해진 형식으로 답을 주는 창구</td>
+        <td>수영장·후기·지도를 전부 남의 서버에서 받아옵니다</td></tr>
+    <tr><td><strong>rate limit</strong></td><td>하루에 몇 번까지만 부를 수 있는 한도</td>
+        <td>TMAP 보행자 경로 1일 1,000회를 넘겨 429를 받았습니다. 구글도 하루 50회로 묶어뒀습니다</td></tr>
+    <tr><td><strong>robots.txt</strong></td><td>“어떤 자동 프로그램이 어디를 봐도 되는지” 적어둔 파일</td>
+        <td>네이버 카페에 “AI·RAG 목적 접근 금지”가 있어 크롤링을 접었습니다</td></tr>
+    <tr><td><strong>환경변수</strong></td><td>코드 밖에 따로 숨겨두는 비밀값</td>
+        <td>API 키를 저장소에 올리지 않고 배포할 때만 주입합니다</td></tr>
+    <tr><td><strong>서버 함수(프록시)</strong></td><td>브라우저 대신 서버가 남의 API를 불러주는 중간 다리</td>
+        <td>브라우저에서 직접 부르면 키가 노출됩니다</td></tr>
+    <tr><td><strong>하버사인</strong></td><td>지구가 둥근 걸 감안한 두 좌표 사이 직선거리 계산식</td>
+        <td>도보 API 호출을 줄이려 1차 필터로 썼는데 <strong>8%밖에 안 줄어</strong> 포기했습니다</td></tr>
+    <tr><td><strong>지오코딩</strong></td><td>주소를 위도·경도로 바꾸는 일</td>
+        <td>빌라·다세대는 지도에 등록이 안 돼 이 단계가 더 필요해서 범위에서 뺐습니다</td></tr>
+    <tr><td><strong>CDN</strong></td><td>인터넷에 올려둔 파일을 주소 한 줄로 가져다 쓰기</td>
+        <td>PapaParse·Three.js·MediaPipe를 설치 없이 씁니다</td></tr>
+    <tr><td><strong>data URI</strong></td><td>그림 파일 대신 글자로 적어 넣은 이미지</td>
+        <td>지도 마커를 파일 없이 만들어 배포할 때 챙길 파일이 안 늘어납니다</td></tr>
+    <tr><td><strong>localStorage</strong></td><td>브라우저가 기억해두는 작은 저장소</td>
+        <td>사용자가 추가한 시설이 새로고침해도 남습니다</td></tr>
+    <tr><td><strong>정밀도 / 재현율</strong></td><td>찾아낸 게 맞는 비율 / 있어야 할 걸 찾아낸 비율</td>
+        <td>후기 분류를 정답표와 대조해 <strong>86% / 35%</strong>로 쟀습니다</td></tr>
+    <tr><td><strong>히스테리시스</strong></td><td>올라가는 문턱과 내려오는 문턱을 다르게 두는 것</td>
+        <td>팔이 문턱 근처에서 떨릴 때 한 번이 여러 번으로 세어지는 걸 막습니다</td></tr>
+    <tr><td><strong>preserveDrawingBuffer</strong></td><td>3D가 그린 화면을 지우지 말고 남겨두라는 설정</td>
+        <td>안 켜면 결과 이미지를 복사할 때 <strong>빈 화면</strong>이 나옵니다</td></tr>
+    <tr><td><strong>requestAnimationFrame</strong></td><td>브라우저가 화면을 새로 그릴 때마다 부르는 함수</td>
+        <td><strong>창이 숨겨지면 멈춥니다.</strong> 이걸 몰라서 멀쩡한 코드를 고장 난 줄 알았습니다</td></tr>
+  </table>
+
+  <div class="note">
+    <b>기록이 포트폴리오가 됐습니다</b><br>
+    6주 동안 매주 작업 일지를 남겼고, 코드 저장소에도
+    <code>docs/작업기록.md</code>(1,254줄)와 <code>docs/포트폴리오-기록.md</code>(854줄)를 따로 썼습니다.
+    작업기록은 <strong>무엇을 만들었나</strong>, 포트폴리오 기록은 <strong>누가 왜 그렇게 정했나</strong>를 적습니다.
+    이 페이지의 수치·프롬프트·버전 캡처는 전부 그 기록에서 꺼낸 것이고,
+    <strong>AI가 틀린 것도 지우지 않고 남겨</strong> 검증한 흔적이 보이게 했습니다.
+  </div>
 
   <h3>배운 것</h3>
   <ul>
