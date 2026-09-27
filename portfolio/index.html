@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>자수하자 — 프로젝트 포트폴리오</title>
+<meta name="description" content="자유수영장 검색 서비스 '자수하자' 제작 기록. 문제 발견부터 자른 기능, AI 활용, 남은 과제까지.">
+<style>
+  :root{
+    --ink:#1e2a25; --muted:#6f7b75; --line:#e2e8e4; --paper:#fbfaf6;
+    --mint:#dff2e8; --green:#176b50; --deep:#0d3d4f; --yellow:#fff1ba;
+    --pink:#f9e2ea; --red:#c0453c;
+  }
+  *{ box-sizing:border-box }
+  html{ scroll-behavior:smooth; scroll-padding-top:66px }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:Pretendard,"Noto Sans KR",-apple-system,sans-serif;
+    line-height:1.72; font-size:16px; letter-spacing:-.2px;
+  }
+  .wrap{ max-width:940px; margin:0 auto; padding:0 20px }
+
+  /* 내비 */
+  nav{ position:sticky; top:0; z-index:20; background:#fbfaf6f2; backdrop-filter:blur(12px);
+       border-bottom:1px solid var(--line) }
+  nav .wrap{ display:flex; align-items:center; gap:18px; height:56px; overflow-x:auto }
+  nav b{ font-size:15px; white-space:nowrap }
+  nav a{ color:var(--muted); text-decoration:none; font-size:13px; font-weight:700; white-space:nowrap }
+  nav a:hover{ color:var(--green) }
+  nav .print{ margin-left:auto; border:1px solid var(--line); background:#fff; border-radius:9px;
+              padding:7px 13px; font:inherit; font-size:12px; font-weight:800; cursor:pointer; white-space:nowrap }
+
+  /* 표지 */
+  header.cover{ padding:70px 0 54px; border-bottom:1px solid var(--line) }
+  .eyebrow{ display:inline-block; background:var(--mint); color:var(--green); font-weight:850;
+            font-size:12px; padding:5px 12px; border-radius:99px; margin-bottom:18px }
+  h1{ font-size:clamp(30px,5.2vw,46px); line-height:1.25; margin:0 0 16px; letter-spacing:-1.4px }
+  h1 em{ font-style:normal; color:var(--green) }
+  .sub{ font-size:17px; color:var(--muted); max-width:680px; margin:0 0 26px }
+  .meta{ display:flex; gap:10px; flex-wrap:wrap }
+  .chip{ background:#fff; border:1px solid var(--line); border-radius:99px; padding:7px 14px;
+         font-size:13px; font-weight:700 }
+  .chip a{ color:var(--green); text-decoration:none }
+
+  section{ padding:56px 0; border-bottom:1px solid var(--line) }
+  .num{ display:inline-grid; place-items:center; width:27px; height:27px; border-radius:50%;
+        background:var(--green); color:#fff; font-size:14px; font-weight:800; margin-right:10px }
+  h2{ font-size:26px; margin:0 0 8px; letter-spacing:-.8px; display:flex; align-items:center }
+  .lead{ color:var(--muted); margin:0 0 26px; font-size:15px }
+  h3{ font-size:17px; margin:30px 0 10px; letter-spacing:-.4px }
+  p{ margin:0 0 14px }
+
+  .card{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin:14px 0 }
+  .card h4{ margin:0 0 8px; font-size:15px }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px }
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px }
+
+  .quote{ background:var(--deep); color:#eaf6fb; border-radius:14px; padding:18px 20px; margin:16px 0;
+          font-family:ui-monospace,Consolas,monospace; font-size:13.5px; line-height:1.8; white-space:pre-wrap }
+  .quote .who{ display:block; font-family:inherit; font-size:11px; color:#8fc6dd; margin-bottom:9px;
+               font-weight:800; letter-spacing:.3px }
+
+  table{ width:100%; border-collapse:collapse; margin:14px 0; font-size:14px }
+  th,td{ text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top }
+  th{ background:#f4f7f5; font-size:12.5px; font-weight:800; color:var(--muted) }
+  td.n, th.n{ text-align:right; font-variant-numeric:tabular-nums }
+
+  .stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0 }
+  .stat{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px }
+  .stat b{ display:block; font-size:27px; color:var(--green); letter-spacing:-1px; line-height:1.2 }
+  .stat span{ font-size:12px; color:var(--muted) }
+
+  .mermaid{ background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px; margin:16px 0;
+            text-align:center; overflow-x:auto }
+  .cap{ font-size:12.5px; color:var(--muted); text-align:center; margin:-6px 0 20px }
+
+  .tag{ display:inline-block; font-size:11px; font-weight:800; padding:2px 9px; border-radius:99px; margin-right:6px }
+  .t-off{ background:var(--mint); color:var(--green) }
+  .t-ref{ background:var(--yellow); color:#8a6a12 }
+  .t-cut{ background:var(--pink); color:#a33a53 }
+  .t-none{ background:#eef1ef; color:var(--muted) }
+
+  .note{ background:var(--mint); border-radius:14px; padding:16px 18px; margin:16px 0; font-size:14.5px }
+  .note b{ color:var(--green) }
+  .warn{ background:var(--yellow); border-radius:14px; padding:16px 18px; margin:16px 0; font-size:14.5px }
+  .hole{ border:2px dashed var(--line); border-radius:14px; padding:22px; text-align:center;
+         color:var(--muted); font-size:13.5px; margin:16px 0; background:#fff }
+
+  ul{ margin:0 0 14px; padding-left:19px } li{ margin:6px 0 }
+  footer{ padding:54px 0 70px; text-align:center; color:var(--muted); font-size:14px }
+  footer b{ display:block; font-size:19px; color:var(--ink); margin-bottom:10px; letter-spacing:-.5px }
+
+  @media (max-width:760px){
+    .grid2,.grid3,.stats{ grid-template-columns:1fr }
+    .stats{ grid-template-columns:1fr 1fr }
+    section{ padding:40px 0 }
+  }
+  @media print{
+    nav{ display:none } html{ scroll-padding-top:0 }
+    body{ background:#fff; font-size:10.5pt; line-height:1.6 }
+    section{ break-inside:avoid; page-break-inside:avoid; padding:20px 0 }
+    .card,.mermaid,table,.quote,.note,.warn{ break-inside:avoid; page-break-inside:avoid }
+    header.cover{ padding:20px 0 24px }
+    @page{ size:A4; margin:14mm }
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <b>자수하자</b>
+  <a href="#p1">문제</a><a href="#p2">한 일</a><a href="#p3">결과</a>
+  <a href="#p4">자른 기능</a><a href="#p5">AI 활용</a><a href="#p6">다음</a>
+  <button class="print" onclick="window.print()">PDF로 저장</button>
+</div></nav>
+
+<header class="cover"><div class="wrap">
+  <span class="eyebrow">개인 프로젝트 · 2026.08.29 – 09.27</span>
+  <h1>“오늘 수영하러 갈 수 있나?”<br>한 번에 답하는 <em>자수하자</em></h1>
+  <p class="sub">
+    수영장마다 홈페이지를 열어 시간표를 확인하던 일을 한 화면으로 줄였습니다.
+    공식 자료와 이용자 후기를 <strong>섞지 않고 출처별로 갈라서</strong> 보여줍니다.
+  </p>
+  <div class="meta">
+    <span class="chip">🌐 <a href="https://mulddae-cyan.vercel.app" target="_blank" rel="noopener">mulddae-cyan.vercel.app</a></span>
+    <span class="chip">기여도 100% (1인)</span>
+    <span class="chip">커밋 69개 · 30일</span>
+    <span class="chip">HTML · JavaScript · Three.js · Vercel</span>
+  </div>
+</div></header>
+
+<!-- ① 문제 -->
+<section id="p1"><div class="wrap">
+  <h2><span class="num">1</span>문제</h2>
+  <p class="lead">누구를 위한 서비스인가, 뭐가 불편해서 만들었나</p>
+
+  <p>
+    저는 수영을 다닙니다. 등록한 곳 말고 다른 수영장에서 자유수영을 하려면
+    <strong>시설마다 홈페이지를 하나씩 열어야</strong> 했습니다. 공공 시설은 공지 게시판 어딘가에,
+    민간 시설은 이미지 한 장에 시간표가 있었습니다. 요금은 또 다른 페이지에 있었고요.
+  </p>
+  <p>
+    “지금 갈 수 있는 곳”을 알려면 매번 대여섯 개 사이트를 오가야 했습니다.
+    <strong>누가 시켜서가 아니라 제가 겪던 일</strong>이라 시작했습니다.
+  </p>
+
+  <h3>이미 있는 서비스를 먼저 찾아봤습니다</h3>
+  <p>
+    만들기 전에 <strong>apuapu.kr</strong>을 발견했습니다. 전국 839곳에 시간표·요금·레인·수심까지
+    있었습니다. “이미 있는 걸 또 만드는가”가 이후 내내 기준이 됐습니다.
+  </p>
+  <div class="note">
+    <b>차이를 찾은 지점</b> — apuapu는 정보량은 많은데 <strong>리뷰가 사실상 1개</strong>였습니다.
+    처음엔 “후기를 잘 모으면 되겠다”고 봤지만, 나중에 그 이유를 알게 됐습니다(④·⑤ 참고).
+    결국 차별점은 후기 개수가 아니라 <strong>“이 정보가 공식인지 아닌지를 밝히는 것”</strong>이 됐습니다.
+  </div>
+
+  <h3>전체 진행 흐름</h3>
+  <div class="mermaid">
+flowchart LR
+  A["① 내 불편<br/>시설마다 홈페이지"] --> B["② 경쟁 서비스 확인<br/>apuapu.kr"]
+  B --> C["③ 데이터 수집<br/>공식 홈페이지·공지 이미지"]
+  C --> D["④ 출처 상태 설계<br/>공식/참고/후기 분리"]
+  D --> E["⑤ 검색·정렬<br/>구·날짜·시간"]
+  E --> F["⑥ 후기 3출처 교차<br/>네이버 카페·블로그·구글"]
+  F --> G["⑦ 배포·재검증<br/>Vercel"]
+  </div>
+  <p class="cap">그림 1. 30일간의 진행 흐름. ⑦에서 다시 ③으로 돌아간 적이 두 번 있습니다(④ 참고).</p>
+</div></section>
+
+<!-- ② 내가 한 것 -->
+<section id="p2"><div class="wrap">
+  <h2><span class="num">2</span>내가 한 것</h2>
+  <p class="lead">만든 주요 기능 세 가지</p>
+
+  <div class="card">
+    <h4>① 구·날짜·시간으로 찾고, 갈 수 있는 곳부터 보여주기</h4>
+    <p>
+      구(마포/양천), 날짜, 시간을 고르면 결과가 네 단계로 정렬됩니다.
+      <strong>선택 시간에 이용 가능 → 운영 확인 필요 → 회차 없음 → 휴관 중</strong> 순입니다.
+      같은 상태 안에서는 그날 등록된 회차가 많은 순으로 놓았습니다.
+    </p>
+    <p class="cap" style="text-align:left;margin:0">
+      왜 이렇게 했나 — 처음엔 “현재 위치에서 가까운 순”으로 만들었습니다.
+      그런데 대상이 마포·양천 두 구뿐이라 거리 정렬이 의미가 없었고,
+      위치 권한을 물어보는 부담만 컸습니다. 그래서 위치 기능을 <strong>빼고</strong> 구 선택으로 바꿨습니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h4>② 공식 정보와 참고 정보를 갈라서 표시하기</h4>
+    <p>
+      시간·요금·규격을 값마다 출처 상태와 함께 보여줍니다.
+      <span class="tag t-off">공식 확인</span>
+      <span class="tag t-ref">참고 정보 · 공식 미확인</span>
+      <span class="tag t-none">출처 미기록</span>
+    </p>
+    <p class="cap" style="text-align:left;margin:0">
+      왜 이렇게 했나 — 처음엔 시설 단위로 하나의 상태만 뒀습니다. 그랬더니
+      <strong>시간표는 공식인데 요금은 후기에서 가져온 시설</strong>에서 요금 옆에 “공식 확인”이 붙었습니다.
+      항목마다 출처가 다를 수 있어서, 규격을 <code>시설규격.csv</code>라는 별도 표로 떼어냈습니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h4>③ 후기를 별점이 아니라 “사람이 쓴 문장”으로 보여주기</h4>
+    <p>
+      네이버 카페·네이버 블로그·구글 지도 <strong>세 곳</strong>에서 최근 1년 글을 모아
+      혼잡·시설·수질로 나누고, 별점 대신 <strong>원문 문장과 작성일·출처 링크</strong>를 보여줍니다.
+    </p>
+    <p class="cap" style="text-align:left;margin:0">
+      왜 이렇게 했나 — 별점을 먼저 만들었다가 버렸습니다. 이유는 ④에 적었습니다.
+    </p>
+  </div>
+
+  <h3>How it works — 검색 한 번에 일어나는 일</h3>
+  <div class="mermaid">
+flowchart TD
+  U["① 사용자<br/>구·날짜·시간 선택"] --> S["② 요일 판정<br/>'평일·토' → 월화수목금토"]
+  S --> T["③ 회차 대조<br/>자유수영시간.csv"]
+  T --> R["④ 4단계 정렬<br/>가능 → 확인필요 → 없음 → 휴관"]
+  R --> C["⑤ 카드 출력<br/>값마다 출처 배지"]
+  C --> D["⑥ 상세 열기"]
+  D --> N["⑦ 네이버 검색 API<br/>카페·블로그 (프록시)"]
+  D --> G["⑧ 구글 Places API<br/>리뷰 (프록시)"]
+  N --> K["⑨ 문장 분류<br/>혼잡·시설·수질"]
+  G --> K
+  </div>
+  <p class="cap">
+    그림 2. ⑦⑧은 API 키가 노출되지 않도록 서버 함수를 거칩니다.
+    ⑨는 키워드 규칙이며 정확도를 측정했습니다(③ 결과 참고).
+  </p>
+
+  <div class="warn">
+    <strong>②단계가 은근히 까다로웠습니다.</strong>
+    시간표에 적힌 <code>평일·토</code>, <code>토·공휴일</code> 같은 표기를 요일로 풀어야 하는데,
+    글자 포함 여부로 판정하면 <strong><code>공휴일</code> 안의 <code>일</code></strong> 때문에
+    토요일 회차가 일요일에도 떴습니다. 같은 종류의 버그를 네 번 만났습니다(⑤ 참고).
+  </div>
+
+  <div class="card">
+    <h4>덤 · 웹캠 수영 게임 (유입용)</h4>
+    <p>
+      “검색하세요”로 사람을 부르기 어려워서, <strong>웹캠 앞에서 팔을 저으면 캐릭터가 나아가는
+      3D 레이스 게임</strong>을 만들어 첫 화면에 걸었습니다. 게임이 끝나면 지도로 넘깁니다.
+      MediaPipe로 어깨·손목을 읽고, 손목이 어깨 위로 올라갔다 내려오면 한 번으로 셉니다.
+    </p>
+  </div>
+</div></section>
+
+<!-- ③ 결과 -->
+<section id="p3"><div class="wrap">
+  <h2><span class="num">3</span>결과</h2>
+  <p class="lead">배포 주소와 숫자</p>
+
+  <p>
+    <strong>🌐 <a href="https://mulddae-cyan.vercel.app" target="_blank" rel="noopener">https://mulddae-cyan.vercel.app</a></strong>
+    — GitHub push 시 Vercel 자동 배포
+  </p>
+
+  <div class="stats">
+    <div class="stat"><b>12곳</b><span>수영장 (마포 6 · 양천 6)</span></div>
+    <div class="stat"><b>50개</b><span>자유수영 회차</span></div>
+    <div class="stat"><b>29개</b><span>규격 항목 (길이·레인·수심)</span></div>
+    <div class="stat"><b>34개</b><span>회귀 검증 통과</span></div>
+  </div>
+
+  <h3>수집한 정보의 출처 구성</h3>
+  <table>
+    <tr><th>출처 상태</th><th class="n">시간표 회차</th><th class="n">규격 항목</th><th>뜻</th></tr>
+    <tr><td><span class="tag t-off">공식 확인</span></td><td class="n">30</td><td class="n">15</td><td>운영처 공식 페이지·공지에서 직접 확인</td></tr>
+    <tr><td><span class="tag t-ref">참고 정보</span></td><td class="n">12</td><td class="n">9</td><td>외부 자료. 공식으로 표시하지 않음</td></tr>
+    <tr><td><span class="tag t-ref">부분 확인</span></td><td class="n">5</td><td class="n">—</td><td>일부만 공식, 나머지는 미확인</td></tr>
+    <tr><td><span class="tag t-ref">후기 참고</span></td><td class="n">3</td><td class="n">3</td><td>이용자 후기에서 읽은 값</td></tr>
+    <tr><td><span class="tag t-none">출처 미기록</span></td><td class="n">—</td><td class="n">2</td><td>기존 데이터에서 옮겼으나 원출처 불명</td></tr>
+  </table>
+  <p class="cap">
+    표 1. 전체 50개 회차 중 공식 확인은 30개(60%)입니다.
+    <strong>나머지 40%를 “공식”으로 위장하지 않은 것</strong>이 이 표의 요점입니다.
+  </p>
+
+  <h3>후기 분류 정확도를 직접 쟀습니다</h3>
+  <p>
+    키워드 분류를 만들고 나서 “잘 되는 것 같다”로 넘기지 않았습니다.
+    후기 37건을 직접 읽고 <strong>사람이 매긴 정답표</strong>를 만든 뒤 대조했습니다.
+  </p>
+  <table>
+    <tr><th>항목</th><th class="n">정답</th><th class="n">찾음</th><th class="n">적중</th><th class="n">정밀도</th><th class="n">재현율</th></tr>
+    <tr><td>혼잡 여유도</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">67%</td><td class="n">40%</td></tr>
+    <tr><td>시설 쾌적도</td><td class="n">7</td><td class="n">0</td><td class="n">0</td><td class="n">—</td><td class="n">0%</td></tr>
+    <tr><td>수영 환경</td><td class="n">2</td><td class="n">2</td><td class="n">2</td><td class="n">100%</td><td class="n">100%</td></tr>
+    <tr><td>가성비</td><td class="n">3</td><td class="n">2</td><td class="n">2</td><td class="n">100%</td><td class="n">67%</td></tr>
+    <tr><th>합계</th><th class="n">17</th><th class="n">7</th><th class="n">6</th><th class="n">86%</th><th class="n">35%</th></tr>
+  </table>
+  <p class="cap">표 2. 정답표 대조 결과(측정일 2026-09-24, 표본 37건).</p>
+
+  <div class="note">
+    <b>이 숫자가 뜻하는 것</b> — 정밀도 86%는 “찾아낸 건 대체로 맞다”,
+    재현율 35%는 <strong>“있어야 할 것의 3분의 1밖에 못 찾는다”</strong>입니다.
+    측정 전 제 짐작은 “헛다리가 문제”였는데, 재보니 <strong>오탐 1건 · 누락 11건</strong>으로 정반대였습니다.
+    원인은 키워드가 <code>샤워실이 깨끗</code> 같은 통문장이라
+    실제 후기의 <code>정말 깨끗해졌어요</code>를 못 잡은 것이었습니다.
+  </div>
+
+  <div class="hole">
+    📷 <strong>사진 필요</strong> — 배포 화면 캡처 3장<br>
+    ① 검색 결과 목록(출처 배지가 보이게) ② 상세창의 시간표 플래너 + 후기 문장 ③ 3D 수영 게임 화면
+  </div>
+</div></section>
+
+<!-- ④ 자른 기능 -->
+<section id="p4"><div class="wrap">
+  <h2><span class="num">4</span>자른 기능과 이유</h2>
+  <p class="lead">넣으려다 뺀 것들. 왜 뺐는지가 이 프로젝트의 내용입니다</p>
+
+  <table>
+    <tr><th style="width:26%">뺀 기능</th><th>왜 뺐나</th><th style="width:26%">대신 한 것</th></tr>
+    <tr>
+      <td><strong>후기 별점</strong><br><span class="tag t-cut">가장 큰 결정</span></td>
+      <td>네이버 검색 API가 본문을 안 주고 <strong>평균 142자 요약만</strong> 줍니다. 근거 3건이 모여야 별점이 나오는데
+          <strong>수영장 6곳 × 4항목 = 24칸 중 1칸</strong>만 채워졌습니다. 그 1칸의 근거도
+          한식뷔페 글의 “가는 길이 복잡하다”였습니다.</td>
+      <td>별점 대신 <strong>근거 문장</strong>. 1건만 있어도 쓸모가 있고, 분류가 틀려도 화면에서 바로 보입니다.</td>
+    </tr>
+    <tr>
+      <td><strong>카페 크롤링</strong></td>
+      <td><code>robots.txt</code>에 <code>Disallow: /</code>와 함께
+          <strong>“AI 학습·RAG 목적 접근 금지”</strong>가 명시돼 있었습니다. 블로그에는 제 도구 이름이 직접 적혀 있었습니다.</td>
+      <td>공식 검색 API. 본문은 못 받지만 약관 안에서 씁니다.</td>
+    </tr>
+    <tr>
+      <td><strong>카카오 리뷰</strong></td>
+      <td>출처를 더 늘리려 했으나 <strong>공식 리뷰 API가 존재하지 않습니다</strong>(카카오 개발자 포럼 공식 답변).
+          긁는 외부 도구는 약관 위반입니다.</td>
+      <td>“안 붙였다”가 아니라 <strong>“확인했더니 길이 없었다”</strong>로 남겼습니다.</td>
+    </tr>
+    <tr>
+      <td><strong>도보 시간 계산</strong></td>
+      <td>TMAP 보행자 경로 API가 <strong>1일 1,000회 한도</strong>라 실제로 429를 받았습니다.
+          직선거리로 미리 거르면 해결될 줄 알았는데 <strong>실측 절감은 8%</strong>였습니다.</td>
+      <td>카카오맵 길찾기로 연결. 대중교통·도보·자동차를 사용자가 고릅니다.</td>
+    </tr>
+    <tr>
+      <td><strong>현재 위치 추천</strong></td>
+      <td>만들어 배포까지 했다가 되돌렸습니다. 대상이 <strong>두 개 구뿐</strong>이라 거리 정렬의 의미가 작고,
+          위치 권한을 묻는 비용만 컸습니다.</td>
+      <td>구 선택 + 날짜·시간 검색.</td>
+    </tr>
+    <tr>
+      <td><strong>트랜스포머 분류</strong></td>
+      <td>키워드 대신 AI 모델을 쓰려고 토큰 발급 직전까지 갔다가 멈췄습니다.
+          <strong>분석할 데이터가 확보되지 않은 상태</strong>였기 때문입니다.</td>
+      <td>데이터 출처부터 해결. 정답표와 측정 도구는 만들어 뒀습니다.</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <b>공통점</b> — 여섯 개 모두 <strong>“하고 싶었지만 확인해보니 근거가 없었다”</strong>입니다.
+    포기가 아니라 <strong>확인의 결과</strong>로 남기려고, 각각 무엇을 어떻게 확인했는지 기록했습니다.
+  </div>
+</div></section>
+
+<!-- ⑤ AI 활용 -->
+<section id="p5"><div class="wrap">
+  <h2><span class="num">5</span>AI를 어떻게 썼나</h2>
+  <p class="lead">코드는 대부분 AI가 썼습니다. 그래서 무엇을 맡기고 무엇을 제가 판단했는지가 중요했습니다</p>
+
+  <h3>사례 A · 한 문장을 되물어 설계를 뒤엎다 <span class="tag t-cut">아키텍처</span></h3>
+  <p>
+    AI가 만든 문서에 <em>“네이버 검색 API는 카페 본문을 주지 않습니다”</em>라는 문장이
+    <strong>지나가듯</strong> 적혀 있었습니다. 저는 거기서 멈췄습니다.
+  </p>
+  <div class="quote"><span class="who">실제 프롬프트 (원문)</span>잠깐 이게 뭔소리에 본문을 주지 않는다고?
+그럼 너가 판정하는게 저 3줄에 대한 분석이 다야???</div>
+  <p><strong>제가 한 판단과 검증</strong></p>
+  <ul>
+    <li>AI에게 요약문 길이를 <strong>실제로 재게</strong> 했습니다 → 100건 평균 142자, 앞뒤 잘림 확인</li>
+    <li>그 데이터로 별점이 몇 칸이나 채워지는지 세게 했습니다 → <strong>24칸 중 1칸</strong></li>
+    <li>“데이터가 부족하다”가 아니라 <strong>“별점이라는 형식이 틀렸다”</strong>로 결론을 바꿨습니다</li>
+    <li>대안 조사 지시 → 구글 리뷰는 본문 전체 + 별점을 준다는 것을 확인</li>
+  </ul>
+  <div class="note">
+    <b>결과</b> — 별점 → 근거 문장으로 전환. 출처도 1곳에서 3곳으로 늘었습니다.
+    덤으로 경쟁사 apuapu의 리뷰가 1개뿐이던 이유까지 설명됐습니다.
+    <strong>AI는 거짓말을 하지 않았습니다. 중요한 한계를 사소하게 적었을 뿐입니다.</strong>
+  </div>
+
+  <h3>사례 B · AI가 정한 숫자에 근거를 요구하다 <span class="tag t-cut">아키텍처</span></h3>
+  <p>후기 기간 필터의 기본값이 “3년”이었습니다. 왜 3년인지 물었습니다.</p>
+  <div class="quote"><span class="who">실제 프롬프트 (원문)</span>시설 근데 3년으로 정한이유가 따로 있어?
+리뷰란에 넣을 기간이 없어서 그런거야??
+있으면 1년 내 정보가 나을 것 같음</div>
+  <p><strong>드러난 것</strong></p>
+  <ul>
+    <li>AI의 답: <em>“그냥 정한 숫자입니다. 근거 없어요.”</em></li>
+    <li>이유는 제 짐작대로였습니다 — 구글 리뷰 5개만 쓰던 시절엔 1년으로 자르면 0개가 됐습니다</li>
+    <li><strong>네이버를 붙이면서 전제가 바뀌었는데 옛 숫자가 그대로 남아 있었습니다</strong></li>
+    <li>실측: 1년 이내 문장이 아현 혼잡 4·시설 6·물 5 → 화면에 쓸 3개보다 충분</li>
+  </ul>
+  <div class="note">
+    <b>결과</b> — 기본값 1년으로 변경. 그리고 주제마다 코드에 흩어져 있던 기간 값을
+    <strong>화면 버튼 하나로 합쳤습니다.</strong> 값이 흩어져 있으면 고칠 곳을 못 찾고 사용자도 바꿀 수 없습니다.
+  </div>
+
+  <h3>사례 C · AI가 정한 값과 내가 정한 값을 갈라 적기 <span class="tag t-cut">생산성</span></h3>
+  <p>
+    사례 B 이후, AI가 혼자 정하고 있던 기준값들을 <strong>표로 꺼내라고</strong> 시켰습니다.
+    꺼내놓자마자 첫 줄부터 근거가 없다는 게 드러났습니다. 지금도 이 표를 유지합니다.
+  </p>
+  <table>
+    <tr><th>기준</th><th>값</th><th>누가 정했나</th><th>근거</th></tr>
+    <tr><td>후기 기간 기본값</td><td>1년</td><td><strong>내가</strong></td><td>1년 내 문장 수 실측</td></tr>
+    <tr><td>기간 규칙의 위치</td><td>화면 버튼</td><td><strong>내가</strong></td><td>흩어지면 못 고침</td></tr>
+    <tr><td>공식/후기 구분 기준</td><td>정답이 하나인가</td><td><strong>내가</strong></td><td>홈페이지에 없는 것만 후기로</td></tr>
+    <tr><td>주제당 보여줄 문장 수</td><td>3개</td><td>AI</td><td><span class="tag t-none">아직 근거 없음</span></td></tr>
+    <tr><td>별점 뱃지 기준</td><td>3명</td><td>AI</td><td><span class="tag t-none">아직 근거 없음</span></td></tr>
+  </table>
+  <p class="cap">표 3. <strong>“아직 근거 없음”을 일부러 남겨</strong> 다음에 잴 대상으로 표시합니다.</p>
+
+  <h3>AI 결과를 검증한 방법</h3>
+  <div class="grid2">
+    <div class="card"><h4>정답표를 먼저 만들었다</h4>
+      <p>후기 37건을 직접 읽고 사람 판정을 붙인 뒤 대조했습니다. 비교할 자가 없으면
+        “AI가 더 낫다”를 말할 수 없습니다. (③ 표 2)</p></div>
+    <div class="card"><h4>숫자는 직접 재게 했다</h4>
+      <p>“될 것 같다”를 받지 않고 실측을 시켰습니다. 게임 난이도도 브라우저 없이
+        물리 계산만 돌려 상대 완주 45초 → 32초로 맞췄습니다.</p></div>
+    <div class="card"><h4>AI가 틀린 것을 기록으로 남겼다</h4>
+      <p>직선거리 필터 8%, 존재하지 않는 TMAP 도메인 제한, 잘못 매칭된 구글 Place ID
+        (소의체육문화센터 → 서울소의초등학교) 등 10건.</p></div>
+    <div class="card"><h4>같은 종류의 버그를 네 번 만났다</h4>
+      <p><code>공휴일</code>의 <code>일</code>, <code>건물은</code>의 <code>물은</code>,
+        <code>할줄</code>의 <code>줄</code>, <code>월~토</code>. 한국어에서 짧은 단어로
+        포함 검사를 하면 계속 터집니다. 이후 데이터를 넣기 전에 함수에 대입해 봅니다.</p></div>
+  </div>
+
+  <div class="warn">
+    <strong>측정 환경이 결과를 바꾼 사례</strong> — 3D 게임에서 팔이 안 보여 코드를 계속 뜯었는데,
+    원인은 <strong>브라우저 창이 숨겨지면 애니메이션이 멈춘다</strong>는 것이었습니다.
+    값이 이상할 때는 코드보다 <strong>재는 방법</strong>을 먼저 의심해야 한다는 걸 여기서 배웠습니다.
+  </div>
+</div></section>
+
+<!-- ⑥ 다음에 할 것 -->
+<section id="p6"><div class="wrap">
+  <h2><span class="num">6</span>다음에 할 것</h2>
+  <p class="lead">지금 아쉬운 것과 개선 계획</p>
+
+  <h3>가장 아쉬운 것 하나</h3>
+  <div class="warn">
+    <strong>공식 시간표를 끝까지 확보하지 못한 시설이 남아 있습니다.</strong>
+    창천교육문화관은 운영처 URL이 404이고, 소의체육문화센터는 사이트 접속이 불안정하며,
+    월드컵스파랜드24는 평일 공식 시간표를 찾지 못했습니다.
+    <strong>세 곳 모두 “참고 정보”로 표시해 두었지만, 사용자가 진짜 원하는 건 확정된 시간표입니다.</strong>
+    전화로 확인하는 것이 확실하지만 그건 수집이 아니라 취재라, 자동화와 정확성 사이에서 아직 답을 못 냈습니다.
+  </div>
+
+  <h3>이어서 할 일</h3>
+  <table>
+    <tr><th style="width:34%">할 일</th><th>왜 / 어떻게</th></tr>
+    <tr><td>정보 변경 자동 점검</td>
+        <td>시간표·요금은 <strong>월 1회</strong>, 휴관은 <strong>분기 1회</strong> 공식 페이지를 다시 읽는 작업을 예약합니다.
+            서부여성발전센터 휴관 공지가 <strong>이미지 한 장</strong>이라 글자 수집으로는 못 찾았던 적이 있어,
+            이미지까지 읽는 방식이 필요합니다.</td></tr>
+    <tr><td>후기 분류 재측정</td>
+        <td>정답표는 네이버 요약문 37건 기준입니다. 지금은 구글 리뷰가 붙었으므로
+            <strong>새 정답표로 다시 재야</strong> 재현율 35%가 얼마나 올랐는지 말할 수 있습니다.</td></tr>
+    <tr><td>키워드 → 모델 비교</td>
+        <td>재현율 35%의 원인은 표현의 다양성입니다. 같은 정답표로 트랜스포머와 비교하면
+            <strong>“재현율이 얼마나 오르고 정밀도를 얼마나 잃는가”</strong>를 숫자로 말할 수 있습니다.</td></tr>
+    <tr><td>게임 스트로크 중복 카운트</td>
+        <td>19번 저었는데 29번으로 세어진 적이 있습니다. 최소 진폭 조건을 넣어 완화했지만
+            원인을 확정하지 못했습니다. <strong>판정 간격을 화면에 찍게 해</strong> 진단할 수 있게 해뒀습니다.</td></tr>
+    <tr><td>지역 확대</td>
+        <td>지금은 마포·양천 두 구입니다. 다만 <strong>넓히기 전에</strong> 지금 정보의 정확도를 먼저 끌어올리는 게
+            맞다고 판단해 보류했습니다.</td></tr>
+  </table>
+
+  <h3>배운 것</h3>
+  <ul>
+    <li><strong>데이터 출처의 한계는 시작 전에 확인해야 한다.</strong>
+      “API로 가져올 수 있다”와 “쓸 만한 내용이 온다”는 전혀 다른 말이었습니다.
+      응답을 한 번만 열어봤으면 몇 주 일찍 알았을 문제였습니다.</li>
+    <li><strong>같은 데이터도 무엇이라 부르느냐에 따라 맞기도 틀리기도 한다.</strong>
+      정원을 “혼잡도 예측”으로 쓰면 틀린 정보지만,
+      “정원이 차면 못 들어갈 수 있다”는 경고로 쓰면 정확한 정보입니다.</li>
+    <li><strong>기준값은 정할 때의 전제와 함께 기억해야 한다.</strong>
+      코드에 박힌 숫자는 왜 그 값인지 말해주지 않습니다. 그래서 값을 화면으로 꺼냈습니다.</li>
+    <li><strong>모르는 것을 모른다고 적는 편이 쓸모 있다.</strong>
+      “확인 필요”라고 적힌 화면을 보고 사용자가 직접 홈페이지에 들어갔고,
+      거기서 제가 놓친 휴관 공지를 찾았습니다.</li>
+  </ul>
+
+  <div class="hole">
+    ✏️ <strong>채울 곳</strong> — 지원 직무에 맞춘 마무리 한 문장<br>
+    예) “○○에서도 데이터의 출처와 한계를 먼저 밝히는 방식으로 일하겠습니다.”
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <b>자수하자 — 오늘 갈 수 있는 자유수영장</b>
+  <p>
+    <a href="https://mulddae-cyan.vercel.app" target="_blank" rel="noopener">mulddae-cyan.vercel.app</a>
+    · 2026.08.29 – 09.27 · 1인 개발
+  </p>
+  <p style="font-size:12.5px">
+    이 문서의 모든 수치는 저장소의 <code>docs/작업기록.md</code>와 <code>docs/포트폴리오-기록.md</code>에
+    측정일·근거와 함께 기록돼 있습니다.
+  </p>
+</div></footer>
+
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+mermaid.initialize({
+  startOnLoad:true, theme:'base',
+  themeVariables:{
+    fontFamily:'Pretendard, Noto Sans KR, sans-serif', fontSize:'14px',
+    primaryColor:'#dff2e8', primaryTextColor:'#1e2a25', primaryBorderColor:'#176b50',
+    lineColor:'#6f7b75', tertiaryColor:'#fbfaf6'
+  }
+});
+</script>
+</body>
+</html>
