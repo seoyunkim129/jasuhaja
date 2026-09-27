@@ -143,6 +143,7 @@
     <span class="chip">기여도 100% (1인)</span>
     <span class="chip">커밋 73개 · 30일</span>
     <span class="chip">HTML · JavaScript · Three.js · Vercel</span>
+    <span class="chip">화면 캡처 10장으로 본 버전 변화</span>
   </div>
 
   <div class="pivot-hero">
@@ -389,12 +390,130 @@ flowchart TD
     TMAP 키는 빌드 시점에 환경변수로 주입해 저장소에 올라가지 않습니다.
   </div>
 
+  <h3>유입용 게임 — 네 단계로 만들고, 만들 때마다 재봤습니다</h3>
+  <p>
+    “수영장 검색하세요”로는 사람을 부르기 어렵습니다. <strong>“업무시간에도 수영해볼까요?”</strong>로 먼저 부르고,
+    게임이 끝나면 지도로 넘기는 동선을 만들었습니다. 한 번에 만든 게 아니라
+    <strong>단계마다 브라우저에서 확인하고 다음으로 넘어갔습니다.</strong>
+  </p>
+  <table>
+    <tr><th style="width:9%">단계</th><th style="width:28%">만든 것</th><th>무엇을 확인하고 넘어갔나</th></tr>
+    <tr><td><strong>1</strong></td><td>웹캠 + 어깨·손목 점 찍기</td>
+        <td>팔을 움직이면 점이 따라오는지, 좌표 숫자가 실시간으로 바뀌는지. <strong>FPS 17</strong> 확인</td></tr>
+    <tr><td><strong>2</strong></td><td>스트로크 판정 + 조절 슬라이더</td>
+        <td><strong>팔을 정확히 10번 저으면 10이 나오는지.</strong> 기준값을 화면 슬라이더로 빼
+            직접 맞출 수 있게 했습니다</td></tr>
+    <tr><td><strong>3</strong></td><td>레이스 · 승패 · 기록</td>
+        <td>열심히 저으면 이기고 대충 저으면 지는지. <strong>물리 계산을 따로 돌려</strong> 난이도를 맞췄습니다</td></tr>
+    <tr><td><strong>4</strong></td><td>2D 탑뷰 → <strong>3D 1인칭</strong></td>
+        <td>“위에서 본 그림”이 아니라 <strong>내가 물속에 있는 것처럼</strong> 보이는지</td></tr>
+  </table>
+
+  <div class="verline">
+    <figure>
+      <img src="img/game-v1-2D탑뷰.webp" alt="2D 탑뷰 게임 화면. 위에서 내려다본 레인 두 줄에 나와 상대 캐릭터가 있고 우상단에 웹캠이 있다">
+      <figcaption><span class="badge">게임 v1 · 2D 탑뷰</span>
+        위에서 내려다본 레인 두 줄. 캐릭터는 타원과 동그라미였습니다.
+        동작은 하지만 <strong>“내가 수영한다”는 느낌이 없었습니다.</strong>
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="img/game-v2-3D결과.png" alt="3D 1인칭 게임 화면. 수면 근처에서 본 레인과 결과 오버레이가 보인다">
+      <figcaption><span class="badge after">게임 v2 · 3D 1인칭</span>
+        Three.js로 갈아엎었습니다. 수면 근처 저각도, 타일 바닥, 레인 로프, 물결.
+        <strong>물결·타일 무늬는 이미지 파일 없이 코드로 그렸습니다.</strong>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="note">
+    <b>3D로 옮기면서 화면을 보고 세 번 고쳤습니다</b>
+    <table style="margin:10px 0 0">
+      <tr><th style="width:30%">처음 결과</th><th>고친 것</th></tr>
+      <tr><td>위쪽이 <strong>검은 공백</strong></td><td>천장·트러스·조명을 넣어 실내 경기장으로</td></tr>
+      <tr><td><strong>물 빠진 수영장</strong>처럼 보임</td><td>저각도에서 수면은 거의 눕혀 보입니다. 반사도를 올리고 수면 아래 물빛 층을 깔았습니다</td></tr>
+      <tr><td>부표가 <strong>돌덩이</strong> 같음</td><td>한 알씩 색을 바꾸니 자갈이 됐습니다. 실제 레인 로프처럼 5알씩 묶고 크기를 줄였습니다</td></tr>
+    </table>
+  </div>
+
+  <h3>판정이 틀렸을 때 — “19번 저었는데 29번”</h3>
+  <p>
+    직접 해보고 <strong>팔을 19번 저었는데 화면에 29번</strong>으로 찍혔습니다. 제가 발견해 알렸습니다.
+  </p>
   <div class="card">
-    <h4>덤 · 웹캠 수영 게임 (유입용)</h4>
+    <h4>원인과 대응</h4>
     <p>
-      “수영장 검색하세요”로는 사람을 부르기 어렵습니다. 그래서 <strong>“업무시간에도 수영해볼까요?”</strong>로
-      먼저 부르고, 게임이 끝나면 지도로 넘기는 <strong>유입 동선</strong>을 만들었습니다.
+      원래 규칙은 “손목이 어깨 위로 올라갔다 내려오면 1회”였습니다. 그런데 올라감 기준이
+      화면 높이의 <strong>6%</strong>밖에 안 되고, 손목 좌표는 매 프레임 떨립니다.
+      <strong>팔을 살짝 까딱한 것과 크게 한 바퀴 돌린 것을 구분하지 못했습니다.</strong>
     </p>
+    <p>
+      그래서 <strong>최소 진폭</strong>을 넣었습니다. 팔을 올린 동안 최고 높이를 기억했다가,
+      그 값이 기준을 넘을 때만 셉니다.
+    </p>
+    <p><strong>짐작으로 고치지 않고 재봤습니다.</strong> 판정 함수만 떼어내 흔들림을 넣고 돌렸습니다.</p>
+    <table>
+      <tr><th>손목 흔들림</th><th class="n">고치기 전</th><th class="n">고친 후</th><th>정답</th></tr>
+      <tr><td>±0.10</td><td class="n">10.5회</td><td class="n">9.6회</td><td>10회</td></tr>
+      <tr><td>±0.14</td><td class="n"><strong>12.1회</strong></td><td class="n"><strong>9.7회</strong></td><td>10회</td></tr>
+    </table>
+    <p class="cap" style="text-align:left">
+      다만 <strong>깨끗한 팔 동작에서는 중복이 재현되지 않았습니다.</strong>
+      팔이 어깨선 근처에서 머뭇거릴 때만 재현됐습니다.
+      제게 실제로 일어난 일이 이것인지는 원격으로 확인할 수 없었습니다.
+    </p>
+    <div class="note" style="margin-bottom:0">
+      <b>그래서 고치는 대신 보이게 만들었습니다</b> —
+      최근 10회의 <strong>판정 간격</strong>을 화면에 찍게 했습니다.
+      <code>980ms · 1020ms · 140ms …</code> 처럼 나오는데 100~200ms짜리가 섞여 있으면
+      한 번 저은 걸 두 번 센 것입니다. <strong>원인을 말할 수 있는 상태</strong>로 만들어 두는 것이
+      급하게 고치는 것보다 낫다고 판단했습니다.
+    </div>
+  </div>
+
+  <h3>난이도를 웹캠 없이 맞췄습니다</h3>
+  <p>
+    처음엔 상대 완주 시간을 45초로 뒀는데, <strong>느리게 저어도 이겼습니다.</strong>
+    카메라 앞에서 팔을 수십 번 저어 확인하는 대신,
+    <strong>브라우저 없이 물리 계산만 따로 돌려</strong> 비교했습니다.
+  </p>
+  <table>
+    <tr><th>저는 방식</th><th class="n">기록</th><th>상대 32초 기준</th></tr>
+    <tr><td>빠르게 번갈아 1.2회/초</td><td class="n">21.3초</td><td>이김</td></tr>
+    <tr><td>보통 번갈아 1.0회/초</td><td class="n">25.5초</td><td>이김</td></tr>
+    <tr><td><strong>보통 한팔만 1.0회/초</strong></td><td class="n">32.0초</td><td><strong>짐 — 치팅 방지 확인</strong></td></tr>
+    <tr><td>대충 0.5회/초</td><td class="n">32.0초</td><td>짐</td></tr>
+  </table>
+  <p class="cap" style="text-align:left">
+    표 4. 같은 속도라도 <strong>한 팔만 흔들면 지도록</strong> 맞췄습니다.
+    이 표를 코드 주석에 남겨 다음에 난이도를 만질 때 근거가 되게 했습니다.
+  </p>
+
+  <div class="warn">
+    <strong>팔이 화면에 안 보이던 문제 — 원인이 둘이었습니다</strong><br>
+    1인칭이면 내 팔이 보여야 하는데 없었습니다.
+    <strong>첫째는 측정 환경</strong>이었습니다. 브라우저 창이 숨겨지면
+    <code>requestAnimationFrame</code>이 멈추는데, 그 상태에서 값을 읽고 “렌더 루프가 죽었다”고
+    잘못 판단했습니다. <strong>둘째가 진짜 버그</strong>였습니다. 손의 경로가
+    회복 동작에서 카메라 뒤로 넘어가 <strong>반 바퀴 동안 팔이 사라졌습니다.</strong>
+    앞뒤 폭을 줄이고 기준을 앞으로 밀어 항상 앞에 있게 했습니다.
+  </div>
+
+  <div class="card">
+    <h4>결과 이미지가 빈 화면으로 나오던 문제</h4>
+    <p>
+      공유 카드를 만들었더니 <strong>가운데 경기 화면 자리가 통째로 비어</strong> 있었습니다.
+      WebGL은 <code>preserveDrawingBuffer</code>가 기본값 <code>false</code>라
+      <strong>한 번 그린 뒤 그림 버퍼를 비웁니다.</strong> 화면에는 이미 표시됐으니 남겨둘 이유가 없기 때문인데,
+      그래서 나중에 복사하면 빈 화면이 나옵니다. <strong>2D 캔버스에는 없던 문제</strong>이고 3D로 바꾸면서 딸려왔습니다.
+    </p>
+    <p>
+      옵션을 켜고 실제로 복사해 <strong>색이 122종류</strong> 잡히는 것을 확인했습니다. 고치기 전에는 2종류 이하였습니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h4>게임 기술 정의</h4>
     <table style="margin-top:6px">
       <tr><th style="width:26%">항목</th><th>기술 정의</th></tr>
       <tr><td>동작 인식</td>
@@ -522,10 +641,37 @@ flowchart TD
     전부 고치려 들면 하루가 날아가고, 그날의 목표였던 배포를 못 했을 겁니다.
   </div>
 
-  <div class="hole">
-    📷 <strong>사진 필요 — v5(현재)</strong><br>
-    배포 화면 캡처 3장 ① 검색 결과 목록(출처 배지가 보이게) ② 상세창의 시간표 + 후기 문장 ③ 3D 수영 게임<br>
-    <span style="font-size:12px">파일을 <code>portfolio/img/</code>에 넣으면 v1~v4와 같은 형식으로 이어 붙입니다.</span>
+  <div class="verline">
+    <figure>
+      <img src="img/v5-메인-검색.png" alt="자수하자 메인 화면. 구·날짜·시간 검색 폼과 12곳 안내가 보인다">
+      <figcaption><span class="badge after">v5 · 현재</span>
+        대상이 <strong>집에서 수영장으로</strong> 바뀌었습니다. 구·날짜·시간 검색과
+        <strong>12곳 · 운영 10곳 · 휴관 2곳</strong>을 처음부터 밝힙니다. 오른쪽 노란 카드가 게임 입구입니다.
+      </figcaption>
+    </figure>
+    <figure>
+      <img src="img/v5-상세-시간표.png" alt="양천구민체육센터 상세창. 요일별 시간표와 정원, 입장 전 확인 안내, 출처 배지가 보인다">
+      <figcaption><span class="badge after">v5 · 상세</span>
+        요일별 시간표에 <strong>회차별 정원</strong>을 함께. <strong>“입장 전 확인”</strong> 상자로
+        정원 45명과 발권 시간(15:40~16:10)을 알립니다. 값마다 <strong>공식 확인</strong> 배지가 붙습니다.
+      </figcaption>
+    </figure>
+  </div>
+  <div class="verline">
+    <figure>
+      <img src="img/v5-지도.png" alt="지도 화면. 좌측 목록에 시설별 출처 상태 배지가 있고 지도 말풍선에 길찾기 버튼이 있다">
+      <figcaption><span class="badge after">v5 · 지도</span>
+        목록에 <strong>공식확인 · 부분확인 · 공식시간표미확인 · 휴관 중</strong>이 그대로 보입니다.
+        휴관 시설을 지우지 않고 남긴 이유는 ⑤에 적었습니다.
+      </figcaption>
+    </figure>
+    <figure style="display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px">
+      <img src="img/game-공유카드.webp" alt="게임 결과 공유 카드. 9.1m 32.4초 스트로크 6회와 3D 수영장 화면이 담겨 있다" style="max-width:62%">
+      <figcaption><span class="badge after">v5 · 공유 카드</span>
+        인스타 스토리 비율(1080×1920)로 만든 결과 이미지. <strong>거리를 가장 크게</strong> 뒀습니다.
+        졌어도 몇 미터 갔는지는 남는 기록이기 때문입니다.
+      </figcaption>
+    </figure>
   </div>
 </div></section>
 
