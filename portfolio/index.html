@@ -608,29 +608,31 @@ flowchart TD
   </p>
   <table>
     <tr><th>항목</th><th class="n">정답</th><th class="n">찾음</th><th class="n">적중</th><th class="n">정밀도</th><th class="n">재현율</th></tr>
-    <tr><td>혼잡 여유도</td><td class="n">4</td><td class="n">3</td><td class="n">1</td><td class="n">33%</td><td class="n">25%</td></tr>
+    <tr><td>혼잡 여유도</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">67%</td><td class="n">40%</td></tr>
     <tr><td>시설 쾌적도</td><td class="n">5</td><td class="n">0</td><td class="n">0</td><td class="n">—</td><td class="n">0%</td></tr>
     <tr><td>수영 환경</td><td class="n">2</td><td class="n">2</td><td class="n">2</td><td class="n">100%</td><td class="n">100%</td></tr>
     <tr><td>가성비</td><td class="n">3</td><td class="n">2</td><td class="n">2</td><td class="n">100%</td><td class="n">67%</td></tr>
-    <tr><th>합계 (제가 검수한 답안지)</th><th class="n">14</th><th class="n">7</th><th class="n">5</th><th class="n">71%</th><th class="n">36%</th></tr>
+    <tr><th>합계 (제가 검수한 답안지)</th><th class="n">15</th><th class="n">7</th><th class="n">6</th><th class="n">86%</th><th class="n">40%</th></tr>
     <tr style="color:var(--muted)"><td>참고: 검수 전 AI 답안지</td><td class="n">17</td><td class="n">7</td><td class="n">6</td><td class="n">86%</td><td class="n">35%</td></tr>
   </table>
   <p class="cap">표 2. 정답표 대조 결과. 표본 37건(2026-09-24 수집), 검수·재측정 2026-10-03.
-    판정이 붙은 17칸만 검수했고, “평가 내용 없음”으로 둔 20건은 검수하지 않았습니다.</p>
+    판정이 붙은 17칸만 검수했고, “평가 내용 없음”으로 둔 20건은 검수하지 않았습니다.
+    판정 기준: 들은 말을 전하는 글도 그 주제를 이야기하면 관련 있음, 붐빈다고 확정할 수 없으면 중립.</p>
 
   <div class="note">
-    <b>이 숫자가 뜻하는 것</b> — 재현율 36%는 <strong>“있어야 할 것의 3분의 1밖에 못 찾는다”</strong>입니다.
-    측정 전 AI는 “헛다리가 문제”라고 짐작했는데, 재보니 <strong>오탐 2건 · 누락 9건</strong>으로 정반대였습니다.
+    <b>이 숫자가 뜻하는 것</b> — 정밀도 86%는 “찾아낸 건 대체로 맞다”, 재현율 40%는 <strong>“있어야 할 것의 절반도 못 찾는다”</strong>입니다.
+    측정 전 AI는 “헛다리가 문제”라고 짐작했는데, 재보니 <strong>오탐 1건 · 누락 9건</strong>으로 정반대였습니다.
     원인은 키워드가 <code>샤워실이 깨끗</code> 같은 통문장이라
     실제 후기의 <code>정말 깨끗해졌어요</code>를 못 잡은 것이었습니다.
   </div>
 
   <div class="note">
-    <b>검수하자 정밀도가 86% → 71%로 떨어졌습니다</b><br>
-    “요새 사람 여전히 많나요?”처럼 <strong>블로그에서 들은 말을 묻는 글</strong>을
-    AI 답안지와 키워드 규칙이 둘 다 “붐빈다”로 봤습니다. 제가 읽어보니 근거가 없었습니다.
+    <b>검수해 보니 AI 답안지가 단정하고 있었습니다</b><br>
+    “여름 후기들엔 사람이 많다고 하더라고요… 지금도 그런가요?”처럼 <strong>들은 말을 묻는 글</strong>을
+    AI 답안지는 “붐빈다”로 확정했고, 키워드 규칙도 같은 글을 “붐빈다”로 봤습니다.
+    제 기준으로는 붐빈다고 확정할 수 없어 <strong>중립</strong>입니다.
+    그러자 붐빈다·여유롭다 <strong>방향까지 맞힌 칸이 5개에서 3개로</strong> 줄었습니다.
     <strong>AI가 짠 규칙을 AI가 쓴 답안지로 채점하면 같은 쪽으로 후해집니다.</strong>
-    숫자는 나빠졌지만, 검수 전 86%는 믿을 수 없는 숫자였습니다.
   </div>
 
   <h3>버전별로 무엇이 달라졌나</h3>
@@ -854,7 +856,8 @@ flowchart TD
   <div class="grid2">
     <div class="card"><h4>AI가 쓴 답안지를 제가 검수했다</h4>
       <p>정답표 초안은 AI가 썼고, 판정이 붙은 17칸을 제가 읽어 5칸을 고쳤습니다.
-        그러자 정밀도가 86%에서 71%로 내려갔습니다. 채점 기준까지 AI에게 맡기면 점수가 부풀려집니다. (③ 표 2)</p></div>
+        AI 답안지는 들은 말을 “붐빈다”로 단정해 키워드 규칙과 같은 쪽으로 맞춰 주고 있었습니다.
+        방향까지 맞힌 칸이 5개에서 3개로 줄었습니다. 채점 기준까지 AI에게 맡기면 점수가 부풀려집니다. (③ 표 2)</p></div>
     <div class="card"><h4>숫자는 직접 재게 했다</h4>
       <p>“될 것 같다”를 받지 않고 실측을 시켰습니다. 게임 난이도도 브라우저 없이
         물리 계산만 돌려 상대 완주 45초 → 32초로 맞췄습니다.</p></div>
@@ -906,9 +909,9 @@ flowchart TD
             이미지까지 읽는 방식이 필요합니다.</td></tr>
     <tr><td>후기 분류 재측정</td>
         <td>정답표는 네이버 요약문 37건 기준입니다. 지금은 구글 리뷰가 붙었으므로
-            <strong>새 정답표로 다시 재야</strong> 재현율 36%가 얼마나 올랐는지 말할 수 있습니다.</td></tr>
+            <strong>새 정답표로 다시 재야</strong> 재현율 40%가 얼마나 올랐는지 말할 수 있습니다.</td></tr>
     <tr><td>키워드 → 모델 비교</td>
-        <td>재현율 36%의 원인은 표현의 다양성입니다. 같은 정답표로 트랜스포머와 비교하면
+        <td>재현율 40%의 원인은 표현의 다양성입니다. 같은 정답표로 트랜스포머와 비교하면
             <strong>“재현율이 얼마나 오르고 정밀도를 얼마나 잃는가”</strong>를 숫자로 말할 수 있습니다.</td></tr>
     <tr><td>게임 스트로크 중복 카운트</td>
         <td>19번 저었는데 29번으로 세어진 적이 있습니다. 최소 진폭 조건을 넣어 완화했지만
@@ -950,7 +953,7 @@ flowchart TD
     <tr><td><strong>localStorage</strong></td><td>브라우저가 기억해두는 작은 저장소</td>
         <td>사용자가 추가한 시설이 새로고침해도 남습니다</td></tr>
     <tr><td><strong>정밀도 / 재현율</strong></td><td>찾아낸 게 맞는 비율 / 있어야 할 걸 찾아낸 비율</td>
-        <td>후기 분류를 제가 검수한 정답표와 대조해 <strong>71% / 36%</strong>로 쟀습니다</td></tr>
+        <td>후기 분류를 제가 검수한 정답표와 대조해 <strong>86% / 40%</strong>로 쟀습니다</td></tr>
     <tr><td><strong>히스테리시스</strong></td><td>올라가는 문턱과 내려오는 문턱을 다르게 두는 것</td>
         <td>팔이 문턱 근처에서 떨릴 때 한 번이 여러 번으로 세어지는 걸 막습니다</td></tr>
     <tr><td><strong>preserveDrawingBuffer</strong></td><td>3D가 그린 화면을 지우지 말고 남겨두라는 설정</td>
