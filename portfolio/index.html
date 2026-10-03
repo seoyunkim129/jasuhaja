@@ -161,7 +161,7 @@
     <div class="stat"><b>12곳 → 1화면</b><span>수영장 홈페이지를 하나씩 열던 일을 한 화면으로 (마포 6 · 양천 6)</span></div>
     <div class="stat"><b>후기 출처 3개</b><span>네이버 카페 · 블로그 · 구글. 참고한 두 서비스는 리뷰 1개 · 0건</span></div>
     <div class="stat"><b>공식 확인 60%</b><span>시간표 50회차 중 30회차. 나머지 40%는 공식으로 표시하지 않음</span></div>
-    <div class="stat"><b>AI 오류 10건</b><span>그대로 받지 않고 직접 확인해 잡아낸 뒤 지우지 않고 기록</span></div>
+    <div class="stat"><b>AI 오류 12건</b><span>그대로 받지 않고 직접 확인해 잡아낸 뒤 지우지 않고 기록</span></div>
   </div>
 </div></header>
 
@@ -601,27 +601,36 @@ flowchart TD
     <strong>나머지 40%를 “공식”으로 위장하지 않은 것</strong>이 이 표의 요점입니다.
   </p>
 
-  <h3>후기 분류 정확도를 직접 쟀습니다</h3>
+  <h3>후기 분류 정확도를 쟀고, 답안지는 제가 검수했습니다</h3>
   <p>
-    키워드 분류를 만들고 나서 “잘 되는 것 같다”로 넘기지 않았습니다.
-    후기 37건을 직접 읽고 <strong>사람이 매긴 정답표</strong>를 만든 뒤 대조했습니다.
+    키워드 분류를 만들고 나서 “잘 되는 것 같다”로 넘기지 않고 채점했습니다.
+    채점에 쓸 답안지(정답표) 초안은 AI가 썼고, 판정이 붙은 <strong>17칸은 제가 한 칸씩 읽고 검수해 5칸을 고쳤습니다.</strong>
   </p>
   <table>
     <tr><th>항목</th><th class="n">정답</th><th class="n">찾음</th><th class="n">적중</th><th class="n">정밀도</th><th class="n">재현율</th></tr>
-    <tr><td>혼잡 여유도</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">67%</td><td class="n">40%</td></tr>
-    <tr><td>시설 쾌적도</td><td class="n">7</td><td class="n">0</td><td class="n">0</td><td class="n">—</td><td class="n">0%</td></tr>
+    <tr><td>혼잡 여유도</td><td class="n">4</td><td class="n">3</td><td class="n">1</td><td class="n">33%</td><td class="n">25%</td></tr>
+    <tr><td>시설 쾌적도</td><td class="n">5</td><td class="n">0</td><td class="n">0</td><td class="n">—</td><td class="n">0%</td></tr>
     <tr><td>수영 환경</td><td class="n">2</td><td class="n">2</td><td class="n">2</td><td class="n">100%</td><td class="n">100%</td></tr>
     <tr><td>가성비</td><td class="n">3</td><td class="n">2</td><td class="n">2</td><td class="n">100%</td><td class="n">67%</td></tr>
-    <tr><th>합계</th><th class="n">17</th><th class="n">7</th><th class="n">6</th><th class="n">86%</th><th class="n">35%</th></tr>
+    <tr><th>합계 (제가 검수한 답안지)</th><th class="n">14</th><th class="n">7</th><th class="n">5</th><th class="n">71%</th><th class="n">36%</th></tr>
+    <tr style="color:var(--muted)"><td>참고: 검수 전 AI 답안지</td><td class="n">17</td><td class="n">7</td><td class="n">6</td><td class="n">86%</td><td class="n">35%</td></tr>
   </table>
-  <p class="cap">표 2. 정답표 대조 결과(측정일 2026-09-24, 표본 37건).</p>
+  <p class="cap">표 2. 정답표 대조 결과. 표본 37건(2026-09-24 수집), 검수·재측정 2026-10-03.
+    판정이 붙은 17칸만 검수했고, “평가 내용 없음”으로 둔 20건은 검수하지 않았습니다.</p>
 
   <div class="note">
-    <b>이 숫자가 뜻하는 것</b> — 정밀도 86%는 “찾아낸 건 대체로 맞다”,
-    재현율 35%는 <strong>“있어야 할 것의 3분의 1밖에 못 찾는다”</strong>입니다.
-    측정 전 제 짐작은 “헛다리가 문제”였는데, 재보니 <strong>오탐 1건 · 누락 11건</strong>으로 정반대였습니다.
+    <b>이 숫자가 뜻하는 것</b> — 재현율 36%는 <strong>“있어야 할 것의 3분의 1밖에 못 찾는다”</strong>입니다.
+    측정 전 AI는 “헛다리가 문제”라고 짐작했는데, 재보니 <strong>오탐 2건 · 누락 9건</strong>으로 정반대였습니다.
     원인은 키워드가 <code>샤워실이 깨끗</code> 같은 통문장이라
     실제 후기의 <code>정말 깨끗해졌어요</code>를 못 잡은 것이었습니다.
+  </div>
+
+  <div class="note">
+    <b>검수하자 정밀도가 86% → 71%로 떨어졌습니다</b><br>
+    “요새 사람 여전히 많나요?”처럼 <strong>블로그에서 들은 말을 묻는 글</strong>을
+    AI 답안지와 키워드 규칙이 둘 다 “붐빈다”로 봤습니다. 제가 읽어보니 근거가 없었습니다.
+    <strong>AI가 짠 규칙을 AI가 쓴 답안지로 채점하면 같은 쪽으로 후해집니다.</strong>
+    숫자는 나빠졌지만, 검수 전 86%는 믿을 수 없는 숫자였습니다.
   </div>
 
   <h3>버전별로 무엇이 달라졌나</h3>
@@ -843,15 +852,15 @@ flowchart TD
 
   <h3>AI 결과를 검증한 방법</h3>
   <div class="grid2">
-    <div class="card"><h4>정답표를 먼저 만들었다</h4>
-      <p>후기 37건을 직접 읽고 사람 판정을 붙인 뒤 대조했습니다. 비교할 자가 없으면
-        “AI가 더 낫다”를 말할 수 없습니다. (③ 표 2)</p></div>
+    <div class="card"><h4>AI가 쓴 답안지를 제가 검수했다</h4>
+      <p>정답표 초안은 AI가 썼고, 판정이 붙은 17칸을 제가 읽어 5칸을 고쳤습니다.
+        그러자 정밀도가 86%에서 71%로 내려갔습니다. 채점 기준까지 AI에게 맡기면 점수가 부풀려집니다. (③ 표 2)</p></div>
     <div class="card"><h4>숫자는 직접 재게 했다</h4>
       <p>“될 것 같다”를 받지 않고 실측을 시켰습니다. 게임 난이도도 브라우저 없이
         물리 계산만 돌려 상대 완주 45초 → 32초로 맞췄습니다.</p></div>
     <div class="card"><h4>AI가 틀린 것을 기록으로 남겼다</h4>
       <p>직선거리 필터 8%, 존재하지 않는 TMAP 도메인 제한, 잘못 매칭된 구글 Place ID
-        (소의체육문화센터 → 서울소의초등학교) 등 10건.</p></div>
+        (소의체육문화센터 → 서울소의초등학교), 후하게 매긴 정답표 등 12건.</p></div>
     <div class="card"><h4>같은 종류의 버그를 네 번 만났다</h4>
       <p><code>공휴일</code>의 <code>일</code>, <code>건물은</code>의 <code>물은</code>,
         <code>할줄</code>의 <code>줄</code>, <code>월~토</code>. 한국어에서 짧은 단어로
@@ -897,9 +906,9 @@ flowchart TD
             이미지까지 읽는 방식이 필요합니다.</td></tr>
     <tr><td>후기 분류 재측정</td>
         <td>정답표는 네이버 요약문 37건 기준입니다. 지금은 구글 리뷰가 붙었으므로
-            <strong>새 정답표로 다시 재야</strong> 재현율 35%가 얼마나 올랐는지 말할 수 있습니다.</td></tr>
+            <strong>새 정답표로 다시 재야</strong> 재현율 36%가 얼마나 올랐는지 말할 수 있습니다.</td></tr>
     <tr><td>키워드 → 모델 비교</td>
-        <td>재현율 35%의 원인은 표현의 다양성입니다. 같은 정답표로 트랜스포머와 비교하면
+        <td>재현율 36%의 원인은 표현의 다양성입니다. 같은 정답표로 트랜스포머와 비교하면
             <strong>“재현율이 얼마나 오르고 정밀도를 얼마나 잃는가”</strong>를 숫자로 말할 수 있습니다.</td></tr>
     <tr><td>게임 스트로크 중복 카운트</td>
         <td>19번 저었는데 29번으로 세어진 적이 있습니다. 최소 진폭 조건을 넣어 완화했지만
@@ -941,7 +950,7 @@ flowchart TD
     <tr><td><strong>localStorage</strong></td><td>브라우저가 기억해두는 작은 저장소</td>
         <td>사용자가 추가한 시설이 새로고침해도 남습니다</td></tr>
     <tr><td><strong>정밀도 / 재현율</strong></td><td>찾아낸 게 맞는 비율 / 있어야 할 걸 찾아낸 비율</td>
-        <td>후기 분류를 정답표와 대조해 <strong>86% / 35%</strong>로 쟀습니다</td></tr>
+        <td>후기 분류를 제가 검수한 정답표와 대조해 <strong>71% / 36%</strong>로 쟀습니다</td></tr>
     <tr><td><strong>히스테리시스</strong></td><td>올라가는 문턱과 내려오는 문턱을 다르게 두는 것</td>
         <td>팔이 문턱 근처에서 떨릴 때 한 번이 여러 번으로 세어지는 걸 막습니다</td></tr>
     <tr><td><strong>preserveDrawingBuffer</strong></td><td>3D가 그린 화면을 지우지 말고 남겨두라는 설정</td>
