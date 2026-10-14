@@ -6,5 +6,8 @@
     "build": "node scripts/키파일만들기.js",
     "analyze:reviews": "node scripts/후기분석비교.mjs",
     "sample:reviews": "node scripts/후기표본만들기.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.133.0"
   }
 }

@@ -7,31 +7,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { 관련, 받기, 글줄, 이미지 } from './페이지읽기.mjs';
 
 const 폴더 = process.argv[2] || 'data/스냅샷';
 const 설정 = JSON.parse(fs.readFileSync('scripts/감시대상.json', 'utf8'));
-const 관련 = /수영|자유|휴관|휴장|재개장|운영|요금|입장|[0-9]{1,2}\s*[:시]\s*[0-9]{0,2}|[0-9,]+\s*원/;
-
-async function 받기(대상) {
-  const 응답 = await fetch(대상.주소, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; jasuhaja-checker; +https://github.com/seoyunkim129/jasuhaja)' }, signal: AbortSignal.timeout(30000) });
-  if (!응답.ok) throw Error(`HTTP ${응답.status}`);
-  return new TextDecoder(대상.인코딩).decode(await 응답.arrayBuffer());
-}
-
-function 글줄(html) {
-  return html
-    .replace(/<(script|style|noscript)[\s\S]*?<\/\1>/gi, ' ')
-    .replace(/<!--[\s\S]*?-->/g, ' ')
-    .replace(/<br\s*\/?>|<\/(p|div|li|tr|td|th|h\d)>/gi, '\n')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&amp;/g, '&')
-    .split('\n').map(s => s.replace(/\s+/g, ' ').trim()).filter(Boolean);
-}
-
-function 이미지(html, 기준) {
-  const 주소들 = [...html.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].map(m => m[1]).filter(s => !s.startsWith('data:'));
-  return [...new Set(주소들.map(s => { try { return new URL(s, 기준).href; } catch { return s; } }))];
-}
 
 const 지문 = x => crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex').slice(0, 16);
 
