@@ -76,7 +76,7 @@ function 적용칸(표기){
   if(표기.includes('공휴일')) 칸.push('공휴일');
   return 칸;
 }
-function 플래너HTML(표){const 칸들=['월','화','수','목','금','토','일','공휴일'];return `<div class="planner">${칸들.map(d=>{const 회차=표.filter(t=>적용칸(t.요일구분).includes(d)),이름=d==='공휴일'?'공휴일':`${d}요일`;return `<div class="planner-day"><b>${이름}</b>${회차.length?회차.map(t=>`<span class="planner-time">${시간텍스트(t)}${t.정원명?`<em>${t.정원명}명</em>`:''}</span>`).join(''):'<span class="planner-empty">확인된 회차 없음</span>'}</div>`}).join('')}</div>`}
+function 플래너HTML(표){const 칸들=['월','화','수','목','금','토','일','공휴일'];return `<div class="planner">${칸들.map(d=>{const 회차=표.filter(t=>적용칸(t.요일구분).includes(d)).sort((a,b)=>a.시작시간.localeCompare(b.시작시간)),이름=d==='공휴일'?'공휴일':`${d}요일`;return `<div class="planner-day"><b>${이름}</b>${회차.length?회차.map(t=>`<span class="planner-time">${시간텍스트(t)}${t.정원명?`<em>${t.정원명}명</em>`:''}${/^한시 운영/.test(t.비고||'')?'<em>한시 운영</em>':''}</span>`).join(''):'<span class="planner-empty">확인된 회차 없음</span>'}</div>`}).join('')}</div>`}
 /* 정원은 '얼마나 붐비는가'가 아니라 '헛걸음할 수 있는가'를 말해줍니다.
    정원이 크다고 그만큼 사람이 온다는 보장은 없지만, 정원이 정해져 있다는 것은
    늦게 가면 못 들어갈 수 있다는 뜻이라 방문 전에 알아야 할 정보입니다. */
