@@ -15,13 +15,19 @@ if (fs.existsSync('.env.local')) {
 }
 
 // 100만 토큰당 달러. 비용 비교용 추정치라 실제 청구액과 다를 수 있다.
-// claude: Anthropic 공식 가격(2026-10). gemini: 3.8 Flash 출시 할인가로 알려진 값(공식 확인 전).
-// qwen: 공식 가격표에서 확인한 뒤 채운다.
-export const 모델들 = {
-  claude: { 이름: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5', 키: 'ANTHROPIC_API_KEY', 가격: { 입력: 2, 출력: 10 }, 데이터위치: '미국' },
-  gemini: { 이름: process.env.GEMINI_MODEL || 'gemini-3.8-flash', 키: 'GEMINI_API_KEY', 가격: { 입력: 0.75, 출력: 3.75 }, 데이터위치: '미국' },
-  qwen: { 이름: process.env.QWEN_MODEL || 'qwen-vl-max', 키: 'DASHSCOPE_API_KEY', 가격: null, 데이터위치: '싱가포르(알리바바 국제판)' },
+// claude: Anthropic 공식 가격(2026-10). gemini: 가격 비교 사이트 값(공식 확인 전), 출력에 생각 토큰 포함.
+// 목록에 없는 모델은 비용을 비워 둔다(qwen은 공식 가격표 확인 후 채운다).
+const 가격표 = {
+  'claude-sonnet-5-5': { 입력: 2, 출력: 10 },
+  'gemini-3.8-flash': { 입력: 0.75, 출력: 3.75 },
+  'gemini-3.5-flash': { 입력: 1.5, 출력: 9 },
 };
+export const 모델들 = {
+  claude: { 이름: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5', 키: 'ANTHROPIC_API_KEY', 데이터위치: '미국' },
+  gemini: { 이름: process.env.GEMINI_MODEL || 'gemini-3.8-flash', 키: 'GEMINI_API_KEY', 데이터위치: '미국' },
+  qwen: { 이름: process.env.QWEN_MODEL || 'qwen3-vl-plus', 키: 'DASHSCOPE_API_KEY', 데이터위치: '싱가포르(알리바바 국제판)' },
+};
+for (const 모델 of Object.values(모델들)) 모델.가격 = 가격표[모델.이름] ?? null;
 
 // 입력: { 종류, 지시, 글, 이미지들:[{종류, 바이트}], 스키마 }
 // 출력: { 결과, 입력토큰, 출력토큰, 걸린초, 모델, 추정비용달러 }
@@ -44,6 +50,17 @@ function JSON꺼내기(글) {
   const 시작 = 본문.indexOf('{'), 끝 = 본문.lastIndexOf('}');
   if (시작 < 0 || 끝 < 시작) throw Error(`JSON을 찾지 못했습니다: ${글.slice(0, 200)}`);
   return 본문.slice(시작, 끝 + 1);
+}
+
+// 서버가 붐비거나(429, 503) 잠깐 오류가 나면 5초, 15초, 45초 쉬고 다시 보낸다.
+// Claude SDK는 자체 재시도가 있어서 Gemini·Qwen에만 쓴다.
+async function 보내기(주소, 옵션, 쉬는초 = [5, 15, 45]) {
+  for (let i = 0; ; i++) {
+    const 응답 = await fetch(주소, { ...옵션, signal: AbortSignal.timeout(180000) });
+    if (![429, 500, 502, 503, 504].includes(응답.status) || i >= 쉬는초.length) return 응답;
+    console.log(`   서버 응답 ${응답.status}, ${쉬는초[i]}초 뒤 다시 시도 (${i + 1}/${쉬는초.length})`);
+    await new Promise(r => setTimeout(r, 쉬는초[i] * 1000));
+  }
 }
 
 async function 클로드({ 모델, 키, 지시, 글, 이미지들, 스키마 }) {
@@ -72,7 +89,7 @@ async function 클로드({ 모델, 키, 지시, 글, 이미지들, 스키마 }) 
 }
 
 async function 제미나이({ 모델, 키, 지시, 글, 이미지들, 스키마 }) {
-  const 응답 = await fetch('https://generativelanguage.googleapis.com/v1beta/interactions', {
+  const 응답 = await 보내기('https://generativelanguage.googleapis.com/v1beta/interactions', {
     method: 'POST',
     headers: { 'x-goog-api-key': 키, 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -83,7 +100,6 @@ async function 제미나이({ 모델, 키, 지시, 글, 이미지들, 스키마 
       ],
       response_format: { type: 'text', mime_type: 'application/json', schema: 스키마 },
     }),
-    signal: AbortSignal.timeout(180000),
   });
   const 본문 = await 응답.json();
   if (!응답.ok) throw Error(`Gemini ${응답.status}: ${JSON.stringify(본문).slice(0, 300)}`);
@@ -93,7 +109,10 @@ async function 제미나이({ 모델, 키, 지시, 글, 이미지들, 스키마 
 
 async function 큐웬({ 모델, 키, 지시, 글, 이미지들, 스키마 }) {
   // 알리바바 국제판(싱가포르)의 OpenAI 호환 주소. 중국 본토판 키는 여기서 쓰이지 않는다.
-  const 응답 = await fetch('https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', {
+  // 콘솔은 업무공간 전용 주소(https://<업무공간ID>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1)로 옮기라고 권한다.
+  // 기존 주소도 계속 동작한다고 문서에 나와 있어 기본값으로 두고, QWEN_BASE_URL로 바꿀 수 있게 했다.
+  const 기준 = process.env.QWEN_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
+  const 응답 = await 보내기(`${기준}/chat/completions`, {
     method: 'POST',
     headers: { authorization: `Bearer ${키}`, 'content-type': 'application/json' },
     body: JSON.stringify({
@@ -107,7 +126,6 @@ async function 큐웬({ 모델, 키, 지시, 글, 이미지들, 스키마 }) {
         ] },
       ],
     }),
-    signal: AbortSignal.timeout(180000),
   });
   const 본문 = await 응답.json();
   if (!응답.ok) throw Error(`Qwen ${응답.status}: ${JSON.stringify(본문).slice(0, 300)}`);
