@@ -63,4 +63,5 @@ jobs:
 
       - name: 접속 실패만 있을 때 알리기
         if: steps.detect.outputs.changed == '' && steps.detect.outputs.failed != '0'
-        run: gh issue create --title "주간 점검 ${{ steps.detect.outputs.date }}: 접속 실패 ${{ steps.detect.outputs.failed }}곳" --body-file data/점검보고.md
+        run: |
+          gh issue create --title "주간 점검 ${{ steps.detect.outputs.date }} - 접속 실패 ${{ steps.detect.outputs.failed }}곳" --body-file data/점검보고.md
