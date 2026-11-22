@@ -1,0 +1,30 @@
+{
+  "수영장ID": "YC006",
+  "이름": "서부여성발전센터",
+  "주소": "https://seobu.seoulcareerup.or.kr/seobu/main/main.do",
+  "모델": "claude-sonnet-5-5",
+  "읽은시각": "2026-11-22T03:34:27.610Z",
+  "이미지": [
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20261117/1794894449779YQDDAXIFN2XCH3RNIRWJB1S85.png",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20260904/178850196897311B9DRSSMITQV3C96UCJST85X.png",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20260901/178823929779187FAOCO2XIVTXRW0IAOYSOINU.jpg",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20260901/1788239370868EEJQDGZLPMTZHVJEF6QWCG6V2.jpg",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20261110/1794289859477OIW83QP33TNV3SWF33K1O6MCY.jpg"
+  ],
+  "형식문제": [],
+  "입력토큰": 13154,
+  "출력토큰": 429,
+  "걸린초": 5.278,
+  "추정비용달러": 0.030598,
+  "운영상태": "휴관",
+  "공지": [
+    {
+      "내용": "수영장 재개장 연기 및 전면 그린리모델링 추진. 2024년 5월 안전사고 이후 2026년 내 재개장을 목표로 보수 공사를 해 왔으나 재개장 일정을 연기함. 센터 전관 리모델링 공사와 수영장 개선 공사를 통합 추진하며 재개장 예정 시기는 2028년 상반기(공사 진행 상황에 따라 별도 공지 예정)",
+      "기간": "사업 기간 2026.7.~2028.12.",
+      "근거": "이미지 3: 수영장 재개장 연기 및 전면 그린리모델링 추진 안내 / 재개장 예정 시기:2028년 상반기"
+    }
+  ],
+  "회차": [],
+  "확신도": "높음",
+  "메모": "수영장은 리모델링으로 재개장이 연기되어 운영하지 않으며 자유수영 회차와 요금 정보는 페이지에 없음. 이미지 4는 이미지 3과 동일한 공지임. 이미지 1(직업교육), 이미지 2(교육생 모집), 이미지 5(주차장 임시 개방 안내)는 자유수영과 무관하여 제외함."
+}

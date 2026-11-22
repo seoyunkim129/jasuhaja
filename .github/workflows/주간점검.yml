@@ -1,0 +1,66 @@
+# 매주 월요일 아침, 수영장 공식 페이지 8곳이 지난번과 달라졌는지 본다.
+# 달라진 곳이 있으면 수정안을 PR로 올린다. 사람이 PR을 합쳐야 사이트에 반영된다.
+# 같으면 아무것도 하지 않는다. 접속에 실패한 곳만 있으면 이슈로 알린다.
+#
+# AI 요약은 저장소 Secrets에 ANTHROPIC_API_KEY가 있을 때만 붙는다. 없어도 "어느 페이지의 어떤 줄이 바뀌었는지"는 PR에 나온다.
+name: 주간 점검
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # 월요일 09:00 (한국 시간)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: weekly-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+
+      - name: 바뀐 곳 찾기
+        id: detect
+        run: |
+          node scripts/변경감지.mjs data/스냅샷
+          node scripts/점검보고.mjs data/스냅샷
+
+      - name: AI가 바뀐 페이지 읽고 수정안 만들기
+        if: steps.detect.outputs.changed != '' && env.ANTHROPIC_API_KEY != ''
+        run: |
+          node scripts/시간표추출.mjs --모델 claude --대상 "${{ steps.detect.outputs.changed }}"
+          node scripts/수정안만들기.mjs --모델 claude --대상 "${{ steps.detect.outputs.changed }}" --적용
+          node scripts/검색정렬검증.cjs
+          node scripts/점검보고.mjs data/스냅샷 claude
+
+      - name: 수정안 PR 올리기
+        if: steps.detect.outputs.changed != ''
+        run: |
+          BRANCH="auto/check-${{ steps.detect.outputs.date }}"
+          git config user.name "jasuhaja-checker"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add data/스냅샷 data/추출 data/수정안 자유수영시간.csv
+          git commit -m "주간 점검 ${{ steps.detect.outputs.date }}: 바뀐 곳 ${{ steps.detect.outputs.changed }}"
+          git push -f origin "$BRANCH"
+          TITLE="주간 점검 ${{ steps.detect.outputs.date }}: ${{ steps.detect.outputs.changed }} 변경"
+          # 저장소 설정에서 Actions의 PR 생성이 꺼져 있으면 이슈로 대신 알린다.
+          gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file data/점검보고.md \
+            || gh issue create --title "$TITLE (PR을 직접 열어 주세요)" --body-file data/점검보고.md
+
+      - name: 접속 실패만 있을 때 알리기
+        if: steps.detect.outputs.changed == '' && steps.detect.outputs.failed != '0'
+        run: gh issue create --title "주간 점검 ${{ steps.detect.outputs.date }}: 접속 실패 ${{ steps.detect.outputs.failed }}곳" --body-file data/점검보고.md

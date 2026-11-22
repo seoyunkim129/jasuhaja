@@ -1,0 +1,30 @@
+{
+  "수영장ID": "YC006",
+  "이름": "서부여성발전센터",
+  "주소": "https://seobu.seoulcareerup.or.kr/seobu/main/main.do",
+  "모델": "gemini-3.5-flash",
+  "읽은시각": "2026-11-22T03:36:41.645Z",
+  "이미지": [
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20261117/1794894449779YQDDAXIFN2XCH3RNIRWJB1S85.png",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20260904/178850196897311B9DRSSMITQV3C96UCJST85X.png",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20260901/178823929779187FAOCO2XIVTXRW0IAOYSOINU.jpg",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20260901/1788239370868EEJQDGZLPMTZHVJEF6QWCG6V2.jpg",
+    "https://seobu.seoulcareerup.or.kr/cmsdata/web_upload/popup/20261110/1794289859477OIW83QP33TNV3SWF33K1O6MCY.jpg"
+  ],
+  "형식문제": [],
+  "입력토큰": 6286,
+  "출력토큰": 761,
+  "걸린초": 8.745,
+  "추정비용달러": 0.016278,
+  "운영상태": "휴관",
+  "공지": [
+    {
+      "내용": "수영장 재개장 연기 및 전면 그린리모델링 추진 안내 (재개장 예정 시기: 2028년 상반기)",
+      "기간": "2026.7. ~ 2028.12.",
+      "근거": "이미지 3"
+    }
+  ],
+  "회차": [],
+  "확신도": "높음",
+  "메모": "2024년 5월 안전사고 이후 수영장 공사가 연기되어 전면 그린리모델링 추진 중으로, 2028년 상반기 재개장 예정입니다."
+}

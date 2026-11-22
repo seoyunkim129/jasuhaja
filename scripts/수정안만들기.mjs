@@ -13,7 +13,8 @@ import path from 'node:path';
 const 인자 = process.argv.slice(2);
 const 값 = 이름 => { const i = 인자.indexOf(이름); return i >= 0 ? 인자[i + 1] : undefined; };
 const 종류 = 값('--모델') || 'claude';
-const 적용 = 인자.includes('--적용');
+const 확인일만 = 인자.includes('--확인일만'); // 새 회차는 넣지 않고, 다시 확인된 줄의 확인일만 갱신한다
+const 적용 = 인자.includes('--적용') || 확인일만;
 const 시간표파일 = '자유수영시간.csv';
 
 const 요일순서 = ['월', '화', '수', '목', '금', '토', '일', '공휴일'];
@@ -70,7 +71,9 @@ const 보고 = [];
 for (const 파일 of 파일들) {
   const 추출 = JSON.parse(fs.readFileSync(path.join(폴더, 파일), 'utf8'));
   const id = 추출.수영장ID;
-  const 지금행 = 행들.filter(r => r.칸.수영장ID === id && r.칸.대상 === '성인');
+  // 시작·끝 시간이 다 있는 줄만 비교한다. 휴관 표시용 빈 줄이나 끝 시간을 모르는 참고 줄은 비교할 수 없다.
+  const 지금행 = 행들.filter(r => r.칸.수영장ID === id && r.칸.대상 === '성인' && r.칸.시작시간 && r.칸.종료시간);
+  const 못읽음 = 추출.운영상태 !== '운영' || 추출.회차.length === 0;
 
   // 둘 다 "요일|시작|끝" 칸으로 푼다
   const AI칸 = new Map();
@@ -90,7 +93,8 @@ for (const 파일 of 파일들) {
   const 추가 = [...묶음.values()].map(x => ({ ...x, 요일구분: 요일묶기(x.요일들) }));
 
   const 빠짐 = [];
-  for (const [k, r] of CSV칸들) if (!AI칸.has(k)) { const [d] = k.split('|'); 빠짐.push({ 줄: r.번호 + 1, 요일: d, 시작: r.칸.시작시간, 끝: r.칸.종료시간 }); }
+  // 페이지에서 시간표 자체를 못 읽은 곳(휴관·확인불가)은 회차마다 묻지 않고 한 줄로 알린다
+  if (!못읽음) for (const [k, r] of CSV칸들) if (!AI칸.has(k)) { const [d] = k.split('|'); 빠짐.push({ 줄: r.번호 + 1, 요일: d, 시작: r.칸.시작시간, 끝: r.칸.종료시간 }); }
 
   // 요금: AI가 값을 읽었을 때만 비교한다. AI가 비워 뒀다면 페이지에 요금이 없다는 뜻이라 메모만 남긴다.
   const 요금 = [];
@@ -107,13 +111,24 @@ for (const 파일 of 파일들) {
   // CSV 한 줄의 모든 칸을 AI도 읽었으면 "다시 확인됨"
   const 확인된줄 = 지금행.filter(r => 요일풀기(r.칸.요일구분).every(d => AI칸.has(`${d}|${r.칸.시작시간}|${r.칸.종료시간}`)));
 
-  보고.push({ id, 이름: 추출.이름, 주소: 추출.주소, 모델: 추출.모델, 읽은시각: 추출.읽은시각, 운영상태: 추출.운영상태, 확신도: 추출.확신도, 공지: 추출.공지, 메모: 추출.메모, 추가, 빠짐, 요금, 요금없음, 확인된줄: 확인된줄.map(r => r.번호 + 1), 형식문제: 추출.형식문제 });
+  // 모델 비교용 숫자. 기준은 "지금 CSV"라 정답률이 아니라 일치율이다(CSV가 틀렸을 수도 있다).
+  const 일치칸 = [...AI칸.keys()].filter(k => CSV칸들.has(k));
+  let 요금비교 = 0, 요금일치 = 0;
+  for (const k of 일치칸) for (const 항목 of ['회원가격원', '비회원가격원']) {
+    const c = CSV칸들.get(k).칸[항목];
+    if (c === '' || CSV칸들.get(k).칸.요금정보상태) continue; // CSV 요금이 비었거나 외부 참고값이면 기준으로 쓰지 않는다
+    요금비교++;
+    if (AI칸.get(k)[항목] === Number(c)) 요금일치++;
+  }
+  const 숫자 = { AI칸수: AI칸.size, CSV칸수: CSV칸들.size, 일치칸수: 일치칸.length, 요금비교, 요금일치, 입력토큰: 추출.입력토큰, 출력토큰: 추출.출력토큰, 걸린초: 추출.걸린초, 추정비용달러: 추출.추정비용달러 };
+
+  보고.push({ 숫자, 못읽음, 비교줄수: 지금행.length, id, 이름: 추출.이름, 주소: 추출.주소, 모델: 추출.모델, 읽은시각: 추출.읽은시각, 운영상태: 추출.운영상태, 확신도: 추출.확신도, 공지: 추출.공지, 메모: 추출.메모, 추가, 빠짐, 요금, 요금없음, 확인된줄: 확인된줄.map(r => r.번호 + 1), 형식문제: 추출.형식문제 });
 
   if (적용) {
     // 확인일은 오늘이 아니라 AI가 실제로 페이지를 읽은 날이다
     const 읽은날 = new Date(추출.읽은시각).toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
     for (const r of 확인된줄) r.칸.확인일 = 읽은날;
-    for (const x of 추가) {
+    for (const x of 확인일만 ? [] : 추가) {
       const 새행 = Object.fromEntries(머리.map(k => [k, '']));
       Object.assign(새행, {
         수영장ID: id, 요일구분: x.요일구분, 시작시간: x.시작, 종료시간: x.끝, 대상: '성인',
@@ -132,7 +147,8 @@ const md = [`# 시간표 수정안 (${종류}, ${오늘})`, '', '> 자동 추출
 for (const r of 보고) {
   md.push(`## ${r.id} ${r.이름}`, '', `- 출처: ${r.주소}`, `- 모델: ${r.모델} · 읽은 시각 ${r.읽은시각} · 운영상태 **${r.운영상태}** · 확신도 ${r.확신도}${r.형식문제?.length ? ` · 형식문제 ${r.형식문제.length}` : ''}`, '');
   const 없음 = !r.추가.length && !r.빠짐.length && !r.요금.length;
-  if (없음) md.push('**바뀐 회차 없음.** 지금 CSV와 같다.', '');
+  if (r.못읽음) md.push(`**이 페이지에서 시간표를 읽지 못했다(${r.운영상태}).** CSV ${r.비교줄수}줄은 비교하지 않았다. 공지와 메모를 보고 사람이 확인한다.`, '');
+  else if (없음) md.push('**바뀐 회차 없음.** 지금 CSV와 같다.', '');
   if (r.추가.length) { md.push('**새로 생긴 회차 (CSV에 없음)**', ''); r.추가.forEach(x => md.push(`- ➕ ${x.요일구분} ${x.시작}~${x.끝} — 근거: ${x.근거}`)); md.push(''); }
   if (r.빠짐.length) { md.push('**페이지에서 못 찾은 회차 (CSV에는 있음) — 사람이 확인**', ''); r.빠짐.forEach(x => md.push(`- ❓ ${x.요일} ${x.시작}~${x.끝} (CSV ${x.줄}번째 줄)`)); md.push(''); }
   if (r.요금.length) { md.push('**요금이 다름 — 사람이 확인**', ''); r.요금.forEach(x => md.push(`- 💰 ${x.칸.replaceAll('|', ' ')} ${x.항목}: CSV ${x.지금 ?? '없음'} → 페이지 ${x.AI} (근거: ${x.근거})`)); md.push(''); }
@@ -151,5 +167,5 @@ if (적용) {
   fs.writeFileSync(시간표파일, 새줄들.join(줄끝) + (원문.endsWith('\n') ? 줄끝 : ''));
 }
 
-for (const r of 보고) console.log(`${r.id} 추가 ${r.추가.length} · 못 찾음 ${r.빠짐.length} · 요금 다름 ${r.요금.length} · 다시 확인 ${r.확인된줄.length}줄`);
+for (const r of 보고) console.log(`${r.id}${r.못읽음 ? ` [${r.운영상태}·시간표 못 읽음]` : ''} 추가 ${r.추가.length} · 못 찾음 ${r.빠짐.length} · 요금 다름 ${r.요금.length} · 다시 확인 ${r.확인된줄.length}줄`);
 console.log(`수정안: data/수정안/${종류}.md${적용 ? ` · CSV에 적용함(${시간표파일})` : ' · CSV는 그대로'}`);

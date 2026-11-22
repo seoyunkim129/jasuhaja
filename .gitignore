@@ -28,3 +28,7 @@ docs/기획전환-수영장카공카페.md
 docs/04_4주차_0912.md
 docs/skill-정리.md
 docs/CLAUDE_HANDOFF.md
+
+# 주간 점검이 실행 중에만 쓰는 파일
+data/스냅샷/_변경목록.json
+data/점검보고.md
